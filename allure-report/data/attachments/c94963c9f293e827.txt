@@ -1,0 +1,8 @@
+{
+  "script": "<script> [13 bytes]",
+  "args": [
+    {
+      "command": "am start -a android.intent.action.VIEW -d \"https://youtu.be/5t6Yr4eZ9wY?si=32xirVzLBsHIrZgJ\""
+    }
+  ]
+}

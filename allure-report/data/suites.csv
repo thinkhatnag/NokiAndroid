@@ -1,0 +1,3 @@
+"DESCRIPTION","DURATION IN MS","NAME","PARENT SUITE","START TIME","STATUS","STOP TIME","SUB SUITE","SUITE","TEST CLASS","TEST METHOD"
+"","259686","Verify if encounter starts and SOAP note is generated for a new patient","","Wed Apr 02 16:27:17 IST 2025","broken","Wed Apr 02 16:31:37 IST 2025",""," all the the soap note generation process are verified here ","",""
+"","18","Verify SOAP note generation after sleep mode for 1 minute after clicking on stop Button and wait until the genrating the soap note button is displayed","","Wed Apr 02 12:02:10 IST 2025","broken","Wed Apr 02 12:02:10 IST 2025",""," all the the soap note generation process are verified here ","",""
