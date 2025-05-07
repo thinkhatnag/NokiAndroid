@@ -59,5 +59,30 @@ describe('login screen test cases {TC01 - TC09}',() => {
         await verify(HomePage.homeScreenAnimation)
         await LoginPage.restartApp();
     });
+        // it('Verify  message when the no password for multitenent{TC08}', async() => {
+    //     await LoginPage.enterEmail('bheema.Badri@thinkhat.ai')
+    //     await LoginPage.selectMultiTenant();
+    //     await LoginPage.enterPassword('')
+    //     await LoginPage.clickLogin();
+    //     await verify(LoginPage.errorMessage)
+    // });
+    // it('Verify  message for not selecting the dropdrown is multitenent{TC08}', async() => {
+    //     await LoginPage.enterEmail('bheema.Badri@thinkhat.ai')
+    //     await LoginPage.clickLogin();
+    //     await verify(LoginPage.multiTenantError);
+    // });
+    // it('Verify  message for incorrect Password is multitenent{TC08}', async() => {
+    //     await LoginPage.enterEmail('bheema.Badri@thinkhat.ai')
+    //     await LoginPage.selectMultiTenant();
+    //     await LoginPage.enterPassword('Abcd12343')
+    //     await LoginPage.clickLogin();
+    //     await verify(LoginPage.WrongPassword);
+    // });
+    // it('Verify  message when the email is multitenent{TC08}', async() => {
+    //     await LoginPage.enterEmail('bheema.Badri@thinkhat.ai')
+    //     await LoginPage.selectMultiTenant();
+    //     await LoginPage.enterPassword('Abcd1234')
+    //     await LoginPage.clickLogin();
+    // });
     
 })

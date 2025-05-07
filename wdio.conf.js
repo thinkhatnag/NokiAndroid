@@ -1,7 +1,9 @@
-import path from 'path';
-import video from 'wdio-video-reporter';
-import allure from 'allure-commandline';
-import { EventEmitter } from 'events';
+import path from "path";
+import video from "wdio-video-reporter";
+import allure from "allure-commandline";
+import { EventEmitter } from "events";
+import fs from "fs";
+import fsExtra from "fs-extra";
 
 EventEmitter.defaultMaxListeners = 50;
 
@@ -27,22 +29,23 @@ export const config = {
     // process simply enclose them in an array within the specs array.
     //
     // The path of the spec files will be resolved relative from the directory of
-    // of the config file unless it's absolute.
+    // of the config file unless it"s absolute.
     //
     specs: [
-           
-        //'./test/spec/Test.spec.js'
-        //'./test/spec/Hayoki.spec.js'
-        //'./test/spec/login.spec.js'
-        //'./test/spec/home.spec.js'
-        //'./test/spec/patient.spec.js'
-         //'./test/spec/encounter.spec.js'
-         //'./test/spec/setting.spec.js'
-         //'./test/spec/noki.spec.js'
-         './test/spec/soapnote.spec.js'
+        //"./test/spec/login.spec.js",
+        "./test/spec/Test.spec.js",
+        //"./test/spec/Hayoki.spec.js"
+
+        //"./test/spec/home.spec.js"
+        //allure open
+        //"./test/spec/patient.spec.js"
+         //"./test/spec/encounter.spec.js"
+         //"./test/spec/setting.spec.js"
+         //"./test/spec/noki.spec.js"
+        //"./test/spec/soapnote.spec.js"
     ],
     exclude: [
-        // 'path/to/excluded/files'
+        // "path/to/excluded/files"
     ],
     //
     // ============
@@ -53,7 +56,7 @@ export const config = {
     // sessions. Within your capabilities you can overwrite the spec and exclude options in
     // order to group specific specs to a specific capability.
     //
-    // First, you can define how many instances should be started at the same time. Let's
+    // First, you can define how many instances should be started at the same time. Let"s
     // say you have 3 different capabilities (Chrome, Firefox, and Safari) and you have
     // set maxInstances to 1; wdio will spawn 3 processes. Therefore, if you have 10 spec
     // files and you set maxInstances to 10, all spec files will get tested at the same time
@@ -69,20 +72,18 @@ export const config = {
     capabilities: [
         // capabilities for local Appium web tests on an Android Emulator
         // {
-        //     platformName: 'Android',
-        //     "appium:path": "/wd/hub",
-        //      'appium:deviceName': '',
-        //     //'appium:deviceName': 'vivo V2222',
-        //      'appium:platformVersion': '14',
-        //      'appium:automationName': 'UiAutomator2',
-        //      'appium:app':'/Users/nagasubarayudu/Desktop/NokiAndroid/app/HEY_NOKI_V_1.2_2025030401.apk',
-        //      'appium:noReset':true,
-        //      'appium:fullReset': false,
+        //     "platformName": "Android",
+        //     "appium:deviceName": "vivo V2222",
+        //      "appium:platformVersion": "15",
+        //      "appium:automationName": "UiAutomator2",
+        //      "appium:app":"/Users/nagasubarayudu/Desktop/NokiAndroid/app/Noki(T)(V_1.3.0_2025041101).apk",
+        //      "appium:noReset":true,
+        //      "appium:fullReset": false,
         //      "appium:forceAppLaunch":true,
         //      "appium:showXcodeLog": true,
-        //      "appium:wdaLaunchTimeout": 1200000,
-        //      "appium:newCommandTimeout": 1200000,
-        //      "appium:connectionTimeout": 1200000,
+        //      "appium:wdaLaunchTimeout": 1800000,
+        //      "appium:newCommandTimeout": 1800000,
+        //      "appium:connectionTimeout": 1800000,
         //      "appium:sessionOverride": true,
         //      "appium:bundleId": "com.thinkhat.haynoki",
         //      "appium:AcceptAlerts": true,
@@ -90,14 +91,14 @@ export const config = {
         //   }
         {
             "platformName": "Android",
-            "appium:deviceName": "moto g45 5G",
+            "appium:deviceName": "moto s",
             "appium:platformVersion": "15",
             "appium:automationName": "UiAutomator2",
-            "appium:app": "/Users/nagasubarayudu/Desktop/NokiAndroid/app/noki-d.apk",
+            "appium:app": "/Users/nagasubarayudu/Desktop/NokiAndroid/app/noki-Android05May.apk",
             "appium:noReset": true,
             "appium:fullReset": false,
-            "appium:newCommandTimeout": 1200000,
-            "appium:connectionTimeout": 120000,
+            "appium:newCommandTimeout": 1800000,
+            "appium:connectionTimeout": 1800000,
             "appium:sessionOverride": true,
             "appium:autoGrantPermissions": true,
             "appium:appWaitActivity": "*",
@@ -107,7 +108,6 @@ export const config = {
             "appium:uiautomator2ServerInstallTimeout": 60000,
             "appium:AcceptAlerts": true,
             "appium:forceAppLaunch":true,
-
             "appium:bundleId": "com.thinkhat.haynoki"
           }
     //         "appium:platformName": "iOS",
@@ -122,7 +122,7 @@ export const config = {
     //         "appium:useNewWDA": true,
     //         "appium:showXcodeLog": true,
     //         "appium:wdaLaunchTimeout": 120000,
-    //         "appium:newCommandTimeout": 1200000,
+    //         "appium:newCommandTimeout": 1800000,
     //         "appium:connectionTimeout": 120000,
     //         "appium:sessionOverride": true,
     //         "appium:udid": "90114A4A-2E6F-4CBD-ABC3-E133CC2D274D",
@@ -141,7 +141,7 @@ export const config = {
     // Define all options that are relevant for the WebdriverIO instance here
     //
     // Level of logging verbosity: trace | debug | info | warn | error | silent
-    logLevel: 'info',
+    logLevel: "info",
     //
     // Set specific log levels per logger
     // loggers:
@@ -153,37 +153,37 @@ export const config = {
     // - @wdio/cli, @wdio/config, @wdio/utils
     // Level of logging verbosity: trace | debug | info | warn | error | silent
     // logLevels: {
-    //     webdriver: 'info',
-    //     '@wdio/appium-service': 'info'
+    //     webdriver: "info",
+    //     "@wdio/appium-service": "info"
     // },
     //
     // If you only want to run your tests until a specific amount of tests have failed use
-    // bail (default is 0 - don't bail, run all tests).
+    // bail (default is 0 - don"t bail, run all tests).
     bail: 0,
     //
     // Set a base URL in order to shorten url command calls. If your `url` parameter starts
     // with `/`, the base url gets prepended, not including the path portion of your baseUrl.
     // If your `url` parameter starts without a scheme or `/` (like `some/path`), the base url
     // gets prepended directly.
-    // baseUrl: 'http://localhost:8080',
+    // baseUrl: "http://localhost:8080",
     //
     // Default timeout for all waitFor* commands.
-    waitforTimeout: 100000,
+    waitforTimeout: 240000,
     //
     // Default timeout in milliseconds for request
-    // if browser driver or grid doesn't send response
+    // if browser driver or grid doesn"t send response
     connectionRetryTimeout: 240000,
     //
     // Default request retries count
     connectionRetryCount: 5,
     //
     // Test runner services
-    // Services take over a specific job you don't want to take care of. They enhance
-    // your test setup with almost no effort. Unlike plugins, they don't add new
+    // Services take over a specific job you don"t want to take care of. They enhance
+    // your test setup with almost no effort. Unlike plugins, they don"t add new
     // commands. Instead, they hook themselves up into the test process.
     services: [
         [
-            'appium',
+            "appium",
             {
                 args: {
                     relaxedSecurity: true
@@ -191,13 +191,14 @@ export const config = {
             }
         ],
         [
-            'visual',
+            "visual",
             {
                 baselineFolder: path.join(process.cwd(), "tests", "baseline"),
                 formatImageName: "{tag}-{logName}-{width}x{height}",
                 screenshotPath: path.join(process.cwd(), "tmp"),
                 savePerInstance: true,
-                createJsonReportFiles: true, 
+                createJsonReportFiles: true,
+           
             }
         ],
     ],
@@ -209,7 +210,7 @@ export const config = {
     //
     // Make sure you have the wdio adapter package for the specific framework installed
     // before running any tests.
-    framework: 'mocha',
+    framework: "mocha",
     
     //
     // The number of times to retry the entire specfile when it fails as a whole
@@ -222,28 +223,36 @@ export const config = {
     // specFileRetriesDeferred: false,
     //
     // Test reporter for stdout.
-    // The only one supported by default is 'dot'
+    // The only one supported by default is "dot"
     // see also: https://webdriver.io/docs/dot-reporter
     reporters: [
-        'spec', // Spec reporter
-        ['allure', { 
-            outputDir: 'allure-results',
+        "spec", // Spec reporter
+        ["allure", { 
+            outputDir: "allure-results",
             disableWebdriverStepsReporting: false,
             disableWebdriverScreenshotsReporting: false,
             debug: true,
         }],
-        [video, {
-            saveAllVideos: false,       // If true, also saves videos for successful test cases
-            videoSlowdownMultiplier: 3, // Higher to get slower videos, lower for faster videos [Value 1-100]
-          }]
+    //     [video, {
+    //         saveAllVideos: true,       
+    //         videoSlowdownMultiplier: 10, 
+    //         outputDir: '/Users/nagasubarayudu/Desktop/NokiAndroid/_results_',
+    // takeScreenshotOnFail: false,
+    // onComplete: () => {
+    //   const resultsDir = '/Users/nagasubarayudu/Desktop/NokiAndroid/_results_';
+    //   if (!fs.existsSync(resultsDir)) {
+    //     fs.mkdirSync(resultsDir, { recursive: true });
+    //   }
+    //   console.log('Video files:', fs.readdirSync(resultsDir));
+    // }
+    //       }]
     ],
     
-
     // Options to be passed to Mocha.
     // See the full list at http://mochajs.org/
     mochaOpts: {
-        ui: 'bdd',
-        timeout: 1200000
+        ui: "bdd",
+        timeout: 2400000
     },
 
     //
@@ -261,9 +270,9 @@ export const config = {
      */
    
 onPrepare: function (_config, _capabilities) {
-    const { removeSync } = fsExtra;
-    removeSync('./allure-results');
-    console.log('Allure results folder cleared.');
+    console.log('Cleaning up old allure results...');
+    removeSync('./allure-results'); // Automatically remove old results
+    
 },
     /**
      * Gets executed before a worker process is spawned and can be used to initialize specific service
@@ -302,10 +311,10 @@ onPrepare: function (_config, _capabilities) {
      * @param {Array.<String>} specs        List of spec file paths that are to be run
      * @param {object}         browser      instance of created browser/device session
      */
-    before: function (capabilities, specs) {
-        const helper = require('./helper/helper.js'); // Ensure helper is initialized here
-        global.helper = helper; // Make it globally accessible if needed
-    },
+    // before: function (capabilities, specs) {
+    //     const helper =   require("./helper/helper.js"); // Ensure helper is initialized here
+    //     global.helper = helper; // Make it globally accessible if needed
+    // },
     /**
      * Runs before a WebdriverIO command gets executed.
      * @param {string} commandName hook command name
@@ -346,95 +355,57 @@ onPrepare: function (_config, _capabilities) {
      * @param {boolean} result.passed    true if test has passed, otherwise false
      * @param {object}  result.retries   information about spec related retries, e.g. `{ attempts: 0, limit: 0 }`
      */
-        afterTest: async function(_test, _context, { error, result, duration, passed, retries }) {
-            console.log(`Test Name: ${result}`);
-            console.log(`Duration: ${duration} ms`);
-            console.log(`Passed: ${passed}`);
-            console.log(`Retries: ${retries}`);
-            if (error) {
-                await driver.takeScreenshot();
-                
+        // afterTest: async function(_test, _context, { error, result, duration, passed, retries }) {
+        //     const BASE_DIR = "/Users/nagasubarayudu/Desktop/NokiAndroid";
+        //     const screenshotDir = path.join(BASE_DIR, "allure-results", "screenshots");
+        //     if (!fs.existsSync(screenshotDir)) {
+        //         fs.mkdirSync(screenshotDir, { recursive: true });
+        //     }
+
+        //     const testName = _test.title.replace(/[^a-zA-Z0-9]/g, "_");
+        //     const status = error ? "failed" : "passed";
+        //     const screenshotPath = path.join(screenshotDir, `${testName}_${status}_${new Date().toISOString().replace(/:/g, "-")}.png`);
+
+        //     if (error) {
+        //         await browser.saveScreenshot(screenshotPath);
+        //         console.log(`📸 Screenshot saved: ${screenshotPath}`);
+        //     }
+        // },
+        onAfterCommand(commandName, args, result, error) {
+            const allure = this.allure;
+            if (allure && allure.getCurrentTest()) { // Ensure there is an active test
+                if (commandName === 'takeScreenshot') {
+                    allure.addAttachment('Screenshot', Buffer.from(result, 'base64'), 'image/png');
+                }
+            } else {
+                console.warn('No active test found to attach screenshot or file.');
             }
         },
+        onComplete: function(_exitCode, _config, _capabilities, _results) {
+            const reportError = new Error('Could not generate Allure report');
+            const generation = allure(['generate', 'allure-results', '--clean']); // Use allure-commandline
+            return new Promise((resolve, reject) => {
+                const generationTimeout = setTimeout(
+                    () => reject(reportError),
+                    30000
+                );
+                generation.on('exit', function(exitCode) {
+                    clearTimeout(generationTimeout);
+    
+                    if (exitCode !== 0) {
+                        return reject(reportError);
+                    }
+    
+                    console.log('Allure report successfully generated');
+                    resolve();
+                });
+            });
 
+        
+  // ... other config ...
+}}
+        
+      
+          // ... other config ...
+       
 
-    /**
-     * Hook that gets executed after the suite has ended
-     * @param {object} suite suite details
-     */
-    // afterSuite: function (suite) {
-    // },
-    /**
-     * Runs after a WebdriverIO command gets executed
-     * @param {string} commandName hook command name
-     * @param {Array} args arguments that command would receive
-     * @param {number} result 0 - command success, 1 - command error
-     * @param {object} error error object if any
-     */
-    // afterCommand: function (commandName, args, result, error) {
-    // },
-    /**
-     * Gets executed after all tests are done. You still have access to all global variables from
-     * the test.
-     * @param {number} result 0 - test pass, 1 - test fail
-     * @param {Array.<Object>} capabilities list of capabilities details
-     * @param {Array.<String>} specs List of spec file paths that ran
-     */
-    // after: function (result, capabilities, specs) {
-    // },
-    /**
-     * Gets executed right after terminating the webdriver session.
-     * @param {object} config wdio configuration object
-     * @param {Array.<Object>} capabilities list of capabilities details
-     * @param {Array.<String>} specs List of spec file paths that ran
-     */
-    // afterSession: function (config, capabilities, specs) {
-    // },
-    /**
-     * Gets executed after all workers got shut down and the process is about to exit. An error
-     * thrown in the onComplete hook will result in the test run failing.
-     * @param {object} _exitCode 0 - success, 1 - fail
-     * @param {object} _config wdio configuration object
-     * @param {Array.<Object>} _capabilities list of capabilities details
-     * @param {<Object>} _results object containing test results
-     */
-    onComplete: function(_exitCode, _config, _capabilities, _results) {
-        const reportError = new Error('Could not generate Allure report')
-        const generation = allure(['generate', 'allure-results', '--clean'])
-        return new Promise((resolve, reject) => {
-            const generationTimeout = setTimeout(
-                () => reject(reportError),
-                5000)
-
-            generation.on('exit', function(exitCode) {
-                clearTimeout(generationTimeout)
-
-                if (exitCode !== 0) {
-                    return reject(reportError)
-                }
-
-                console.log('Allure report successfully generated')
-                resolve()
-            })
-        })
-    },
-    /**
-    * Gets executed when a refresh happens.
-    * @param {string} oldSessionId session ID of the old session
-    * @param {string} newSessionId session ID of the new session
-    */
-    // onReload: function(oldSessionId, newSessionId) {
-    // }
-    /**
-    * Hook that gets executed before a WebdriverIO assertion happens.
-    * @param {object} params information about the assertion to be executed
-    */
-    // beforeAssertion: function(params) {
-    // }
-    /**
-    * Hook that gets executed after a WebdriverIO assertion happened.
-    * @param {object} params information about the assertion that was executed, including its results
-    */
-    // afterAssertion: function(params) {
-    // }
-}

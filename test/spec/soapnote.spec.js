@@ -17,16 +17,16 @@ describe(' all the the soap note generation process are verified here ', () => {
        await verifyAndClick(RecordingPage.startConversationBtn)
        await RecordingPage.recordAudio()
        await RecordingPage.ctsConformation()
+       await RecordingPage.finalizeEncounter()
        await LoginPage.restartApp();
 
     });
     it('Verify SOAP note generation for an existing patient', async() => {
         await driver.pause(5000)
-        await SearchPatientPage.startNewConversation('Chandu')
-                await RecordingPage.startConversation()
-
+        await SearchPatientPage.startNewConversation('Naga')
+        await RecordingPage.startConversation()
         await RecordingPage.recordAudio()
-        await RecordingPage.PrevEncounterRefYes()
+        await RecordingPage.PrevEncounterRefYes.click()
         await RecordingPage.ctsConformation()
         await LoginPage.restartApp();
 
@@ -43,8 +43,7 @@ describe(' all the the soap note generation process are verified here ', () => {
     });
     it('Verify SOAP note generation after app switch after clicking stop button instantly', async() => {
         await SearchPatientPage.startNewConversation('Chandu')
-                await RecordingPage.startConversation()
-
+        await RecordingPage.startConversation()
         await RecordingPage.recordAudio()
         await RecordingPage.PrevEncounterRefNo.click()
         await driver.pause(1000)
@@ -92,8 +91,7 @@ describe(' all the the soap note generation process are verified here ', () => {
     // Network failure test case
     it('verify the transcript is saved as draft or not after clicking stop Button ', async() => {
         await SearchPatientPage.startNewConversation('Chandu')
-                await RecordingPage.startConversation()
-
+        await RecordingPage.startConversation()
         await RecordingPage.Audio()
         await RecordingPage.stopBtn.click()
         await networkFailureVerification()

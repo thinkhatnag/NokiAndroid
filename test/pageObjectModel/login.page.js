@@ -10,7 +10,9 @@ class LoginPage {
     get emailError() { return $('//android.widget.TextView[@text="Email is required"]'); }
     get invalidEmailError() { return $('//android.widget.TextView[@text="Invalid Email"]'); }
     get startNewEncounter() { return $('//android.view.ViewGroup[@content-desc="Start New Encounter"]/android.view.ViewGroup'); }
-
+    get multitenantDropDown() { return $('~Select Account ID*'); }
+    get multiTenantOption() { return $('~bheema-badri-ocsqv'); }
+    get multiTenantError() { return $('//android.widget.TextView[@text="Account ID is required"]')}
   
     async enterEmail(email) {
         await this.emailField.click();
@@ -33,7 +35,15 @@ class LoginPage {
         await driver.pause(2000)
         await driver.activateApp(appId);
     }
-
+    async selectMultiTenant() {
+        if(this.multitenantDropDown.isDisplayed()){
+          await this.multitenantDropDown.click();
+          await driver.pause(2000);
+          await this.multiTenantOption.click();
+        }else {
+          console.log('the user Id that you have Entered is not a multi tenant user');
+        }
+      }
 }
 
 export default new LoginPage();

@@ -25,17 +25,17 @@ class SearchPatientPage {
     }
    
     async patientName(patient) {
-        
-        const scribeName = `${patient.charAt(0).toUpperCase()}, ${patient}`;
-        return $(`//android.view.ViewGroup[@content-desc="${scribeName} "]`);
-
-    }////android.view.ViewGroup[@content-desc="C, Chandu "]
+        const scribeName = await $(`//android.widget.TextView[@text="${patient}"]`);
+        return scribeName;
+    }
+    
     async patientSearch(patient) {
         await this.searchPatientsField.click();
         await this.searchPatientsField.addValue(patient);
-        const patientElement = await this.patientName(patient);
-        await hideKeyboard()
-        await patientElement.click();
+        const scribeName = await this.patientName(patient);
+        await hideKeyboard();
+        await driver.pause(3000);
+        await scribeName.click(); // Directly click the element
     }
     
 

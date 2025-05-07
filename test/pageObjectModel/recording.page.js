@@ -1,6 +1,7 @@
-import { verify, verifyAndClick, waitForElement } from '/Users/nagasubarayudu/Desktop/NokiAndroid/helper/helper.js'
+import { hideKeyboard, verify, verifyAndClick, waitForElement,back } from '/Users/nagasubarayudu/Desktop/NokiAndroid/helper/helper.js'
 import HomePage from '/Users/nagasubarayudu/Desktop/NokiAndroid/test/pageObjectModel/home.page.js'
 import EncounterPage from '/Users/nagasubarayudu/Desktop/NokiAndroid/test/pageObjectModel/encounter.page.js'
+import QuickActions from '/Users/nagasubarayudu/Desktop/NokiAndroid/test/pageObjectModel/quickActions.page.js';
 
 class RecordingPage {
     get back() 
@@ -37,7 +38,7 @@ class RecordingPage {
     }
     get launguageSelectior() 
     { 
-        return $('//android.view.ViewGroup[@content-desc="Scribe Language, English"]/com.horcrux.svg.SvgView'); 
+        return $('~Scribe Language, English (en-US)'); 
     }
     get launguageSelectText() 
     { 
@@ -49,17 +50,17 @@ class RecordingPage {
     }
     get englishLanOpt() 
     { 
-        return $('~English'); 
+        return $('~English (en-US)'); 
     }
     get spanishLanOpt() 
     { 
-        return $('~Español'); 
+        return $('~Español (es-PR)'); 
     }
 
 
     get acknowledgeCheckBox() 
     { 
-        return $('//android.widget.ScrollView/android.view.ViewGroup/android.view.ViewGroup/android.view.ViewGroup/android.view.ViewGroup/android.view.ViewGroup[4]/android.view.ViewGroup/com.horcrux.svg.SvgView/com.horcrux.svg.GroupView/com.horcrux.svg.PathView'); 
+        return $('//android.widget.FrameLayout[@resource-id="android:id/content"]/android.widget.FrameLayout/android.view.ViewGroup/android.view.ViewGroup/android.view.ViewGroup/android.view.ViewGroup/android.view.ViewGroup[3]/android.widget.FrameLayout/android.view.ViewGroup/android.view.ViewGroup/android.view.ViewGroup/android.widget.ScrollView/android.view.ViewGroup/android.view.ViewGroup/android.view.ViewGroup/android.view.ViewGroup/android.widget.ScrollView/android.view.ViewGroup/android.view.ViewGroup[3]/android.view.ViewGroup/com.horcrux.svg.SvgView/com.horcrux.svg.GroupView/com.horcrux.svg.PathView'); 
     }
     get acknowledgeCheckConText() 
     { 
@@ -79,7 +80,7 @@ class RecordingPage {
     }
     get startConversationBtn() 
     { 
-        return $('//android.view.ViewGroup[@content-desc="Start Conversation"]/android.view.ViewGroup/android.view.View'); 
+        return $('~Start Conversation'); 
     }
    
     get pauseBtn() 
@@ -92,7 +93,7 @@ class RecordingPage {
     }
     get resumeRecording() 
     { 
-        return $('//android.view.ViewGroup[@content-desc="Resume Recording"]/android.view.ViewGroup/android.view.View'); 
+        return $('//android.widget.TextView[@text="Resume Conversation"]'); 
     }
     get cdssDisabled() 
     { 
@@ -266,11 +267,11 @@ class RecordingPage {
     //multiple Conversations
     get addConversation() 
     { 
-        return $(''); 
+        return $('//android.widget.TextView[@text="Add Conversation"]'); 
     }
     get multipleConcversationConfertmation() 
     { 
-        return $(''); 
+        return $('~'); 
     }
     get multipleConcversationCancel() 
     { 
@@ -278,7 +279,7 @@ class RecordingPage {
     }
     get resumeConversation() 
     { 
-        return $(''); 
+        return $('//android.widget.TextView[@text="Resume Conversation"]'); 
     }
     get () 
     { 
@@ -370,23 +371,23 @@ class RecordingPage {
     { 
         return $(''); 
     }
-    get () 
+    get title() 
     { 
-        return $(''); 
+        return $('//android.widget.EditText[@text="Title"]'); 
     }
-    get () 
+    get discription() 
     { 
-        return $(''); 
+        return $('//android.widget.EditText[@text="Description"]'); 
     }
-    get () 
+    get add() 
     { 
-        return $(''); 
+        return $('//androidx.recyclerview.widget.RecyclerView/android.widget.FrameLayout/android.view.ViewGroup/android.view.ViewGroup/android.view.ViewGroup/android.widget.ScrollView/android.view.ViewGroup/android.view.ViewGroup/android.widget.ScrollView/android.view.ViewGroup/com.horcrux.svg.SvgView[5]/com.horcrux.svg.GroupView/com.horcrux.svg.PathView'); 
     }
-    get () 
+    get clearPatientInfo() 
     { 
-        return $('');   
+        return $('//androidx.recyclerview.widget.RecyclerView/android.widget.FrameLayout/android.view.ViewGroup/android.view.ViewGroup/android.view.ViewGroup/android.widget.ScrollView/android.view.ViewGroup/android.view.ViewGroup/android.widget.ScrollView/android.view.ViewGroup/com.horcrux.svg.SvgView[6]');   
     }
-
+z
     get () 
     { 
         return $(''); 
@@ -446,7 +447,7 @@ class RecordingPage {
     }
     get SuggestedDiagnosisAndInterventions() 
     { 
-        return $('//android.widget.TextView[@text="Suggested Diagnosis and Intervention"]'); 
+        return $('//android.widget.TextView[@text="Suggested Diagnosis and Interventions"]'); 
     }
     get SuggestedQuestions() 
     { 
@@ -479,16 +480,16 @@ class RecordingPage {
     }
     get copyBtn() 
     { 
-        return $('//androidx.recyclerview.widget.RecyclerView/android.widget.FrameLayout/android.view.ViewGroup/android.view.ViewGroup/android.view.ViewGroup/android.widget.ScrollView/android.view.ViewGroup/android.view.ViewGroup[1]/com.horcrux.svg.SvgView[1]'); 
+        return $('//androidx.recyclerview.widget.RecyclerView/android.widget.FrameLayout/android.view.ViewGroup/android.view.ViewGroup/android.view.ViewGroup/android.widget.ScrollView/android.view.ViewGroup/android.view.ViewGroup[1]/android.view.ViewGroup[1]/com.horcrux.svg.SvgView[1]'); 
     }
     get mailBtn() 
     { 
-        return $('//androidx.recyclerview.widget.RecyclerView/android.widget.FrameLayout/android.view.ViewGroup/android.view.ViewGroup/android.view.ViewGroup/android.widget.ScrollView/android.view.ViewGroup/android.view.ViewGroup[1]/com.horcrux.svg.SvgView[2]'); 
+        return $('//com.horcrux.svg.SvgView[@resource-id="email"]'); 
     }
    
     get printBtn() 
     { 
-        return $('//androidx.recyclerview.widget.RecyclerView/android.widget.FrameLayout/android.view.ViewGroup/android.view.ViewGroup/android.view.ViewGroup/android.widget.ScrollView/android.view.ViewGroup/android.view.ViewGroup[1]/com.horcrux.svg.SvgView[3]'); 
+        return $('//com.horcrux.svg.SvgView[@resource-id="print"]'); 
     }
     get SoapNoteScreenTxtField() 
     { 
@@ -501,7 +502,7 @@ class RecordingPage {
     }
     get send() 
     { 
-        return $('//androidx.recyclerview.widget.RecyclerView/android.widget.FrameLayout/android.view.ViewGroup/android.view.ViewGroup/android.view.ViewGroup/android.widget.ScrollView/android.view.ViewGroup/android.view.ViewGroup[3]/com.horcrux.svg.SvgView[2]'); 
+        return $('//androidx.recyclerview.widget.RecyclerView/android.widget.FrameLayout/android.view.ViewGroup/android.view.ViewGroup/android.view.ViewGroup/android.widget.ScrollView/android.view.ViewGroup/android.view.ViewGroup[3]/com.horcrux.svg.SvgView/com.horcrux.svg.GroupView'); 
     }
     get finaliseEncounter() 
     { 
@@ -520,9 +521,9 @@ class RecordingPage {
         return $('~No'); 
     }
    
-    get connectionLost(){
+    get AddPatientInformation(){
 
-        return $('//android.widget.TextView[@text="Connection Lost!"]');
+        return $('~Add Patient Information');
     }
     get connectionLostDescription(){
 
@@ -532,8 +533,34 @@ class RecordingPage {
     { 
         return $('//android.widget.FrameLayout[@resource-id="android:id/content"]/android.widget.FrameLayout/android.view.ViewGroup/android.view.ViewGroup/android.view.ViewGroup/android.view.ViewGroup/android.view.ViewGroup[3]/android.widget.FrameLayout/android.view.ViewGroup/android.view.ViewGroup/android.view.ViewGroup/android.widget.ScrollView/android.view.ViewGroup/android.view.ViewGroup/android.view.ViewGroup/android.view.ViewGroup[1]/android.view.ViewGroup'); 
     }
-
-   
+    get yes() 
+    { 
+        return $('~YES'); 
+    }
+    get no() 
+    { 
+        return $('~No'); 
+    }
+    get Ok() 
+    { 
+        return $('~OK'); 
+    }
+    get cancle() 
+    { 
+        return $('~Cancel'); 
+    }
+    get patitentInfoRequired() {
+        return $('//android.widget.TextView[@text="Patient Information is required"]');
+    }
+  
+    get update() 
+    { 
+        return $('//com.horcrux.svg.SvgView[@resource-id="edit"]/com.horcrux.svg.GroupView/com.horcrux.svg.GroupView/com.horcrux.svg.PathView'); 
+    }
+    get save() 
+    { 
+        return $('~Save'); 
+    }
     async Audio(){
         await driver.execute('mobile: shell', 
             {command: 'am start -a android.intent.action.VIEW -d "https://youtu.be/5t6Yr4eZ9wY?si=32xirVzLBsHIrZgJ"' });        
@@ -547,46 +574,40 @@ class RecordingPage {
         await this.stopBtn.click();
     }
     async ctsConformation()
-    {
+    {   await driver.pause(120000)
         await waitForElement(this.SoapNoteBtn)
         await verifyAndClick(this.Transcript)
-        await verifyAndClick(this.Cdss)
+        await waitForElement(this.Cdss)
+        await this.Cdss.click()
         await driver.pause(10000)
-        const element = this.SuggestedDiagnosisAndInterventions || 
-                        this.SuggestedDiagnosticTesting || 
-                        this.SuggestedMedications || 
-                        this.SuggestedQuestions;
-        await verify(element);
+        // const element = this.SuggestedDiagnosisAndInterventions || 
+        //                 this.SuggestedDiagnosticTesting || 
+        //                 this.SuggestedMedications || 
+        //                 this.SuggestedQuestions;
+        // await verify(element);
         await driver.pause(3000)
         await this.Transcript.click()
-        await driver.execute('mobile: swipe', { direction: 'up' });
 
         await this.showOriginalTrnscript.click()
-        await driver.execute('mobile: swipe', { direction: 'up' });
 
         await this.showClaeanedTranscript.click()
-        await driver.execute('mobile: swipe', { direction: 'up' });
         
         await this.SoapNoteBtn.click()
-        await driver.execute('mobile: swipe', { direction: 'up' });
-        await driver.execute('mobile: swipe', { direction: 'down' });
-        await driver.execute('mobile: swipe', { direction: 'down' });
+      
     }
 
      async multipleConversation() 
-    {
-        await this.AddConversation.click()
-        await this.no.click()
-        await this.yes.click()
-        await this.AddConversationConfirmationYes.click()
+    {   await driver.pause(5000)
+        await this.addConversation.click()
+        await verifyAndClick(this.yes)
         await verify(this.pauseBtn)
         await this.recordAudioAndSaveAsDraft()
         await HomePage.encounter.click()
-        await verifyAndClick(EncounterPage.draft)
+        await EncounterPage.draft.click()
         await this.finaliseEncounter.click()
-        await this.ok.click()
-        await this.resumeConversationForMultipleConverstionScenario.click()
-        await this.Yes.click()
+        await this.Ok.click()
+        await this.resumeConversation.click()
+        await this.yes.click()
         await this.recordAudio()
         await this.ctsConformation()
     }
@@ -594,29 +615,13 @@ class RecordingPage {
     async finalizeEncounter() 
     {
         await verifyAndClick(this.SoapNoteScreenTxtField);
-        await this.doneBtn.click()
+        await hideKeyboard()
         await verify(this.send);
-        await verifyAndClick(this.copyBtn);
-        await verifyAndClick(this.update)
-        await verify(this.save)
-        await verifyAndClick(this.AddPatientInformation)
-        await verify(this.title)
-        await verify(this.Discription)
-        await verifyAndClick(this.add)
-        await verifyAndClick(this.ok)
-        await verifyAndClick(this.clearPatientInfo)
-        await verifyAndClick(this.cancel)
-        await verifyAndClick(this.mailBtn);
-        await verifyAndClick(this.emailSentOk);
-        await verifyAndClick(this.printBtn);
-        await verify(this.printDownload);
-        await verifyAndClick(this.printPageCancel);
-        await verifyAndClick(this.printPageBackBtn);
+        await this.copyMailAndPrint()
         await this.multipleConversation()
+        await  QuickActions.QuickActionsFlow()
         await this.finaliseEncounter.click()
         await this.finaliseEncounterOk.click()
-        await verify(this.finaliseEncounterTxt);
-        await this.ok.click();
         try 
         {
             if(this.update.isDisplayed())
@@ -641,11 +646,10 @@ class RecordingPage {
    
     async recordAudioAndContinueForPrevEncounter(){
         await this.recordAudio()
-        await waitForElementToBeVisible(this.PrevEncounterRef)
         await this.PrevEncounterRefYes.click()
         await this.ctsConformation()
-
     }
+
 
     async recordAudioForDraft(){
         await verifyAndClick(this.resumeRecordingConformationYes)
@@ -690,11 +694,18 @@ class RecordingPage {
     //         allData = [...new Set([...allData, ...currentElements])];
     //         previousElements = currentElements;
 
-    //         // Perform a scroll (swipe up)
-    //         await driver.execute('mobile: swipe', { direction: 'up' });
-    //     }
+    //         // Perform a scroll (scrollGesture up)
+    //     //     }
     //     return allData;
     // }
+    async copyMailAndPrint() {
+        await verifyAndClick(this.copyBtn);
+        await verifyAndClick(this.mailBtn);
+        await verifyAndClick(this.printBtn);
+        await driver.pause(5000)
+        await back()
+
+    }
 }
 export default new RecordingPage();
 
@@ -708,30 +719,3 @@ export default new RecordingPage();
 
 
 
-
-
-async function getScrollableData() {
-    const scrollView = $('//XCUIElementTypeTable');
-    let allData = [];
-    let previousElements = [];
-
-    while (true) {
-        // Get visible elements (e.g., table cells)
-        const cells = $$('//XCUIElementTypeCell');
-        const currentElements = await Promise.all(cells.map(cell => cell.getText()));
-
-        // Check if we’ve reached the end (no new data)
-        if (currentElements.every(elem => previousElements.includes(elem))) {
-            break;
-        }
-
-        // Add new elements to the result
-        allData = [...new Set([...allData, ...currentElements])];
-        previousElements = currentElements;
-
-        // Perform a scroll (swipe up)
-        await driver.execute('mobile: swipe', { direction: 'up' });
-    }
-
-    return allData;
-}

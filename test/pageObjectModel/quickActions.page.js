@@ -1,188 +1,156 @@
-import { verify, verifyAndClick, waitForElement } from "../../helper/helper.js";
+import { verify, verifyAndClick, waitForElement, back } from "../../helper/helper.js";
+import recordingPage from "/Users/nagasubarayudu/Desktop/NokiAndroid/test/pageObjectModel/recording.page";
 import RecordingPage from "/Users/nagasubarayudu/Desktop/NokiAndroid/test/pageObjectModel/recording.page";
 
 class QuickActions {
-   //Quick Action Related 
-    get quickActions() 
-    { 
-        return $('~quickActions'); 
+    //Quick Action Related 
+    get quickActions() {
+        return $('~Quick Actions');
     }
-    get quicktionsSearchField() 
-    { 
-        return $('~quicktionsSearchField'); 
+    get quicktionsSearchField() {
+        return $('(//android.view.ViewGroup[@content-desc="Quick Actions"])[1]/android.view.ViewGroup[1]');
     }
-    get regenerateSoapNote() 
-    { 
-        return $('~regenerateSoapNote'); 
+    get regenerateSoapNote() {
+        return $('~Regenerate Soap Note');
     }
 
 
-    get translateSoapNote() 
-    { 
-        return $('~translateSoapNote'); 
+    get translateSoapNote() {
+        return $('~Translate Soap Note to');
     }
-    get french() 
-    { 
-        return $('~french'); 
+    get french() {
+        return $('~French');
     }
-    get spanish() 
-    { 
-        return $('~spanish'); 
+    get spanish() {
+        return $('~Spanish');
     }
-    get english() 
-    { 
-        return $('~english'); 
+    get english() {
+        return $('~English');
     }
-
-
-
-
-
-    get generateIcdAndCptCodes() 
-    { 
-        return $('~generateIcdAndCptCodes'); 
+    get generateIcdAndCptCodes() {
+        return $('~Generate ICD & CPT codes');
     }
-    get generateCarePlan() 
-    { 
-        return $('~generateCarePlan'); 
+    get generateCarePlan() {
+        return $('~Generate Care Plan with Explanation');
     }
-    get generateFeedBack() 
-    { 
-        return $('~generateFeedBack'); 
+    get generateFeedBack() {
+        return $('~Generate feedback on Doctor Performance');
     }
-    get generateReferalLetter() 
-    { 
-        return $('~generateReferalLetter'); 
+    get generateReferalLetter() {
+        return $('~Generate Referral Letter');
     }
-    get icdAndCptCodes() 
-    { 
-        return $('~icdAndCptCodes'); 
+    get icdAndCptCodes() {
+        return $('//android.view.View[@content-desc="ICD & CPT codes"]/android.view.ViewGroup');
+    }
+    get regenerateIcdAndCptCodes() {
+        return $('~Regenerate ICD & CPT codes');
     }
 
-    get regenerateCarePlan() 
-    { 
-        return $('~regenerateCarePlan'); 
+    get regenerateCarePlan() {
+        return $('~Regenerate Care Plan with Explanation');
     }
-    get carePlan() 
-    { 
-        return $('~carePlanWithExplanation'); 
+    get carePlan() {
+        return $('//android.view.View[@content-desc="Care Plan with Explanation"]/android.view.ViewGroup');
     }
-    get regenerateFeedBack() 
-    { 
-        return $('~regenerateFeedBack'); 
+    get regenerateFeedBack() {
+        return $('~Regenerate feedback on Doctor Performance');
     }
-    get feedBack() 
-    { 
-        return $('~feedBackOnDoctorPerformance'); 
+    get feedBack() {
+        return $('//android.view.View[@content-desc="Feedback on Doctor Performance"]/android.view.ViewGroup/android.view.ViewGroup');
     }
-    get regenerateReferalLetter() 
-    { 
-        return $('~regenerateReferalLetter'); 
+    get regenerateReferalLetter() {
+        return $('~Regenerate Referral Letter');
     }
-    get referalLetter() 
-    { 
-        return $('~referalLetter'); 
+    get referalLetter() {
+        return $('//android.view.View[@content-desc="Referral Letter"]/android.view.ViewGroup');
     }
-   
-    get ok() 
-    { 
-        return $('~ok'); 
+
+    get ok() {
+        return $('~OK');
     }
-    get yes() 
-    { 
-        return $('~yes'); 
+    get yes() {
+        return $('~YES');
     }
-    get no() 
-    { 
-        return $('~no'); 
+    get no() {
+        return $('~NO');
     }
-    get PatientInformationInFrench() 
-    { 
-        return $(''); 
+    
+    get PatientInformationInFrench() {
+        return $('//android.widget.TextView[@text="Informations sur le patient"]');
     }
-    get PatientInformationInSpnish() 
-    { 
-        return $(''); 
+    get PatientInformationInSpnish() {
+        return $('//android.widget.TextView[@text="Información del Paciente"]');
     }
-    get PatientInformation() 
-    { 
-        return $(''); 
+    get PatientInformation() {
+        return $('//android.widget.TextView[@text="Patient Information"]');
     }
-    get () 
-    { 
-        return $(''); 
+    get addPatientInfoSpanish() {
+        return $('~Añadir Información del Paciente');
     }
-    get () 
-    { 
-        return $(''); 
+    get() {
+        return $('');
     }
-    get () 
-    { 
-        return $(''); 
+    get() {
+        return $('');
     }
-    async quickAction()
-    {
+    async QuickActionsFlow() {
         await this.quickActions.click()
         await verify(this.quicktionsSearchField)
         await verifyAndClick(this.regenerateSoapNote)
-        // await this.ok.click()
-        await verify(this.cancle)
-        await verifyAndClick(this.Proceed)
+        await verifyAndClick(this.yes)
         await waitForElement(RecordingPage.SoapNoteBtn)
-        await driver.execute('mobile: swipe', { direction: 'up' });
-        await this.quickActions.click()
-        await verifyAndClick(this.translateSoapNote)
-        await verify(this.french)
-        // await this.ok.click()
-        await verify(this.cancle)
-        await verifyAndClick(this.Proceed)
-        await waitForElement(this.PatientInformationInFrench)
-        await driver.execute('mobile: swipe', { direction: 'up' });
+        await RecordingPage.copyMailAndPrint()
+        await verifyAndClick(RecordingPage.update)
+        await verifyAndClick(RecordingPage.AddPatientInformation)
+        await back()
+        await verify(RecordingPage.title)
+        await verify(RecordingPage.discription)
+        await verifyAndClick(RecordingPage.add)
+        await verify(RecordingPage.patitentInfoRequired)
+        await verifyAndClick(RecordingPage.clearPatientInfo)
+        await verifyAndClick(RecordingPage.cancle)
         await this.quickActions.click()
         await this.translateSoapNote.click()
         await this.spanish.click()
-        // await this.ok.click()
-        await verify(this.cancle)
-        await verifyAndClick(this.Proceed)
+        await verifyAndClick(this.yes)
         await waitForElement(this.PatientInformationInSpnish)
-        await driver.execute('mobile: swipe', { direction: 'up' });
         await this.quickActions.click()
         await this.translateSoapNote.click()
         await this.english.click()
-        // await this.ok.click()
-        await verify(this.cancle)
-        await verifyAndClick(this.Proceed)
+        await verifyAndClick(this.yes)
         await waitForElement(this.PatientInformation)
-        await driver.execute('mobile: swipe', { direction: 'up' });
         await this.quickActions.click()
         await this.generateIcdAndCptCodes.click()
-        // await this.ok.click()
-        await verify(this.cancle)
-        await verifyAndClick(this.Proceed)
-        await waitForElement(icdAndCptCodes)
-        await driver.execute('mobile: swipe', { direction: 'up' });
+        await waitForElement(this.icdAndCptCodes)
         await this.quickActions.click()
         await this.generateCarePlan.click()
-        // await this.ok.click()
-        await verify(this.cancle)
-        await verifyAndClick(this.Proceed)
         await waitForElement(this.carePlan)
-        await driver.execute('mobile: swipe', { direction: 'up' });
         await this.quickActions.click()
         await this.generateFeedBack.click()
-        // await this.ok.click()
-        await verify(this.cancle)
-        await verifyAndClick(this.Proceed)
         await waitForElement(this.feedBack)
-        await driver.execute('mobile: swipe', { direction: 'up' });
         await this.quickActions.click()
         await this.generateReferalLetter.click()
-        // await this.ok.click()
-        await verify(this.cancle)
-        await verifyAndClick(this.Proceed)
         await waitForElement(this.referalLetter)
-        await driver.execute('mobile: swipe', { direction: 'up' });
-
+        await this.quickActions.click()
+        await this.regenerateSoapNote.click()
+        await this.yes.click()
+        await waitForElement(this.PatientInformation)
+        await this.quickActions.click()
+        await this.regenerateIcdAndCptCodes.click()
+        await this.yes.click()
+        await waitForElement(this.icdAndCptCodes)
+        await this.quickActions.click()
+        await this.regenerateCarePlan.click()
+        await this.yes.click()
+        await waitForElement(this.carePlan)
+        await this.quickActions.click()
+        await this.regenerateFeedBack.click()
+        await this.yes.click()
+        await waitForElement(this.feedBack)
+        await this.quickActions.click()
+        await this.regenerateReferalLetter.click()
+        await this.yes.click() 
+        await waitForElement(this.referalLetter)
     }
 }
-    export default new QuickActions();
+export default new QuickActions();

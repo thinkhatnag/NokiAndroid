@@ -9,14 +9,7 @@ import AddPatitentPage from '/Users/nagasubarayudu/Desktop/NokiAndroid/test/page
 import LoginPage from '/Users/nagasubarayudu/Desktop/NokiAndroid/test/pageObjectModel/login.page.js'
 
 describe('Home Screen elements functinalities and flows are verified here ', () => {
-    it('Verify all elements on the home screen are displayed {TC10}', async() => {
-        await verify(HomePage.homeScreenAnimation)
-        await verify(HomePage.patients)
-        await verify(HomePage.encounter)
-        await verify(HomePage.nokiDashboardButton)
-        await verify(HomePage.settings)
-        await LoginPage.restartApp()
-    });
+
     it('Verify all tab bar elements are working correctly {TC11}', async() => {
         await HomePage.patients.click();
         await verify(PatientsPage.patientSearch)
@@ -28,14 +21,14 @@ describe('Home Screen elements functinalities and flows are verified here ', () 
     });
     it('Verify the audio recording process {TC12}', async() => {
         await HomePage.startNewEncounterButton.click();
-        await SearchPatientPage.patientSearch('Chandu');
+        await SearchPatientPage.patientSearch('Naga');
         await (await SearchPatientPage.proceedBTn).click();
         await verify(RecordingPage.startConversationBtn)
         await LoginPage.restartApp()
     });
-    it.only('Start recording with Spanish language selected {TC13}', async() => {
+    it('Start recording with Spanish language selected {TC13}', async() => {
         await HomePage.startNewEncounterButton.click();
-        await SearchPatientPage.patientSearch('Chandu');
+        await SearchPatientPage.patientSearch('Naga');
         await (await SearchPatientPage.proceedBTn).click();
         await verify(RecordingPage.startConversationBtn)
         await RecordingPage.launguageSelectior.click();

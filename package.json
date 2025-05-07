@@ -6,7 +6,7 @@
     "test": "test"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "report": "node generate-report.js",
     "wdio": "wdio run ./wdio.conf.js"
   },
   "keywords": [],
@@ -23,9 +23,11 @@
     "@wdio/visual-service": "^6.2.4",
     "appium-uiautomator2-driver": "^3.9.1",
     "fs-extra": "^11.3.0",
+    "http-server": "^14.1.1",
     "wdio-video-reporter": "^6.1.1"
   },
   "dependencies": {
-    "allure-commandline": "^2.32.0"
+    "allure-commandline": "^2.33.0",
+    "nodemailer": "^6.10.1"
   }
 }

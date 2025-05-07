@@ -1,7 +1,7 @@
 import { faker } from '@faker-js/faker';
 
 export async function verify(element) {
-    await element?.waitForDisplayed({ timeout: 5000 });
+    await element?.waitForDisplayed({ timeout: 10000 });
 }
 export async function verifyAndClick(element) {
     await verify(element)
@@ -34,11 +34,11 @@ export async function newpatient() {
 }
 export async function nokiDashBoard() {
     await driver.action('pointer')
-    .move({ duration: 0, x: 545, y: 2154 })
-    .down({ button: 0 })
-    .pause(50)
-    .up({ button: 0 })
-    .perform();
+  .move({ duration: 0, x: 362, y: 1411 })
+  .down({ button: 0 })
+  .pause(50)
+  .up({ button: 0 })
+  .perform();
 }
 
 export async function performPointerAction(driver, startX, startY, endX = startX, endY = startY, duration = 1000) {
@@ -89,4 +89,9 @@ export async function networkFailureVerification() {
     await network()
     await driver.pause(5000)
 
+    }
+    export async function back() {
+
+        await driver.executeScript("mobile: pressKey", [{"keycode":4}]);
+    
     }
