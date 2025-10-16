@@ -1,12 +1,16 @@
-import HomePage from '/Users/nagasubarayudu/Desktop/NokiAndroid/test/pageObjectModel/home.page.js';
-import PatientsPage from '/Users/nagasubarayudu/Desktop/NokiAndroid/test/pageObjectModel/patient.page.js';
-import EncounterPage from '/Users/nagasubarayudu/Desktop/NokiAndroid/test/pageObjectModel/encounter.page.js';
-import SettingsPage from '/Users/nagasubarayudu/Desktop/NokiAndroid/test/pageObjectModel/setting.page.js';
-import { verify, verifyAndClick, network, networkFailureVerification, waitForElement, nokiDashBoard  } from '/Users/nagasubarayudu/Desktop/NokiAndroid/helper/helper.js';
-import SearchPatientPage from '/Users/nagasubarayudu/Desktop/NokiAndroid/test/pageObjectModel/searchPatitent.page.js';
-import RecordingPage from '/Users/nagasubarayudu/Desktop/NokiAndroid/test/pageObjectModel/recording.page.js';
-import AddPatitentPage from '/Users/nagasubarayudu/Desktop/NokiAndroid/test/pageObjectModel/addPatient.page.js';
-import LoginPage from '/Users/nagasubarayudu/Desktop/NokiAndroid/test/pageObjectModel/login.page.js';
+import HomePage from '../../test/pageObjectModel/home.page.js';
+import PatientsPage from '../../test/pageObjectModel/patient.page.js';
+import EncounterPage from '../../test/pageObjectModel/encounter.page.js';
+import SettingsPage from '../../test/pageObjectModel/setting.page.js';
+import { verify,
+     verifyAndClick,
+      network,
+       networkFailureVerification,
+        waitForElement, nokiDashBoard  } from '/helper/helper.js';
+import SearchPatientPage from '../../test/pageObjectModel/searchPatitent.page.js';
+import RecordingPage from '../../test/pageObjectModel/recording.page.js';
+import AddPatitentPage from '../../test/pageObjectModel/addPatient.page.js';
+import LoginPage from '../../test/pageObjectModel/login.page.js';
 
 describe(' all the the soap note generation process are verified here ', () => {
     it.only('Verify if encounter starts and SOAP note is generated for a new patient', async() => {

@@ -1,7 +1,7 @@
 import HomePage from '/Users/nagasubarayudu/Desktop/NokiAndroid/test/pageObjectModel/home.page.js';
 import PatientsPage from '/Users/nagasubarayudu/Desktop/NokiAndroid/test/pageObjectModel/patient.page.js';
 import EncounterPage from '/Users/nagasubarayudu/Desktop/NokiAndroid/test/pageObjectModel/encounter.page.js';
-import { verify, nokiDashBoard, verifyAndClick, performPointerAction  } from '/Users/nagasubarayudu/Desktop/NokiAndroid/helper/helper.js';
+import { verify, nokiDashBoard } from '/Users/nagasubarayudu/Desktop/NokiAndroid/helper/helper.js';
 import SearchPatientPage from '/Users/nagasubarayudu/Desktop/NokiAndroid/test/pageObjectModel/searchPatitent.page.js';
 import RecordingPage from '/Users/nagasubarayudu/Desktop/NokiAndroid/test/pageObjectModel/recording.page.js';
 import AddPatitentPage from '/Users/nagasubarayudu/Desktop/NokiAndroid/test/pageObjectModel/addPatient.page.js';
@@ -17,7 +17,7 @@ describe('enconter elements functinalities and flows are verified here ', () => 
         await driver.pause(5000)
         await AddPatitentPage.creatNewPatient()
         await verify(RecordingPage.startConversationBtn)
-        await RecordingPage.back.click()
+        // await RecordingPage.back.click()
         await LoginPage.restartApp();
     })
     it('Search for a draft transcript and verify the flow {TC17-A}', async() => {

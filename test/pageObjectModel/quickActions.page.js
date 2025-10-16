@@ -1,6 +1,8 @@
-import { verify, verifyAndClick, waitForElement, back } from "../../helper/helper.js";
-import recordingPage from "/Users/nagasubarayudu/Desktop/NokiAndroid/test/pageObjectModel/recording.page";
-import RecordingPage from "/Users/nagasubarayudu/Desktop/NokiAndroid/test/pageObjectModel/recording.page";
+import { verify, verifyAndClick, waitForElement, 
+    back 
+} from "/Users/nagasubarayudu/Desktop/NokiAndroid/helper/helper.js";
+// import recordingPage from "/Users/nagasubarayudu/Desktop/NokiAndroid/test/pageObjectModel/recording.page";
+import RecordingPage from "/Users/nagasubarayudu/Desktop/NokiAndroid/test/pageObjectModel/recording.page.js";
 
 class QuickActions {
     //Quick Action Related 
@@ -93,64 +95,112 @@ class QuickActions {
     get() {
         return $('');
     }
-    async QuickActionsFlow() {
-        await this.quickActions.click()
-        await verify(this.quicktionsSearchField)
-        await verifyAndClick(this.regenerateSoapNote)
-        await verifyAndClick(this.yes)
-        await waitForElement(RecordingPage.SoapNoteBtn)
+    async Icd_Cpt() {
+        await waitForElement(this.quickActions)
+
+        await driver.pause(3000)
+        await verifyAndClick(this.quickActions)
+        await verifyAndClick(this.generateIcdAndCptCodes)
+        await waitForElement(this.icdAndCptCodes)
+        await driver.pause(2000)
         await RecordingPage.copyMailAndPrint()
-        await verifyAndClick(RecordingPage.update)
-        await verifyAndClick(RecordingPage.AddPatientInformation)
-        await back()
-        await verify(RecordingPage.title)
-        await verify(RecordingPage.discription)
-        await verifyAndClick(RecordingPage.add)
-        await verify(RecordingPage.patitentInfoRequired)
-        await verifyAndClick(RecordingPage.clearPatientInfo)
-        await verifyAndClick(RecordingPage.cancle)
+        await this.quickActions.click()
+        await this.regenerateIcdAndCptCodes.click()
+        await this.yes.click()
+        await waitForElement(this.icdAndCptCodes)
+        await driver.pause(2000) 
+        await RecordingPage.copyMailAndPrint()
+
+    }
+    async translateSoapNote(){
+        await waitForElement(this.quickActions)
+
+        // await RecordingPage.copyMailAndPrint()
+        // await verifyAndClick(RecordingPage.update)
+        // await verifyAndClick(RecordingPage.AddPatientInformation)
+        // await verify(RecordingPage.title)
+        // await verify(RecordingPage.discription)
+        // await verifyAndClick(RecordingPage.add)
+        // await verify(RecordingPage.patitentInfoRequired)
+        // await verifyAndClick(RecordingPage.clearPatientInfo)
+        // await verifyAndClick(RecordingPage.cancle)
         await this.quickActions.click()
         await this.translateSoapNote.click()
         await this.spanish.click()
         await verifyAndClick(this.yes)
         await waitForElement(this.PatientInformationInSpnish)
+        await driver.pause(2000)
+        await RecordingPage.copyMailAndPrint()
         await this.quickActions.click()
         await this.translateSoapNote.click()
         await this.english.click()
         await verifyAndClick(this.yes)
         await waitForElement(this.PatientInformation)
-        await this.quickActions.click()
-        await this.generateIcdAndCptCodes.click()
-        await waitForElement(this.icdAndCptCodes)
+        await RecordingPage.copyMailAndPrint()
+
+    }
+    async care_plan(){
+        await waitForElement(this.quickActions)
+
         await this.quickActions.click()
         await this.generateCarePlan.click()
         await waitForElement(this.carePlan)
-        await this.quickActions.click()
-        await this.generateFeedBack.click()
-        await waitForElement(this.feedBack)
-        await this.quickActions.click()
-        await this.generateReferalLetter.click()
-        await waitForElement(this.referalLetter)
-        await this.quickActions.click()
-        await this.regenerateSoapNote.click()
-        await this.yes.click()
-        await waitForElement(this.PatientInformation)
-        await this.quickActions.click()
-        await this.regenerateIcdAndCptCodes.click()
-        await this.yes.click()
-        await waitForElement(this.icdAndCptCodes)
+        await RecordingPage.copyMailAndPrint()
         await this.quickActions.click()
         await this.regenerateCarePlan.click()
         await this.yes.click()
         await waitForElement(this.carePlan)
+        await RecordingPage.copyMailAndPrint()
+
+    }
+    async feed_Back(){
+        await waitForElement(this.quickActions)
+
+        await this.quickActions.click()
+        await this.generateFeedBack.click()
+        await waitForElement(this.feedBack)
+        await RecordingPage.copyMailAndPrint()
+
         await this.quickActions.click()
         await this.regenerateFeedBack.click()
         await this.yes.click()
         await waitForElement(this.feedBack)
+        await driver.pause(2000)
+        await RecordingPage.copyMailAndPrint()
+
+    }
+    async referal_Letter(){
+        await waitForElement(this.quickActions)
+
+        await driver.pause(2000)
+        await this.quickActions.click()
+        await this.generateReferalLetter.click()
+        await waitForElement(this.referalLetter)
+        await RecordingPage.copyMailAndPrint()
+
+
         await this.quickActions.click()
         await this.regenerateReferalLetter.click()
         await this.yes.click() 
         await waitForElement(this.referalLetter)
+        await driver.pause(2000)
+        await RecordingPage.copyMailAndPrint()
+
     }
-}
+    async soap_note(){
+        await waitForElement(this.quickActions)
+        await driver.pause(2000)
+        await this.quickActions.click()
+        await this.regenerateSoapNote.click()
+        await this.yes.click()
+        await waitForElement(this.PatientInformation)
+        await driver.pause(2000)
+        await RecordingPage.copyMailAndPrint()
+
+        
+    }
+       
+        
+    }
+
 export default new QuickActions();

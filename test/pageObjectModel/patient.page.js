@@ -1,4 +1,4 @@
-import { hideKeyboard, verify, verifyAndClick } from '/Users/nagasubarayudu/Desktop/NokiAndroid/helper/helper.js';
+import { hideKeyboard, verifyAndClick } from '/Users/nagasubarayudu/Desktop/NokiAndroid/helper/helper.js';
 
 class PatientPage {
     get patients() 
@@ -55,6 +55,15 @@ class PatientPage {
             const patientElement = $(`//android.widget.TextView[@text="${patientName}"]`);
             await verifyAndClick(patientElement);       
          } catch (error) {
+            console.error(`Element with name "${patientName}" not found:`, error);
+        }    
+    }
+    async patientSearchAndContinue(patientName) {
+        await this.Search(patientName);
+        try {
+            const patientElement = await $(`//android.widget.TextView[@text="${patientName}"]`);
+            await verifyAndClick(patientElement);       
+        } catch (error) {
             console.error(`Element with name "${patientName}" not found:`, error);
         }    
     }

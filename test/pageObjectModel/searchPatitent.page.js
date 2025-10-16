@@ -1,4 +1,5 @@
-import { hideKeyboard } from "/Users/nagasubarayudu/Desktop/NokiAndroid/helper/helper.js";
+import RecordingPage from "./recording.page";
+import { hideKeyboard, validate, verifyAndClick } from "/Users/nagasubarayudu/Desktop/NokiAndroid/helper/helper.js";
 import HomePage from "/Users/nagasubarayudu/Desktop/NokiAndroid/test/pageObjectModel/home.page.js";
 class SearchPatientPage {
     get patient() {
@@ -11,7 +12,7 @@ class SearchPatientPage {
         return $('~Add Patient');
     }
   
-    get proceedBTn(){
+    get proceedBtn(){
         return $('~Proceed');
     }
     get cancelBtn() {
@@ -35,7 +36,11 @@ class SearchPatientPage {
         const scribeName = await this.patientName(patient);
         await hideKeyboard();
         await driver.pause(3000);
-        await scribeName.click(); // Directly click the element
+        await validate(scribeName)
+        await verifyAndClick(scribeName)
+        await verifyAndClick(this.proceedBtn);
+        await validate(RecordingPage.startConversationBtn)
+     
     }
     
 

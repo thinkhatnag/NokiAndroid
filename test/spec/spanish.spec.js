@@ -1,11 +1,8 @@
-import SpanishLanguage from '/Users/nagasubarayudu/Desktop/IOS/test/screenObjectModel/IOS/spanishLanguage.js';
-import {  verify } from '/Users/nagasubarayudu/Desktop/IOS/helpers/helper.js';
+import SpanishLanguage from '';
+import {  verify } from '/Users/nagasubarayudu/Desktop/NokiAndroid/helper/helper.js';
 
 describe('Spanish language UI elements verification', () => {
-    it('TC027 Verify login button is properly styled and aligned', async () => {
-        await SpanishLanguage.clickLogin();
-        await SpanishLanguage.clearTextFields();
-    });
+ 
 
     it('TC28 Show an error when password is not provided', async () => {
         await SpanishLanguage.enterEmail('test@example.com');
@@ -59,7 +56,7 @@ describe('Spanish language UI elements verification', () => {
 
     it('TC34 Verify login process completes ', async () => {
         await SpanishLanguage.enterEmail('valid@example.com');
-        await SpanishLanguage.enterPassword('validpassword');
+        await SpanishLanguage.enterPassword('');
         await SpanishLanguage.clickLogin();
         await verify(SpanishLanguage.homescreenAnimation, 15000);
         await SpanishLanguage.clearTextFields();

@@ -1,7 +1,7 @@
-import RecordingPage from '/Users/nagasubarayudu/Desktop/NokiAndroid/test/pageObjectModel/recording.page.js';
+//import RecordingPage from '/Users/nagasubarayudu/Desktop/NokiAndroid/test/pageObjectModel/recording.page.js';
 import HomePage from '/Users/nagasubarayudu/Desktop/NokiAndroid/test/pageObjectModel/home.page.js';
-import { network } from '/Users/nagasubarayudu/Desktop/NokiAndroid/helper/helper.js';
-import loginPage from './login.page';
+//import { network } from '/Users/nagasubarayudu/Desktop/NokiAndroid/helper/helper.js';
+//import LoginPage from '/Users/nagasubarayudu/Desktop/NokiAndroid/test/pageObjectModel/login.page.js';
 
 class EncounterPage {
     get Encounter() 
@@ -85,6 +85,16 @@ class EncounterPage {
     
         return $(xpath);
     }
+    async clickDraftTranscript() {
+        await driver.pause(5000)
+        await driver.action('pointer')
+        .move({ duration: 0, x: 180, y: 260 })
+        .down({ button: 0 })
+        .pause(50)
+        .up({ button: 0 })
+        .perform();
+      
+      }
 
     
     async noteSearch(randomName) {
@@ -104,28 +114,28 @@ class EncounterPage {
     }
     
 
-    // async deleteSwipe(startX, startY, endX, endY) {
-    //     await driver.action('pointer')
-    //         .move({ duration: 0, x: startX, y: startY })
-    //         .down({ button: 0 })
-    //         .move({ duration: 1000, x: endX, y: endY })
-    //         .up({ button: 0 })
-    //         .perform();
-    // }
+    async deleteSwipe(startX, startY, endX, endY) {
+        await driver.action('pointer')
+            .move({ duration: 0, x: startX, y: startY })
+            .down({ button: 0 })
+            .move({ duration: 1000, x: endX, y: endY })
+            .up({ button: 0 })
+            .perform();
+    }
     
-    // async deleteEncounter() {
-    //     // Get screen size
-    //     const { width, height } = await driver.getWindowRect();
-    //     const startX = width * 0.9;
-    //     const endX = width * 0.1;
-    //     const y = height * 0.5; 
-    //     // Perform the delete swipe
-    //     await this.deleteSwipe(startX, y, endX, y);
-    //     await this.deleteCancel.click();
-    //     // Perform the delete swipe again
-    //     await this.deleteSwipe(startX, y, endX, y);
-    //     await this.deleteConformation.click();
-    // }
+    async deleteEncounter() {
+        // Get screen size
+        const { width, height } = await driver.getWindowRect();
+        const startX = width * 0.9;
+        const endX = width * 0.1;
+        const y = height * 0.5; 
+        // Perform the delete swipe
+        await this.deleteSwipe(startX, y, endX, y);
+        await this.deleteCancel.click();
+        // Perform the delete swipe again
+        await this.deleteSwipe(startX, y, endX, y);
+        await this.deleteConformation.click();
+    }
     
 }
 

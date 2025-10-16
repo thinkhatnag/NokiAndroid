@@ -31,7 +31,7 @@ describe('Patitent screen  elements functinalities and flows are verified here '
         await nokiDashBoard()     
         await PatientsPage.startNewEncounter.click()
         await verify(RecordingPage.startConversationBtn)
-        await RecordingPage.back.click()
+        // await RecordingPage.back.click()
         await LoginPage.restartApp();
 
     })
