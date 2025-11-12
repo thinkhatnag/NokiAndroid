@@ -6,15 +6,16 @@ import {
   verify,
   verifyAndClick,
   waitForElement,
-  Network,
+  network,
   back,
   swipe,
   validate,
+  playTTS,
 } from "../../helper/helper.js";
 import AudioManager from "../../test/pageObjectModel/audioManeger.js";
 import util from "util";
 import fs from "fs";
-// import path from "path";
+import path from "path";
 
 //
 
@@ -37,6 +38,9 @@ class RecordingPage {
   }
   get ContinueBtn() {
     return $("~CONTINUE");
+  }
+  get endEncounter() {
+    return $("~END ENCOUNTER");
   }
   get saveAsDraftBtn() {
     return $("~SAVE AS DRAFT");
@@ -328,8 +332,8 @@ class RecordingPage {
   get() {
     return $("");
   }
-  get() {
-    return $("");
+  get somethingWentWrongToast() {
+    return $(`//android.widget.TextView[@text="Something went wrong"]`);
   }
 
   //Quick Action Related
@@ -350,12 +354,18 @@ class RecordingPage {
   }
   get add() {
     return $(
-      "//androidx.recyclerview.widget.RecyclerView/android.widget.FrameLayout/android.view.ViewGroup/android.view.ViewGroup/android.view.ViewGroup/android.widget.ScrollView/android.view.ViewGroup/android.view.ViewGroup/android.widget.ScrollView/android.view.ViewGroup/com.horcrux.svg.SvgView[5]/com.horcrux.svg.GroupView/com.horcrux.svg.PathView"
+      "//androidx.recyclerview.widget.RecyclerView/android.widget.FrameLayout/android.view.ViewGroup/android.view.ViewGroup/android.view.ViewGroup/android.widget.ScrollView/android.view.ViewGroup/android.view.ViewGroup/android.widget.ScrollView/android.view.ViewGroup/com.horcrux.svg.SvgView[6]/com.horcrux.svg.GroupView/com.horcrux.svg.PathView"
     );
   }
   get clearPatientInfo() {
     return $(
-      "//androidx.recyclerview.widget.RecyclerView/android.widget.FrameLayout/android.view.ViewGroup/android.view.ViewGroup/android.view.ViewGroup/android.widget.ScrollView/android.view.ViewGroup/android.view.ViewGroup/android.widget.ScrollView/android.view.ViewGroup/com.horcrux.svg.SvgView[6]"
+      "//androidx.recyclerview.widget.RecyclerView/android.widget.FrameLayout/android.view.ViewGroup/android.view.ViewGroup/android.view.ViewGroup/android.widget.ScrollView/android.view.ViewGroup/android.view.ViewGroup/android.widget.ScrollView/android.view.ViewGroup/com.horcrux.svg.SvgView[7]/com.horcrux.svg.GroupView/com.horcrux.svg.PathView"
+    );
+  }
+
+  get patientInformationRequired() {
+    return $(
+      `//android.widget.TextView[@text="Patient Information is required"]`
     );
   }
   z;
@@ -411,9 +421,16 @@ class RecordingPage {
   }
   get copyBtn() {
     return $(
+      // "//androidx.recyclerview.widget.RecyclerView/android.widget.FrameLayout/android.view.ViewGroup/android.view.ViewGroup/android.view.ViewGroup/android.widget.ScrollView/android.view.ViewGroup/android.view.ViewGroup[1]/android.view.ViewGroup[1]/com.horcrux.svg.SvgView[1]"
       "//androidx.recyclerview.widget.RecyclerView/android.widget.FrameLayout/android.view.ViewGroup/android.view.ViewGroup/android.view.ViewGroup/android.widget.ScrollView/android.view.ViewGroup/android.view.ViewGroup[1]/android.view.ViewGroup[1]/com.horcrux.svg.SvgView[1]"
     );
   }
+  get referalCopyBtn() {
+    return $(
+      "//androidx.recyclerview.widget.RecyclerView/android.widget.FrameLayout/android.view.ViewGroup/android.view.ViewGroup/android.view.ViewGroup/android.view.ViewGroup[1]/android.view.ViewGroup[1]/com.horcrux.svg.SvgView[1]"
+    );
+  }
+
   get mailBtn() {
     return $('//com.horcrux.svg.SvgView[@resource-id="email"]');
   }
@@ -530,18 +547,15 @@ class RecordingPage {
     await driver.pause(3000);
     await verifyAndClick(this.Transcript);
     await this.dataScaning(this.cleanedTranscriptScroll);
-    await AudioManager.TextComparison()
-    await this.dataScanning();
-    await verifyAndClick(this.originalTrnscript);
-    await driver.execute("mobile: swipe", { direction: "up" });
-    await verifyAndClick(this.claeanedTranscript);
-    await driver.execute("mobile: swipe", { direction: "up" });
+    await AudioManager.TextComparison();
+    await verifyAndClick(this.showOriginalTrnscript);
+    await verifyAndClick(this.showClaeanedTranscript);
     await verifyAndClick(this.SoapNoteBtn);
   }
 
   async SOAPNote_Verification() {
     await waitForElement(QuickActions.quickActions);
-    await verifyAndClick(this.SoapNoteBtn)
+    await verifyAndClick(this.SoapNoteBtn);
     await this.copyMailAndPrint();
   }
   async CDSS_Verification() {
@@ -572,7 +586,6 @@ class RecordingPage {
       );
     }
   }
-  
 
   async multipleConversation() {
     await waitForElement(this.addConversation);
@@ -586,7 +599,7 @@ class RecordingPage {
     await this.Ok.click();
     await this.resumeConversation.click();
     await this.yes.click();
-    await this.recordAudio();
+    await this.Audio();
   }
   async second_Conversation_For_Existing_Patient() {
     await waitForElement(this.addConversation);
@@ -608,8 +621,6 @@ class RecordingPage {
 
   async third_Conversation_For_Existing_Patient() {
     await this.multipleConversation();
-    await validate(this.PrevEncounterRef);
-    await verifyAndClick(this.PrevEncounterRefNo);
   }
   async third_Conversation_For_New_Patient() {
     await this.multipleConversation();
@@ -623,7 +634,7 @@ class RecordingPage {
     await waitForElement(this.SoapNoteBtn);
     await verifyAndClick(this.SoapNoteBtn);
     await this.finaliseEncounter.click();
-    await this.finaliseEncounterOk.click();
+    await this.Ok.click();
     await back();
   }
 
@@ -641,7 +652,7 @@ class RecordingPage {
   }
 
   async recordAudioForDraft() {
-    await verifyAndClick(this.resumeRecordingConformationNo);
+    await verifyAndClick(this.resumeRecordingConformationNO);
     await this.recordAudio();
     await this.ctsConformation();
   }
@@ -703,7 +714,7 @@ class RecordingPage {
     await AudioManager.resumeAudio();
     console.log("Audio resumed:", AudioManager.currentAudioFile);
     await driver.pause(100000);
-    await Network();
+    await network();
     await driver.pause(20000);
     const appId = process.env.BUNDLE_ID;
     await driver.execute("mobile: terminateApp", { appId });
@@ -738,7 +749,7 @@ class RecordingPage {
     await driver.pause(5000);
     await verifyAndClick(this.stopBtn);
     await verify(this.offlineConversationSaved);
-    await Network();
+    await network();
     await driver.pause(5000);
     console.log(
       "here we have verified that the in offline mode when we click stop button it willshould show a popup of offline conversation is saved"
@@ -761,11 +772,11 @@ class RecordingPage {
     console.log(`Loop will run ${timesToRun} times`);
     for (let i = 0; i < timesToRun; i++) {
       await driver.pause(30000);
-      await Network();
+      await network();
       await driver.pause(5000);
       await verify(this.offlineModeRTranscription);
       await driver.pause(30000);
-      await Network();
+      await network();
     }
   }
 
@@ -799,40 +810,37 @@ class RecordingPage {
       scrollCount++;
     }
 
-    return Array.from(allTexts);
+    const allTextArray = Array.from(allTexts);
+
+    // ✅ Save to file
+    const dirPath =
+      "/Users/nagasubarayudu/Desktop/NokiAndroid/_results_/TranscriptFiles";
+    const filePath = path.join(dirPath, `texts_${Date.now()}.txt`);
+
+    // Ensure folder exists
+    if (!fs.existsSync(dirPath)) {
+      fs.mkdirSync(dirPath, { recursive: true });
+    }
+
+    // Write file
+    fs.writeFileSync(filePath, allTextArray.join("\n"), "utf-8");
+
+    console.log(`✅ Saved ${allTextArray.length} lines to: ${filePath}`);
+    return allTextArray;
   }
 
-  async bloodName(name) {
-    return await waitForElement($(`~${name}`));
-  }
-  get title() {
-    return $('//XCUIElementTypeTextView[@value="Title"]');
-  }
-  get titleTextField() {
-    return $(
-      '//XCUIElementTypeOther[@name="Stack view"]/XCUIElementTypeOther[6]/XCUIElementTypeOther/XCUIElementTypeTextView[1]'
-    );
-  }
-  get Discription() {
-    return $('(//XCUIElementTypeTextView[@value="Description"])[1]');
-  }
-  get discriptionTextField() {
-    return $(
-      '//XCUIElementTypeOther[@name="Stack view"]/XCUIElementTypeOther[6]/XCUIElementTypeOther/XCUIElementTypeTextView[2]'
-    );
-  }
   async UpdatePatientInfo() {
     await waitForElement(this.update);
     await this.update.click();
     await this.AddPatientInformation.click();
+    await verifyAndClick(this.add);
+    await validate(this.patientInformationRequired);
     await verifyAndClick(this.title);
-    await this.titleTextField.setValue("Blood Group");
-    await verifyAndClick(this.Discription);
-    await this.discriptionTextField.setValue("O positive");
+    await this.title.setValue("Blood Group");
+    await verifyAndClick(this.discription);
+    await this.discription.setValue("O positive");
     await verifyAndClick(this.add);
     await verifyAndClick(this.save);
-    await waitForElement(this.Ok);
-    await verifyAndClick(this.Ok);
     await this.bloodGroup("Blood Group");
     await this.bloodName("O positive");
   }
@@ -840,15 +848,23 @@ class RecordingPage {
   get SoapNoteScreenTxtFieldEntry() {
     return $("");
   }
+  async bloodGroup(name) {
+    return await waitForElement(
+      $(`//android.widget.TextView[@text="${name}x"]`)
+    );
+  }
 
+  async bloodName(name) {
+    return await waitForElement(
+      $(`//android.widget.TextView[@text="${name}"]`)
+    );
+  }
   async manualUpdate() {
     await waitForElement(this.SoapNoteScreenTxtField);
     await verifyAndClick(this.SoapNoteScreenTxtField);
-    await this.SoapNoteScreenTxtFieldEntry.setValue("Blood Group O negitive");
-    await verifyAndClick(this.doneBtn);
+    await this.SoapNoteScreenTxtField.setValue("Blood Group O negitive");
+    await hideKeyboard();
     await verifyAndClick(this.send);
-    await waitForElement(this.Ok);
-    await verifyAndClick(this.Ok);
     await this.bloodGroup("Blood Group");
     await this.bloodName("O negitive");
   }
@@ -860,8 +876,6 @@ class RecordingPage {
     await driver.pause(2000);
     await verifyAndClick(this.MicStop);
     await verifyAndClick(this.send);
-    await waitForElement(this.Ok);
-    await verifyAndClick(this.Ok);
     await this.bloodGroup("Blood Group");
     await this.bloodName("B negative");
   }

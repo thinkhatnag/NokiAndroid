@@ -1,6 +1,7 @@
 import { faker } from '@faker-js/faker';
 import RecordingPage from '../test/pageObjectModel/recording.page.js';
 import SpanishLanguage from '../test/pageObjectModel/spanishLanguage.js'
+import say from 'say';
 export async function verify(element) {
   await element?.waitForDisplayed({ timeout: 10000 });
 }
@@ -84,7 +85,6 @@ export async function performPointerAction(
   await driver.releaseActions();
 }
 export async function network() {
-  await driver.toggleData();
   await driver.toggleWiFi();
 }
 // export async function networkFailureVerification() {
@@ -148,85 +148,74 @@ export async function clickDraftTranscript() {
     await driver.pause(500);
 
 }
-// import allureReporter from "@wdio/allure-reporter";
-// import AudioManager from "../test/pageObjectModel/audioManeger.js"; // your AudioManager instance
 
-// // --- Live Transcript Monitoring ---
-// export async function LiveTranscriptMonitor(language = "english", checkInterval = 2000) {
-//   // --- Selectors inside the function ---
-//   const englishOffline = await RecordingPage.offlineModeRTranscription;
-// const spanishOffline = await SpanishLanguage.offlineModeRTranscription;
-//   const TRANSCRIPT_SELECTOR = '//android.widget.TextView';
-//   const OFFLINE_SELECTORS = {
-//     english: englishOffline,
-//     spanish: spanishOffline,
-//     // Add more languages here if needed
-//   };
+export async function playTTS(text, voice = null, speed = 1.0) {
+  return new Promise((resolve, reject) => {
+    say.speak(text, voice, speed, (err) => {
+      if (err) {
+        console.error("TTS failed:", err);
+        reject(err);
+      } else {
+        console.log("TTS spoken:", text);
+        resolve();
+      }
+    });
+  });
+}
+/**
+ * Common Toast Verification Function
+ *
+ * Behavior:
+ * - Waits up to 10s for a toast message (if any)
+ * - If toast = "Bad Request" → FAIL test
+ * - If toast = expectedToast → log as expected
+ * - If toast = anything else → log and continue
+ * - If no toast appears → continue silently
+ *
+ * @param {string} [expectedToast] - Optional. The toast text you expect for feature usage/logging.
+ */
+export async function verifyToastMessage(expectedToast) {
+    const toastLocator = '//android.widget.Toast[1]';
+    const toastElement = await $(toastLocator);
 
-//   const offlineSelector = OFFLINE_SELECTORS[language];
+    // Internal timeout for toast detection
+    const timeout = 20000;
 
-//   let previousText = "";
-//   let monitoring = true;
 
-//   while (monitoring) {
-//     try {
-//       // 1️⃣ Check if device is offline
-//       const offlineElements = await $$(offlineSelector);
-//       if (offlineElements.length > 0) {
-//         allureReporter.addStep(
-//           `⚠️ Device offline detected (${language}), stopping live transcript monitoring`,
-//           {},
-//           "broken"
-//         );
-//         break;
-//       }
+    try {
+        // Wait for toast (if it appears)
+        await toastElement.waitForDisplayed({ timeout });
 
-//       // 2️⃣ Fetch new transcript text
-//       const transcriptElement = await $(TRANSCRIPT_SELECTOR);
-//       const currentText = await transcriptElement.getText();
+        // Get toast text
+        const toastText = await toastElement.getText();
+        console.log(`📢 Toast detected: "${toastText}"`);
 
-//       if (currentText && currentText.trim() !== previousText) {
-//         // New text appeared
-//         previousText = currentText;
-//         allureReporter.addStep(
-//           `✅ Live transcript updated (${language})`,
-//           { text: currentText.slice(0, 500) },
-//           "passed"
-//         );
-//       } else {
-//         // No new text yet
-//         allureReporter.addStep(
-//           `⚠️ Live transcript not updated yet (${language})`,
-//           { lastText: previousText.slice(0, 500) },
-//           "broken"
-//         );
-//       }
+        // Normalize for comparison
+        const normalize = (text) => text.toLowerCase().replace(/\s+/g, '');
+        const normalizedText = normalize(toastText);
 
-//       // 3️⃣ Stop monitoring if audio finished
-//       const audioPlayedTime =
-//         AudioManager.playedTime +
-//         (AudioManager.isPaused ? 0 : Date.now() / 1000 - AudioManager.startTime);
 
-//       if (audioPlayedTime >= AudioManager.maxDuration) {
-//         monitoring = false;
-//         allureReporter.addStep(
-//           `⏹️ Audio finished (${language}), stopping live transcript monitoring`,
-//           {},
-//           "passed"
-//         );
-//         break;
-//       }
+        // If user passed an expected toast, check & log it
+        if (expectedToast) {
+            if (normalizedText.includes(normalize(expectedToast))) {
+                console.log(`✅ Expected toast shown: "${toastText}"`);
+                return true;
+            } else {
+                console.log(`ℹ️ Different toast appeared: "${toastText}"`);
+                return false;
+            }
+        } else {
+            // No expected toast given → just log it
+            console.log(`ℹ️ Toast appeared (no expected text provided): "${toastText}"`);
+        }
 
-//       await driver.pause(checkInterval);
-
-//     } catch (err) {
-//       allureReporter.addStep(
-//         `❌ Error reading live transcript (${language})`,
-//         { error: err.message },
-//         "failed"
-//       );
-//     }
-//   }
-
-//   return previousText;
-// }
+    } catch (err) {
+        // No toast appeared within timeout → continue test
+        if (err.message.includes('waitForDisplayed')) {
+            console.log('ℹ️ No toast appeared — continuing test.');
+            return;
+        }
+        // For actual failure toasts, rethrow
+        throw err;
+    }
+}

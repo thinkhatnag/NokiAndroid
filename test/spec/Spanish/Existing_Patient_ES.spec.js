@@ -1,14 +1,23 @@
-import { Network, validate, verify, verifyAndClick } from "../../../helper/helper.js";
+import {
+  Network,
+  validate,
+  verify,
+  verifyAndClick,
+  network,
+  terminateApp,
+} from "../../../helper/helper.js";
 import SpanishLanguage from "../../pageObjectModel/spanishLanguage.js";
 import AudioManeger from "../../pageObjectModel/audioManeger.js";
-import allureReporter from "@wdio/allure-reporter"
+import allureReporter from "@wdio/allure-reporter";
+import  EncounterPage from "../../pageObjectModel/encounter.page.js";
+import { net } from "appium/support.js";
 describe("Existing patient E2E flow in Spanish", () => {
   beforeEach(() => {
     allureReporter.addEpic("NOKI IOS Automation");
     allureReporter.addFeature("Existing patient E2E flow -Es");
     allureReporter.addOwner("Mobile Team");
   });
-  it("Verification of app switching to spanish launguage", async () => {
+  it("switching NOKI App to spanish launguage", async () => {
     await LoginPage.restartApp();
     await verifyAndClick(HomePage.settings);
     await verifyAndClick(SettingsPage.launguage);
@@ -16,40 +25,33 @@ describe("Existing patient E2E flow in Spanish", () => {
     await verifyAndClick(SettingsPage.home);
   });
 
-  it("Intiating the conversation for a Existing conversation", async () => {
+  it("Search Patient", async () => {
     await LoginPage.restartApp();
     await SpanishLanguage.startNewEncounter.click();
     await SpanishLanguage.patientSearch("Naga");
   });
-  it("Recording the conversation for multiple times offline ", async () => {
+  it("automatic sync verification when offline to online", async () => {
     await SpanishLanguage.startConversation();
     await AudioManeger.playAudio("spanish");
     console.log("Audio started:", AudioManeger.currentAudioFile);
     await SpanishLanguage.recordAudioforOfflineModeMT();
     await driver.pause(5000);
-    // await verifyAndClick(SpanishLanguage.pauseBtn);
+    await verifyAndClick(SpanishLanguage.pauseBtn);
     await AudioManeger.pauseAudio();
     console.log("Audio paused at:", AudioManeger.pausedTime, "seconds");
     await driver.pause(10000);
-    // await SpanishLanguage.PlayBtn.click();
-    await AudioManeger.resumeAudio(); //correct
-    console.log("Audio resumed:", AudioManeger.currentAudioFile);
-    await driver.pause(30000); //aagain playing audio for 1 min in online
-    await AudioManeger.pauseAudio();
-    await driver.pause(2000);
-
-    await aeroplaneModeOn();
-
-    await driver.pause(5000);
-    await AudioManeger.pauseAudio();
+    await verifyAndClick(SpanishLanguage.PlayBtn);
   });
-  it.skip("Offline mode app kill state verification", async () => {
-    allureReporter.addLabel("skipReason", "Feature not stable in offline mode yet");
-
-    await driver.terminateApp(process.env.BUNDLE_Id); // step verifying the app screen to be in recording screen only even in offline
+  it("Offline mode app kill state verification", async () => {
+    await AudioManeger.resumeAudio();
+    console.log("Audio resumed:", AudioManeger.currentAudioFile);
+    await driver.pause(30000);
+    await AudioManeger.pauseAudio();
+    await network();
+    await driver.pause(5000);
+    await terminateApp();
     await driver.pause(5000);
     await driver.activateApp(process.env.BUNDLE_Id);
-    await verifyAndClick(SpanishLanguage.ok);
     await waitForElement(SpanishLanguage.continueBtn);
     await validate(SpanishLanguage.continueBtn);
     await verifyAndClick(SpanishLanguage.continueBtn);
@@ -57,15 +59,28 @@ describe("Existing patient E2E flow in Spanish", () => {
       "Here app got restarted the app while it is in the recording screen and we verified with the app still in that page"
     );
   });
-  it("Offline mode app pause/Stop buttons verification", async () => {
+  it("App offline kill and reopen the app in online mode verifiction", async () => {
     await AudioManeger.resumeAudio();
+    await driver.pause(30000);
+    await AudioManeger.pauseAudio();
+    await driver.pause(5000);
+    await terminateApp();
+    await Network(); //online
+    await driver.activateApp(process.env.BUNDLE_ID);
+    // await waitForElement(RecordingPage.ContinueBtn); //validating the offline kill and reopen the app in online mode
+    // await validate(RecordingPage.endEncounter);
+    await verifyAndClick(RecordingPage.ContinueBtn);
+    await verify(RecordingPage.pauseBtn);
+  });
+  it("Offline mode stop Option Verification", async () => {
+    await Network();
     await driver.pause(30000);
     await AudioManeger.stopAudio();
     await verifyAndClick(SpanishLanguage.stopBtn);
     console.log(
       "here after app got closed while recording we magaing automatically again resumed the audio"
     );
-    await Network() // device come to online
+    await Network(); // device come to online
     await driver.pause(5000);
     console.log(
       "here we have verified that the in offline mode when we click stop button it willshould show a popup of offline conversation is saved"
@@ -77,16 +92,56 @@ describe("Existing patient E2E flow in Spanish", () => {
     await SpanishLanguage.SOAPNOTE_Verification();
     await SpanishLanguage.Transcript_Verification();
   });
-  it("Second Conversation Intiation ", async () => {
-    await SpanishLanguage.second_Conversation_For_Existing_Encounter();
+  it("Add Conversation for Existing Encounter ", async () => {
+    await waitForElement(SpanishLanguage.addConversation);
+    await verifyAndClick(SpanishLanguage.addConversation);
+    await verifyAndClick(SpanishLanguage.yes);
+    await AudioManeger.playAudio("english");
+    await driver.pause(60000);
+    await network();
+    await driver.pause(5000);
+    await AudioManeger.stopAudio();
+    await terminateApp();
+    await driver.pause(5000);
+    await driver.activateApp(process.env.BUNDLE_ID);
+    await driver.pause(5000);
+    await verifyAndClick(SpanishLanguage.endEncounter);
+    await verify(SpanishLanguage.conversationSaved);
+    await driver.pause(5000);
+      await network()
+    await driver.pause(5000);
+    await verifyAndClick(SpanishLanguage.PrevEncounterRefYes);
   });
   it("SOAP NOTE  & Transcript Verification for the second conversation", async () => {
     await SpanishLanguage.SOAPNOTE_Verification();
     await SpanishLanguage.Transcript_Verification();
   });
-  it("Thiord Conversation {makingh the converastion as draft and completing the draft Transcript }", async () => {
-    await SpanishLanguage.third_Conversation_For_Existing_Encounter();
-  });
+  it("Third Conversation {making the conversation as draft and completing the draft Transcript }", async () => {
+ await waitForElement(SpanishLanguage.addConversation);
+    await verifyAndClick(SpanishLanguage.addConversation);
+    await verifyAndClick(SpanishLanguage.yes);
+    await verify(SpanishLanguage.pauseBtn);
+    await SpanishLanguage.recordAudioAndSaveAsDraft();
+    await HomePage.encounter.click();
+    await SpanishLanguage.clickDraftTranscript();
+    await SpanishLanguage.finaliseEncounter.click();
+    await SpanishLanguage.ok.click();
+    await SpanishLanguage.resumeConversation.click();
+    await SpanishLanguage.yes.click();
+    await AudioManeger.playAudio("spanish");
+    await driver.pause(5000);
+    await network()
+    await driver.pause(100000);
+    await AudioManeger.stopAudio();
+    await terminateApp();
+    await driver.pause(5000);
+    await network();
+    await driver.pause(5000);
+    await driver.activateApp(process.env.BUNDLE_ID);
+    await driver.pause(5000);
+    await verifyAndClick(SpanishLanguage.endEncounter)
+    await validate(SpanishLanguage.PrevEncounterRef);
+    await verifyAndClick(SpanishLanguage.PrevEncounterRefNo);  });
   it("SOAP NOTE  & Transcript Verification for the Third Conversation", async () => {
     await SpanishLanguage.SOAPNOTE_Verification();
     await SpanishLanguage.Transcript_Verification();
@@ -117,7 +172,7 @@ describe("Existing patient E2E flow in Spanish", () => {
     await SpanishLanguage.hayNoki();
   });
 
-  it("", async () => {
+  it("Finalize the Encounter", async () => {
     await SpanishLanguage.finalizeEncounter();
   });
 });

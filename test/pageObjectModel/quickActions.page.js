@@ -15,8 +15,6 @@ class QuickActions {
     get regenerateSoapNote() {
         return $('~Regenerate Soap Note');
     }
-
-
     get translateSoapNote() {
         return $('~Translate Soap Note to');
     }
@@ -102,7 +100,7 @@ class QuickActions {
         await verifyAndClick(this.quickActions)
         await verifyAndClick(this.generateIcdAndCptCodes)
         await waitForElement(this.icdAndCptCodes)
-        await driver.pause(2000)
+        await driver.pause(5000)
         await RecordingPage.copyMailAndPrint()
         await this.quickActions.click()
         await this.regenerateIcdAndCptCodes.click()
@@ -145,6 +143,7 @@ class QuickActions {
         await this.quickActions.click()
         await this.generateCarePlan.click()
         await waitForElement(this.carePlan)
+        await driver.pause(5000)
         await RecordingPage.copyMailAndPrint()
         await this.quickActions.click()
         await this.regenerateCarePlan.click()
@@ -155,15 +154,18 @@ class QuickActions {
     }
     async feed_Back(){
         await waitForElement(this.quickActions)
-
-        await this.quickActions.click()
-        await this.generateFeedBack.click()
+        await verifyAndClick(this.quickActions)
+        await verifyAndClick(this.generateFeedBack)
         await waitForElement(this.feedBack)
-        await RecordingPage.copyMailAndPrint()
-
-        await this.quickActions.click()
-        await this.regenerateFeedBack.click()
-        await this.yes.click()
+        await driver.pause(5000)
+        await verifyAndClick(RecordingPage.referalCopyBtn)
+        await verifyAndClick(RecordingPage.mailBtn);
+        await verifyAndClick(RecordingPage.printBtn);
+        await driver.pause(5000);
+        await back();
+        await verifyAndClick(this.quickActions)
+        await verifyAndClick(this.regenerateFeedBack)
+        await verifyAndClick(this.yes)
         await waitForElement(this.feedBack)
         await driver.pause(2000)
         await RecordingPage.copyMailAndPrint()
@@ -171,14 +173,12 @@ class QuickActions {
     }
     async referal_Letter(){
         await waitForElement(this.quickActions)
-
         await driver.pause(2000)
         await this.quickActions.click()
         await this.generateReferalLetter.click()
         await waitForElement(this.referalLetter)
+        await driver.pause(5000)
         await RecordingPage.copyMailAndPrint()
-
-
         await this.quickActions.click()
         await this.regenerateReferalLetter.click()
         await this.yes.click() 

@@ -5,7 +5,6 @@ import {
   back,
   hideKeyboard, nokiDashBoard,
     Network,
-    clickDraftTranscript,
 } from "/Users/nagasubarayudu/Desktop/NokiAndroid/helper/helper.js";
 import RecordingPage from "/Users/nagasubarayudu/Desktop/NokiAndroid/test/pageObjectModel/recording.page.js";
 import { faker } from "@faker-js/faker";
@@ -122,9 +121,19 @@ class SpanishLanguage {
   get DeleteBtn() {
     return $();
   }
+  get draftTranscript() {
+    return $(`(//android.widget.TextView[@text="Borrador de transcripción"])[2]`);
+  }
+async clickDraftTranscript() {
+    await driver.waitUntil(async () => {
+        const drafts = await $$(`//android.widget.TextView[@text="Borrador de transcripción"]`);
+        return drafts.length > 0;
+    }, { timeout: 15000, timeoutMsg: 'Draft Transcript element not found' });
 
-
-
+    const drafts = await $$(`//android.widget.TextView[@text="Borrador de transcripción"]`);
+    await drafts[0].click();
+    console.log('Clicked the first Draft Transcript element.');
+}
 
 
   //SettingPage
@@ -407,6 +416,9 @@ class SpanishLanguage {
   get continueBtn() {
     return $(`~CONTINUAR`);
   }
+  get endEncounter() {
+    return $(`~ENCUENTRO FINAL`);
+  }
   get acknowledgeBtn() {
     return $(`~Aceptar y Continuar`);
   }
@@ -446,16 +458,6 @@ class SpanishLanguage {
     );
   }
   get patientCreatedOk() {
-    return $(`~`);
-  }
-  get resumeRecording() {
-    return $(`~`);
-  }
-  get resumeRecordingConformationYes() {
-    return $(`~`);
-  }
-
-  get resumeRecordingConformationNO() {
     return $(`~`);
   }
 
@@ -959,7 +961,7 @@ get feedBack() {
     await this.translateSoapNote.click();
     await verifyAndClick(this.spanish);
     await verifyAndClick(this.yes);
-    await waitForElement(this.PatientInformationTxtOnSpanish);
+    await waitForElement(this.PatientInformationTxtInSpanish);
     await driver.pause(4000);
   }
     // await this.update.click();
@@ -1147,6 +1149,7 @@ get feedBack() {
     await driver.pause(3000);
     await verifyAndClick(this.Transcript);
     await RecordingPage.dataScaning(RecordingPage.cleanedTranscriptScroll); // dsvceafsdc
+    await AudioManager.TextComparison("spanish")
     await verifyAndClick(this.originalTrnscript);
     await verifyAndClick(this.claeanedTranscript);
     await this.SoapNoteBtn.click();
@@ -1183,6 +1186,16 @@ get feedBack() {
     // await verify(this.finaliseEncounteSuccessrTxt);
     await driver.pause(5000);
   }
+  get resumeConversation() {
+    return $(`//android.view.ViewGroup[@content-desc="Reanudar conversación"]/android.view.ViewGroup/android.view.View`);
+  }
+  get resumeRecordingConformationYes() {
+    return $(`~Sí`);
+  }
+
+  get resumeRecordingConformationNO() {
+    return $(`~No`);
+  }
 
   async multipleConversation() {
     await waitForElement(this.addConversation);
@@ -1200,9 +1213,9 @@ get feedBack() {
     await waitForElement(this.finaliseEncounter);
     await verifyAndClick(this.finaliseEncounter);
     await driver.pause(3000);
-    await verifyAndClick(this.resumeConversationForMultipleConverstionScenario);
+    await verifyAndClick(this.resumeConversation);
     await verifyAndClick(
-      this.resumeConversationForMultipleConverstionScenarioYes
+      this.resumeConversationYes
     );
     await this.recordAudio();
   }
@@ -1405,6 +1418,7 @@ get feedBack() {
     await playTTS("Grupo sanguíneo O negativo", "Alex", 1.1);
     await driver.pause(2000);
     await verifyAndClick(this.MicStop);
+    
     await verifyAndClick(RecordingPage.send);
     await this.bloodGroup("Grupo sanguíneo");
     await this.bloodName("O negativo");

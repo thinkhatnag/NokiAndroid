@@ -1,4 +1,4 @@
-/* eslint-disable require-await */
+
 import _ from 'lodash';
 import B from 'bluebird';
 
@@ -41,7 +41,7 @@ async function removeWebSocketHandler(handlerPathname) {
       client.terminate();
     }
     return true;
-  } catch (ign) {
+  } catch {
     // ignore
   } finally {
     delete this.webSocketsMapping[handlerPathname];

@@ -1,13 +1,9 @@
-import { spawn } from "child_process";
-import { exec } from "child_process";
+import { spawn, exec } from "child_process";
 import util from "util";
 import fs from "fs";
-import {
-  normalizeText,
-  levenshtein,
-} from "/Users/nagasubarayudu/Desktop/IOS/helpers/helper.js";
-import RecordingPage from "../pageObjectModel/recording.page.js";
-import SpanishLanguage from "../pageObjectModel/spanishLanguage.js";
+import path from "path";
+import { normalizeText, levenshtein } from "../../helper/helper.js";
+
 // import path from "path";
 import allureReporter from "@wdio/allure-reporter";
 const execPromise = util.promisify(exec);
@@ -15,9 +11,9 @@ class AudioManager {
   constructor() {
     this.audioFiles = {
       english:
-        "/Users/nagasubarayudu/Desktop/IOS/utils/audioFiles/CardiacArrestEN.wav",
+        "/Users/nagasubarayudu/Desktop/NokiAndroid/utils/audioFiles/CardiacArrestEN.wav",
       spanish:
-        "/Users/nagasubarayudu/Desktop/IOS/utils/audioFiles/CardiacArrestES.mp3",
+        "/Users/nagasubarayudu/Desktop/NokiAndroid/utils/audioFiles/CardiacArrestES.mp3",
     };
     this.currentAudioFile = null;
     this.currentProcess = null;
@@ -46,77 +42,79 @@ class AudioManager {
       }
     }, 1000);
   }
-  async _startLiveTranscriptMonitor(language = "english", checkInterval = 2000) {
-    const TRANSCRIPT_SELECTOR = '//android.widget.TextView';
-    const englishOffline = await RecordingPage.offlineModeRTranscription;
-    const spanishOffline = await SpanishLanguage.offlineModeRTranscription;
-  
-    const OFFLINE_SELECTORS = {
-      english: englishOffline,
-      spanish: spanishOffline,
-    };
-  
-    const offlineSelector = OFFLINE_SELECTORS[language];
-  
-    let previousText = "";
-    this._monitoring = true;
-  
-    (async () => {
-      while (this._monitoring) {
-        try {
-          const offlineElements = await $$(offlineSelector);
-          if (offlineElements.length > 0) {
-            allureReporter.addStep(
-              `⚠️ Device offline detected (${language}), stopping live transcript monitoring`,
-              {},
-              "broken"
-            );
-            break;
-          }
-  
-          const transcriptElement = await $(TRANSCRIPT_SELECTOR);
-          const currentText = await transcriptElement.getText();
-  
-          if (currentText && currentText.trim() !== previousText) {
-            previousText = currentText;
-            allureReporter.addStep(
-              `✅ Live transcript updated (${language})`,
-              { text: currentText.slice(0, 500) },
-              "passed"
-            );
-          } else {
-            allureReporter.addStep(
-              `⚠️ Live transcript not updated yet (${language})`,
-              { lastText: previousText.slice(0, 500) },
-              "broken"
-            );
-          }
-  
-          const audioPlayedTime =
-            this.playedTime +
-            (this.isPaused ? 0 : Date.now() / 1000 - this.startTime);
-          if (audioPlayedTime >= this.maxDuration) {
-            this._monitoring = false;
-            allureReporter.addStep(
-              `⏹️ Audio finished (${language}), stopping live transcript monitoring`,
-              {},
-              "passed"
-            );
-            break;
-          }
-  
-          await driver.pause(checkInterval);
-        } catch (err) {
-          allureReporter.addStep(
-            `❌ Error reading live transcript (${language})`,
-            { error: err.message },
-            "failed"
+  async _startLiveTranscriptMonitor(language) {
+    console.log(`🟢 Starting live transcript monitor for ${language}`);
+
+    const TRANSCRIPT_SELECTOR = "//android.widget.TextView";
+    const offlineSelector =
+      language === "english"
+        ? '//android.widget.TextView[@text="No transcript available in offline mode"]'
+        : '//android.widget.TextView[@text="Transcripción no disponible en modo sin conexión"]';
+
+    let liveFound = false;
+
+    // Run up to 10 checks, 3 sec apart
+    for (let attempt = 1; attempt <= 10; attempt++) {
+      try {
+        // Stop if offline element appears
+        const offlineElements = await $$(offlineSelector);
+        if (offlineElements.length > 0) {
+          console.log(
+            `⚠️ Device offline detected (${language}), stopping monitor`
           );
+          allureReporter.addStep(
+            `⚠️ Device offline detected (${language}), stopping monitor`,
+            {},
+            "broken"
+          );
+          break;
         }
+
+        // Check for live transcript
+        const transcriptElement = await $(TRANSCRIPT_SELECTOR);
+        const currentText = (await transcriptElement.getText())?.trim() || "";
+
+        if (currentText.length > 0) {
+          console.log(`✅ Live transcript detected: "${currentText}"`);
+          allureReporter.addStep(
+            `✅ Live transcript detected (${language})`,
+            { text: currentText.slice(0, 500) },
+            "passed"
+          );
+          liveFound = true;
+          break; // stop monitoring early if live text detected
+        }
+
+        // Stop monitor if audio finished
+        const audioPlayedTime =
+          this.playedTime +
+          (this.isPaused ? 0 : Date.now() / 1000 - this.startTime);
+        if (audioPlayedTime >= this.maxDuration) {
+          console.log(`⏹️ Audio finished (${language}), stopping monitor`);
+          this._monitoring = false;
+          break;
+        }
+      } catch (err) {
+        console.log(
+          `❌ Error reading transcript (${language}): ${err.message}`
+        );
+        allureReporter.addStep(
+          `❌ Error reading transcript (${language})`,
+          { error: err.message },
+          "failed"
+        );
       }
-    })();
+
+      await driver.pause(3000); // wait 3 sec before next attempt
+    }
+
+    if (!liveFound) {
+      console.log(`❌ No live transcript is coming (${language})`);
+      allureReporter.addStep(`❌ No live transcript is coming (${language})`);
+    }
+
+    console.log(`🛑 Live transcript monitor finished (${language})`);
   }
-  
 
   // async playAudio(language) {
   //   const audioFilePath = this.audioFiles[language] || this.audioFiles.english;
@@ -153,10 +151,10 @@ class AudioManager {
   // }
   async playAudio(language = "english") {
     const audioFilePath = this.audioFiles[language] || this.audioFiles.english;
-  
+
     // Start Android live transcript monitoring
-    this._startLiveTranscriptMonitor(language);
-  
+    // this._startLiveTranscriptMonitor(language);
+
     if (this.isPaused && this.currentProcess) {
       this.currentProcess = spawn("afplay", [
         "-t",
@@ -179,7 +177,6 @@ class AudioManager {
       return this.currentAudioFile;
     }
   }
-  
 
   async pauseAudio() {
     if (this.currentProcess && !this.isPaused) {
@@ -198,7 +195,9 @@ class AudioManager {
       await execPromise("pkill -CONT afplay");
       this.startTime = Date.now() / 1000;
       this.isPaused = false;
-      this._startDurationTicker(); // 🔹 restart ticker
+      this._startDurationTicker();
+      // this._startLiveTranscriptMonitor(language);
+      // 🔹 restart ticker
     }
   }
 
@@ -219,9 +218,9 @@ class AudioManager {
     // Load full transcript (linked to current audio)
     const transcriptMap = {
       english:
-        "/Users/nagasubarayudu/Desktop/IOS/utils/audiotranscripts/CardiacArrest.txt",
+        "/Users/nagasubarayudu/Desktop/NokiAndroid/utils/audiotranscripts/CardiacArrest.txt",
       spanish:
-        "/Users/nagasubarayudu/Desktop/IOS/utils/audiotranscripts/CardiacArrestEs.txt",
+        "/Users/nagasubarayudu/NokiAndroid/NokiAndroid/utils/audiotranscripts/CardiacArrestEs.txt",
     };
 
     // Find which transcript to use
@@ -245,7 +244,7 @@ class AudioManager {
     const partialTranscript = fullTranscript.slice(0, wordsToTake).join(" ");
 
     // Save to .txt file
-    const logDir = "/Users/nagasubarayudu/Desktop/IOS/utils/audioLogs";
+    const logDir = "/Users/nagasubarayudu/Desktop/NokiAndroid/utils/audioLogs";
     if (!fs.existsSync(logDir)) {
       fs.mkdirSync(logDir, { recursive: true });
     }
@@ -267,19 +266,13 @@ class AudioManager {
     return logFile;
   }
 
-  async TextComparison(language) {
-    // Constants inside the function
-    const TRANSCRIPTS = {
-      english:
-        "/Users/nagasubarayudu/Desktop/IOS/utils/audiotranscripts/CardiacArrest.txt",
-      spanish:
-        "/Users/nagasubarayudu/Desktop/IOS/utils/audiotranscripts/CardiacArrestES.txt",
-    };
-
+  async TextComparison(language = "english") {
+    const AUDIO_LOG_DIR =
+      "/Users/nagasubarayudu/Desktop/NokiAndroid/utils/audioLogs";
     const SCANNED_DIR =
-      "/Users/nagasubarayudu/Desktop/IOS/TranscriptFiles/_results_";
+      "/Users/nagasubarayudu/Desktop/NokiAndroid/_results_/TranscriptFiles";
 
-    // Helper functions inside the function
+    // --- Helper functions ---
     const normalizeText = (text) => {
       return text
         .replace(/--+\s*Conversation\s*\d+\s*--+/gi, " ")
@@ -297,58 +290,75 @@ class AudioManager {
       return [...new Set(lines)].join(" ");
     };
 
-    // Select transcript file based on language
-    const transcriptPath = TRANSCRIPTS[language.toUpperCase()];
-    if (!transcriptPath)
-      throw new Error(`Transcript not found for language: ${language}`);
-    if (!fs.existsSync(transcriptPath))
-      throw new Error(`Transcript file missing: ${transcriptPath}`);
+    // --- Get latest played audio transcript ---
+    const playedFiles = fs
+      .readdirSync(AUDIO_LOG_DIR)
+      .filter((f) => f.startsWith("texts_") && f.endsWith(".txt"))
+      .sort((a, b) => b.localeCompare(a));
+    if (!playedFiles.length)
+      throw new Error("No played audio transcript files found.");
+    const latestPlayed = path.join(AUDIO_LOG_DIR, playedFiles[0]);
 
-    // Automatically get latest scanned text
+    // --- Get latest scanned transcript ---
     const scannedFiles = fs
       .readdirSync(SCANNED_DIR)
-      .filter((f) => f.startsWith("scanned_texts_") && f.endsWith(".txt"))
+      .filter((f) => f.startsWith("played_audio_") && f.endsWith(".txt"))
       .sort((a, b) => b.localeCompare(a));
     if (!scannedFiles.length) throw new Error("No scanned text files found.");
     const latestScanned = path.join(SCANNED_DIR, scannedFiles[0]);
 
-    // Read and normalize scanned text
-    const scannedTextRaw = fs.readFileSync(latestScanned, "utf8");
-    const scannedText = normalizeText(deduplicateText(scannedTextRaw));
-
-    // Read and normalize transcript
-    const transcriptText = normalizeText(
-      fs.readFileSync(transcriptPath, "utf8")
+    // --- Read and normalize ---
+    const playedText = normalizeText(fs.readFileSync(latestPlayed, "utf8"));
+    const scannedText = normalizeText(
+      deduplicateText(fs.readFileSync(latestScanned, "utf8"))
     );
 
-    // Take portion of transcript equal to scanned text length
-    const transcriptSlice = transcriptText.slice(0, scannedText.length);
-
-    // Compute Levenshtein similarity
-    const distance = levenshtein(scannedText, transcriptSlice);
-    const maxLen = Math.max(scannedText.length, transcriptSlice.length) || 1;
+    // --- Compare similarity (Levenshtein) ---
+    const distance = levenshtein(playedText, scannedText);
+    const maxLen = Math.max(playedText.length, scannedText.length) || 1;
     const similarity = ((1 - distance / maxLen) * 100).toFixed(2);
 
-    const threshold = 85;
+    const threshold = 90;
     const status =
       similarity >= threshold ? "✅ Match found" : "❌ Below threshold";
 
-    // Allure reporting
+    // --- Allure Reporting ---
     allureReporter.step(
       `Text comparison [${language.toUpperCase()}]: ${status} (${similarity}%)`,
       () => {
         allureReporter.attachment(
-          "Scanned Text (Deduplicated)",
+          "Played Transcript",
+          playedText,
+          "text/plain"
+        );
+        allureReporter.attachment(
+          "Scanned Transcript",
           scannedText,
           "text/plain"
         );
       }
     );
 
+    console.log(
+      `🔍 Comparison complete — Similarity: ${similarity}% (${status})`
+    );
+
+    // --- Delete both files after comparison ---
+    try {
+      fs.unlinkSync(latestPlayed);
+      fs.unlinkSync(latestScanned);
+      console.log(`🧹 Deleted compared files:`);
+      console.log(` - ${latestPlayed}`);
+      console.log(` - ${latestScanned}`);
+    } catch (err) {
+      console.warn("⚠️ Error deleting compared files:", err.message);
+    }
+
     return {
+      playedFile: latestPlayed,
       scannedFile: latestScanned,
-      transcriptFile: transcriptPath,
       similarity: `${similarity}%`,
+      threshold: `${threshold}%`,
       status,
       language: language.toUpperCase(),
     };

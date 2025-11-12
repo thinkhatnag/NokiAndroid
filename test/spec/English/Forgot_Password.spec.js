@@ -11,19 +11,19 @@ describe('Forgot Password',() => {
   beforeEach(async() => {
     await LoginPage.restartApp()
   })
-  it('Verify  message entering not rigistered email in forgot password screen', async() => {
+  it('Verify error message entering not registered email in forgot password screen', async() => {
   await verifyAndClick(LoginPage.forgotPasswordBtn)
   await LoginPage.enterForgotPasswordEmail('nag.subbarayudu@gmail.com')
   await verify(LoginPage.emailError)
 });
-it('Verify  message entering inccorect email in forgot password screen', async() => {
+it('Verify error message entering incorrect email in forgot password screen', async() => {
   await verifyAndClick(LoginPage.forgotPasswordBtn)
   await LoginPage.enterForgotPasswordEmail('nag.subbarayudu@')
   await verify(LoginPage.invalidEmailError)
   await verifyAndClick(LoginPage.loginLink)
 });
 
-it('Verify  message not entering  email in forgot password screen', async() => {
+it('Verify error message not entering email in forgot password screen', async() => {
   await verifyAndClick(LoginPage.forgotPasswordBtn)
   await LoginPage.enterForgotPasswordEmail(' ')
   await verify(LoginPage.emailError)

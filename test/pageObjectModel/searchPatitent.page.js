@@ -1,6 +1,6 @@
-import RecordingPage from "./recording.page";
-import { hideKeyboard, validate, verifyAndClick } from "/Users/nagasubarayudu/Desktop/NokiAndroid/helper/helper.js";
-import HomePage from "/Users/nagasubarayudu/Desktop/NokiAndroid/test/pageObjectModel/home.page.js";
+import RecordingPage from "./recording.page.js";
+import { hideKeyboard, validate, verifyAndClick } from "../../helper/helper.js";
+import HomePage from "./home.page.js";
 class SearchPatientPage {
     get patient() {
         return $('//android.widget.TextView[@text="Select Patient"]');

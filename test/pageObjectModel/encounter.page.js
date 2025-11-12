@@ -85,16 +85,27 @@ class EncounterPage {
     
         return $(xpath);
     }
-    async clickDraftTranscript() {
-        await driver.pause(5000)
-        await driver.action('pointer')
-        .move({ duration: 0, x: 180, y: 260 })
-        .down({ button: 0 })
-        .pause(50)
-        .up({ button: 0 })
-        .perform();
+    // async clickDraftTranscript() {
+    //     await driver.pause(5000)
+    //     await driver.action('pointer')
+    //     .move({ duration: 0, x: 180, y: 260 })
+    //     .down({ button: 0 })
+    //     .pause(50)
+    //     .up({ button: 0 })
+    //     .perform();
       
-      }
+    //   }
+async clickDraftTranscript() {
+    await driver.waitUntil(async () => {
+        const drafts = await $$('//android.widget.TextView[@text="Draft Transcript"]');
+        return drafts.length > 0;
+    }, { timeout: 15000, timeoutMsg: 'Draft Transcript element not found' });
+
+    const drafts = await $$('//android.widget.TextView[@text="Draft Transcript"]');
+    await drafts[0].click();
+    console.log('Clicked the first Draft Transcript element.');
+}
+
 
     
     async noteSearch(randomName) {
