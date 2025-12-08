@@ -1,1 +1,1 @@
-[{"values":["Prod"],"name":"Environment"},{"values":["MotoS"],"name":"device_name"},{"values":[""],"name":"app_version"},{"values":["UiAutomator2"],"name":"automation_engine"}]
+[{"values":["Test"],"name":"Environment"},{"values":["MotoS"],"name":"device_name"},{"values":["Android"],"name":"platform_name"},{"values":["V_1.2.5_2025120801"],"name":"app_version"},{"values":["UiAutomator2"],"name":"automation_engine"}]
