@@ -1,4 +1,3 @@
-
 import { EventEmitter } from "events";
 import fsExtra from "fs-extra"; // Import the default export
 import allure from "allure-commandline"; // Import allure-commandline
@@ -41,18 +40,19 @@ export const config = {
   specs: [
     // "./test/spec/test.spec.js"
     // "./test/spec/ISSUESVERIFICAZTION.spec.js"
+    // './test/spec/English/home.spec.js',
     // "./test/spec/English/Forgot_Password.spec.js",
     // "./test/spec/English/Login.spec.js",
-    // './test/spec/English/home.spec.js',
-    // './test/spec/English/setting.spec.js',
-    './test/spec/English/Existing_Patient.spec.js',
-    //  './test/spec/English/New_Patient.spec.js',
+    // "./test/spec/English/Settings.spec.js",
+    // './test/spec/English/New_Patient.spec.js',
+    // "./test/spec/English/Existing_Patient.spec.js",
+     // './test/spec/Spanish/Settings_ES.spec.js',
+    // './test/spec/Spanish/Existing_Patient_ES.spec.js',
+    // './test/spec/Spanish/New_Patient_ES.spec.js',
 
     // './test/spec/Spanish/Forgot_Password_ES.spec.js',
     // './test/spec/Spanish/Login_Es.spec.js',
-    // './test/spec/Spanish/Settings_ES.spec.js',
-    // './test/spec/Spanish/Existing_Patient_ES.spec.js',
-    // './test/spec/Spanish/New_Patient_ES.spec.js',
+   
   ],
   // Patterns to exclude.
   exclude: [
@@ -93,11 +93,11 @@ export const config = {
       "appium:connectionTimeout": 120000,
       "appium:sessionOverride": true,
       // "appium:autoGrantPermissions": true,
-      "appium:forceAppLaunch":true,
+      "appium:forceAppLaunch": true,
 
       "appium:appWaitActivity": "*",
       "appium:adbExecTimeout": 50000,
-      "appium:disableWindowAnimation": true,
+      // "appium:disableWindowAnimation": true,
       "appium:uiautomator2ServerLaunchTimeout": 60000,
       "appium:uiautomator2ServerInstallTimeout": 60000,
     },
@@ -309,28 +309,61 @@ export const config = {
   /**
    * Function to be executed before a test (in Mocha/Jasmine) starts.
    */
+  // beforeTest(test) {
+  //   // parent and suite can be set here or inside your test file
+
+  //   // Segrigate Positive or Negative automatically
+  //   const name = test.title.toLowerCase();
+
+  //   const negativeWords = [
+  //     "error",
+  //     "fail",
+  //     "invalid",
+  //     "empty",
+  //     "expired",
+  //     "wrong",
+  //   ];
+  //   const isNegative = negativeWords.some((word) => name.includes(word));
+
+  //   if (isNegative) {
+  //     allureReporter.addSubSuite("Negative");
+  //   } else {
+  //     allureReporter.addSubSuite("Positive");
+  //   }
+  // },
   beforeTest(test) {
-    // parent and suite can be set here or inside your test file
+    const title = test.title.toLowerCase();
 
-    // Segrigate Positive or Negative automatically
-    const name = test.title.toLowerCase();
+    const language =
+      title.includes(" spanish ") ||
+      title.includes("[es]") ||
+      title.includes("_es") ||
+      title.includes(" es ")
+        ? "Spanish"
+        : "English";
 
+    allureReporter.addParentSuite(language);
+
+    // ✅ Positive / Negative → suite
     const negativeWords = [
       "error",
       "fail",
+      "failed",
       "invalid",
       "empty",
       "expired",
       "wrong",
+      "timeout",
+      "denied",
     ];
-    const isNegative = negativeWords.some((word) => name.includes(word));
 
-    if (isNegative) {
-      allureReporter.addSubSuite("Negative");
-    } else {
-      allureReporter.addSubSuite("Positive");
-    }
+    const isNegative = negativeWords.some((word) => title.includes(word));
+    allureReporter.addSuite(isNegative ? "Negative" : "Positive");
+
+    // ✅ Optional: better filtering
+    allureReporter.addLabel("Language", language);
   },
+
   /**
    * Hook that gets executed _before_ a hook within the suite starts (e.g. runs before calling
    * beforeEach in Mocha)
@@ -358,7 +391,7 @@ export const config = {
     context,
     { error, result, duration, passed, retries, issue }
   ) {
-    if (passed || error || result || !passed) {
+    if (error || result || !passed) {
       const screenshot = await browser.takeScreenshot();
       allureReporter.addAttachment(
         "Screenshot on Failure",

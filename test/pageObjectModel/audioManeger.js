@@ -220,7 +220,7 @@ class AudioManager {
       english:
         "/Users/nagasubarayudu/Desktop/NokiAndroid/utils/audiotranscripts/CardiacArrest.txt",
       spanish:
-        "/Users/nagasubarayudu/NokiAndroid/NokiAndroid/utils/audiotranscripts/CardiacArrestEs.txt",
+        "/Users/nagasubarayudu/Desktop/NokiAndroid/utils/audiotranscripts/CardiacArrestES.txt",
     };
 
     // Find which transcript to use
@@ -271,29 +271,10 @@ class AudioManager {
       "/Users/nagasubarayudu/Desktop/NokiAndroid/utils/audioLogs";
     const SCANNED_DIR =
       "/Users/nagasubarayudu/Desktop/NokiAndroid/_results_/TranscriptFiles";
-
-    // --- Helper functions ---
-    const normalizeText = (text) => {
-      return text
-        .replace(/--+\s*Conversation\s*\d+\s*--+/gi, " ")
-        .replace(/[^a-zA-Z0-9\s]/g, "")
-        .replace(/\s+/g, " ")
-        .trim()
-        .toLowerCase();
-    };
-
-    const deduplicateText = (text) => {
-      const lines = text
-        .split(/\n+/)
-        .map((l) => l.trim())
-        .filter(Boolean);
-      return [...new Set(lines)].join(" ");
-    };
-
     // --- Get latest played audio transcript ---
     const playedFiles = fs
       .readdirSync(AUDIO_LOG_DIR)
-      .filter((f) => f.startsWith("texts_") && f.endsWith(".txt"))
+      .filter((f) => f.startsWith("played_") && f.endsWith(".txt"))
       .sort((a, b) => b.localeCompare(a));
     if (!playedFiles.length)
       throw new Error("No played audio transcript files found.");
@@ -302,20 +283,18 @@ class AudioManager {
     // --- Get latest scanned transcript ---
     const scannedFiles = fs
       .readdirSync(SCANNED_DIR)
-      .filter((f) => f.startsWith("played_audio_") && f.endsWith(".txt"))
+      .filter((f) => f.startsWith("scanned_texts_") && f.endsWith(".txt"))
       .sort((a, b) => b.localeCompare(a));
     if (!scannedFiles.length) throw new Error("No scanned text files found.");
     const latestScanned = path.join(SCANNED_DIR, scannedFiles[0]);
 
     // --- Read and normalize ---
     const playedText = normalizeText(fs.readFileSync(latestPlayed, "utf8"));
-    const scannedText = normalizeText(
-      deduplicateText(fs.readFileSync(latestScanned, "utf8"))
-    );
+    const scannedText = normalizeText(fs.readFileSync(latestScanned, "utf8"));
 
     // --- Compare similarity (Levenshtein) ---
     const distance = levenshtein(playedText, scannedText);
-    const maxLen = Math.max(playedText.length, scannedText.length) || 1;
+    const maxLen = Math.max(playedText.length, scannedText.length);
     const similarity = ((1 - distance / maxLen) * 100).toFixed(2);
 
     const threshold = 90;
@@ -344,15 +323,15 @@ class AudioManager {
     );
 
     // --- Delete both files after comparison ---
-    try {
-      fs.unlinkSync(latestPlayed);
-      fs.unlinkSync(latestScanned);
-      console.log(`🧹 Deleted compared files:`);
-      console.log(` - ${latestPlayed}`);
-      console.log(` - ${latestScanned}`);
-    } catch (err) {
-      console.warn("⚠️ Error deleting compared files:", err.message);
-    }
+    // try {
+    //   fs.unlinkSync(latestPlayed);
+    //   fs.unlinkSync(latestScanned);
+    //   console.log(`🧹 Deleted compared files:`);
+    //   console.log(` - ${latestPlayed}`);
+    //   console.log(` - ${latestScanned}`);
+    // } catch (err) {
+    //   console.warn("⚠️ Error deleting compared files:", err.message);
+    // }
 
     return {
       playedFile: latestPlayed,

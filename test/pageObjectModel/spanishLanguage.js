@@ -3,35 +3,38 @@ import {
   verifyAndClick,
   verify,
   back,
-  hideKeyboard, nokiDashBoard,
-    Network,
-} from "/Users/nagasubarayudu/Desktop/NokiAndroid/helper/helper.js";
-import RecordingPage from "/Users/nagasubarayudu/Desktop/NokiAndroid/test/pageObjectModel/recording.page.js";
+  hideKeyboard,
+  nokiDashBoard,
+  Network,
+  validate,
+} from "../../helper/helper.js";
+import RecordingPage from "../pageObjectModel/recording.page.js";
 import { faker } from "@faker-js/faker";
-import AudioManeger from "/Users/nagasubarayudu/Desktop/NokiAndroid/test/pageObjectModel/audioManeger.js";
-import LoginPage from "/Users/nagasubarayudu/Desktop/NokiAndroid/test/pageObjectModel/login.page.js";
-import AudioManager from "/Users/nagasubarayudu/Desktop/NokiAndroid/test/pageObjectModel/audioManeger.js"
+import AudioManeger from "../pageObjectModel/audioManeger.js";
+import LoginPage from "./login.page.js";
+import SettingsPage from "./setting.page.js";
+import HomePage from "./home.page.js";
 class SpanishLanguage {
   get newUserREsgistrationText() {
     return $();
   }
   get emailField() {
-    return $();
+    return $(`//android.view.ViewGroup[@content-desc="Correo electrónico*"]/android.view.ViewGroup`);
   }
   get passwordField() {
-    return $();
+    return $('-android uiautomator:new UiSelector().className("android.view.ViewGroup").instance(17)');
   }
   get loginButton() {
     return $();
   }
-  get errorMessage() {
+  get passwordRequiredError() {
     return $();
   }
   get WrongPassword() {
     return $();
   }
-  get emailError() {
-    return $();
+  get emailRequiredError() {
+    return $('-android uiautomator:new UiSelector().text("Se requiere correo electrónico")');
   }
   get invalidEmailError() {
     return $();
@@ -43,10 +46,7 @@ class SpanishLanguage {
     return $();
   }
 
-
-
-
-//HOME Screen 
+  //HOME Screen
 
   get homeScreenAnimation() {
     return $(
@@ -78,16 +78,12 @@ class SpanishLanguage {
 
   get startNewEncounter() {
     return $(
-      `//android.view.ViewGroup[@content-desc="Agregar Nuevo Encuentro"]/android.view.ViewGroup/android.view.View`
+      `//android.view.ViewGroup[@content-desc="Agregar Nuevo Encuentro"]/android.view.View`
     );
   }
   get nokiDashBoardStartNewEncounter() {
     return $();
   }
-
-
-
-
 
   // patient Screen
   get PatientsScreenTitle() {
@@ -101,10 +97,6 @@ class SpanishLanguage {
   get PatientScreenDashBoardAddPatientBtn() {
     return $();
   }
-
-
-
-
 
   //Encounter screen
   get encounerScreenTitle() {
@@ -122,27 +114,35 @@ class SpanishLanguage {
     return $();
   }
   get draftTranscript() {
-    return $(`(//android.widget.TextView[@text="Borrador de transcripción"])[2]`);
+    return $(
+      `(//android.widget.TextView[@text="Borrador de transcripción"])[2]`
+    );
   }
-async clickDraftTranscript() {
-    await driver.waitUntil(async () => {
-        const drafts = await $$(`//android.widget.TextView[@text="Borrador de transcripción"]`);
+  async clickDraftTranscript() {
+    await driver.waitUntil(
+      async () => {
+        const drafts = await $$(
+          `//android.widget.TextView[@text="Borrador de transcripción"]`
+        );
         return drafts.length > 0;
-    }, { timeout: 15000, timeoutMsg: 'Draft Transcript element not found' });
+      },
+      { timeout: 15000, timeoutMsg: "Draft Transcript element not found" }
+    );
 
-    const drafts = await $$(`//android.widget.TextView[@text="Borrador de transcripción"]`);
+    const drafts = await $$(
+      `//android.widget.TextView[@text="Borrador de transcripción"]`
+    );
     await drafts[0].click();
-    console.log('Clicked the first Draft Transcript element.');
-}
-
+    console.log("Clicked the first Draft Transcript element.");
+  }
 
   //SettingPage
   get stettings() {
-    return $('');
+    return $("");
   }
 
   get profileSettings() {
-    return $('~Configuración de Perfil');
+    return $("~Configuración de Perfil");
   }
   get help() {
     return $("~Ayuda");
@@ -166,7 +166,7 @@ async clickDraftTranscript() {
     return $(`//android.widget.EditText[@resource-id="firstName"]`);
   }
   get middleName() {
-    return $(`//android.widget.EditText[@resource-id="middleName"]`)
+    return $(`//android.widget.EditText[@resource-id="middleName"]`);
   }
   get lastName() {
     return $(`//android.widget.EditText[@resource-id="lastName"]`);
@@ -210,7 +210,7 @@ async clickDraftTranscript() {
   get consultWithUs() {
     return $(`//android.widget.TextView[@text="Consulta"]`);
   }
-  
+
   get english() {
     return $("~English (en-US)");
   }
@@ -227,32 +227,32 @@ async clickDraftTranscript() {
   }
   get selectAllEnabled() {
     return $(
-      '(//android.widget.SeekBar[@content-desc="Bottom Sheet"])[2]/android.view.ViewGroup/android.view.ViewGroup/android.widget.ScrollView/android.view.ViewGroup/android.view.ViewGroup[1]/android.view.ViewGroup/android.view.ViewGroup'
+      '(//android.widget.SeekBar[@content-desc="Bottom Sheet"])[2]/android.widget.ScrollView/android.view.ViewGroup/android.view.ViewGroup[2]'
     );
   }
   get selectAllDisabled() {
     return $(
-      '(//android.widget.SeekBar[@content-desc="Bottom Sheet"])[2]/android.view.ViewGroup/android.view.ViewGroup/android.widget.ScrollView/android.view.ViewGroup/android.view.ViewGroup[1]/android.view.ViewGroup/android.view.ViewGroup'
+      '(//android.widget.SeekBar[@content-desc="Bottom Sheet"])[2]/android.widget.ScrollView/android.view.ViewGroup/android.view.ViewGroup[2]'
     );
   }
   get cdssEnabled() {
     return $(
-      '(//android.widget.SeekBar[@content-desc="Bottom Sheet"])[2]/android.view.ViewGroup/android.view.ViewGroup/android.widget.ScrollView/android.view.ViewGroup/android.view.ViewGroup[2]/android.view.ViewGroup/android.view.ViewGroup'
+      '(//android.widget.SeekBar[@content-desc="Bottom Sheet"])[2]/android.widget.ScrollView/android.view.ViewGroup/android.view.ViewGroup[4]'
     );
   }
   get cdssDisabled() {
     return $(
-      '(//android.widget.SeekBar[@content-desc="Bottom Sheet"])[2]/android.view.ViewGroup/android.view.ViewGroup/android.widget.ScrollView/android.view.ViewGroup/android.view.ViewGroup[2]/android.view.ViewGroup/android.view.ViewGroup'
+      '(//android.widget.SeekBar[@content-desc="Bottom Sheet"])[2]/android.widget.ScrollView/android.view.ViewGroup/android.view.ViewGroup[4]'
     );
   }
   get diognosisJustificationDisabled() {
     return $(
-      '(//android.widget.SeekBar[@content-desc="Bottom Sheet"])[2]/android.view.ViewGroup/android.view.ViewGroup/android.widget.ScrollView/android.view.ViewGroup/android.view.ViewGroup[3]/android.view.ViewGroup/android.view.ViewGroup'
+      '(//android.widget.SeekBar[@content-desc="Bottom Sheet"])[2]/android.widget.ScrollView/android.view.ViewGroup/android.view.ViewGroup[6]'
     );
   }
   get diognosisJustificationEnabled() {
     return $(
-      '(//android.widget.SeekBar[@content-desc="Bottom Sheet"])[2]/android.view.ViewGroup/android.view.ViewGroup/android.widget.ScrollView/android.view.ViewGroup/android.view.ViewGroup[3]/android.view.ViewGroup/android.view.ViewGroup'
+      '(//android.widget.SeekBar[@content-desc="Bottom Sheet"])[2]/android.widget.ScrollView/android.view.ViewGroup/android.view.ViewGroup[6]'
     );
   }
   get logoutcancelationBtn() {
@@ -274,36 +274,30 @@ async clickDraftTranscript() {
   }
   get phone() {
     return $(
-      '//android.view.ViewGroup[@content-desc="Consult"]/android.view.ViewGroup[1]'
+      '//android.view.ViewGroup[@content-desc="Consulta"]/android.view.ViewGroup[1]'
     );
   }
   get whatsapp() {
-    return $(
-      '//android.view.ViewGroup[@content-desc="Consult"]/android.view.ViewGroup[2]'
-    );
+    return $("");
   }
   get text() {
     return $(
-      '//android.view.ViewGroup[@content-desc="Consult"]/android.view.ViewGroup[3]'
+      '//android.view.ViewGroup[@content-desc="Consulta"]/android.view.ViewGroup[2]'
     );
   }
   get Gmail() {
     return $(
-      '//android.view.ViewGroup[@content-desc="Consult"]/android.view.ViewGroup[4]'
+      '//android.view.ViewGroup[@content-desc="Consulta"]/android.view.ViewGroup[3]'
     );
   }
 
-  
-
-
-
   //patitents Page
   get patients() {
-    return $(`//android.widget.FrameLayout[@resource-id="android:id/content"]/android.widget.FrameLayout/android.view.ViewGroup/android.view.ViewGroup/android.view.ViewGroup/android.view.ViewGroup/android.widget.Button[2]/com.horcrux.svg.SvgView/com.horcrux.svg.GroupView/com.horcrux.svg.PathView`);
+    return $(
+      `//android.widget.FrameLayout[@resource-id="android:id/content"]/android.widget.FrameLayout/android.view.ViewGroup/android.view.ViewGroup/android.view.ViewGroup/android.view.ViewGroup/android.widget.Button[2]/com.horcrux.svg.SvgView/com.horcrux.svg.GroupView/com.horcrux.svg.PathView`
+    );
   }
-  get nokiDashboard() {
-    return $(`~`);
-  }
+
 
   get clearText() {
     return $(`//android.widget.TextView[@text="Cancelar"]`);
@@ -319,36 +313,7 @@ async clickDraftTranscript() {
   }
 
   //Enconter Screen
-  get Encounter() {
-    return $(`~`);
-  }
-  get searchNote() {
-    return $(`~`);
-  }
-  get legPain() {
-    return $(`~`);
-  }
-  get draft() {
-    return $(`~`);
-  }
-  get deleteBtn() {
-    return $(`~`);
-  }
-
-  get deleteCancel() {
-    return $(`~`);
-  }
-
-  get deleteConformation() {
-    return $(`~`);
-  }
-  get noEncounterFound() {
-    return $(`~`);
-  }
-
-
-
-
+  
 
   // Search patitent
   get patient() {
@@ -358,7 +323,6 @@ async clickDraftTranscript() {
     return $(`//android.widget.EditText[@text="Buscar paciente"]`);
   }
 
- 
   get proceedBTn() {
     return $(`~Proceder`);
   }
@@ -374,9 +338,10 @@ async clickDraftTranscript() {
     return $(`//android.widget.EditText[@text="Fecha de nacimiento"]`);
   }
   get genderPicker() {
-    return $(`//android.view.ViewGroup[@content-desc="Género, *, Seleccionar género"]/com.horcrux.svg.SvgView/com.horcrux.svg.GroupView/com.horcrux.svg.PathView`);
+    return $(
+      `//android.view.ViewGroup[@content-desc="Género, *, Seleccionar género"]/com.horcrux.svg.SvgView/com.horcrux.svg.GroupView/com.horcrux.svg.PathView`
+    );
   }
-
 
   get male() {
     return $(`~Masculino`);
@@ -393,14 +358,16 @@ async clickDraftTranscript() {
   get addAndProceed() {
     return $(`~Agregar y continuar`);
   }
-  get cancel() {
-    return $(`~`);
-  }
+
   get nameError() {
-    return $(`//android.widget.TextView[@text="Se requiere el nombre del paciente"]`);
+    return $(
+      `//android.widget.TextView[@text="Se requiere el nombre del paciente"]`
+    );
   }
   get dateError() {
-    return $(`//android.widget.TextView[@text="Se requiere la fecha de nacimiento"]`);
+    return $(
+      `//android.widget.TextView[@text="Se requiere la fecha de nacimiento"]`
+    );
   }
   get genderError() {
     return $(`//android.widget.TextView[@text="Se requiere género"]`);
@@ -408,16 +375,18 @@ async clickDraftTranscript() {
 
   // Recording Screen
   get checkBox() {
-    return $(`//android.widget.FrameLayout[@resource-id="android:id/content"]/android.widget.FrameLayout/android.view.ViewGroup/android.view.ViewGroup/android.view.ViewGroup/android.view.ViewGroup/android.view.ViewGroup[3]/android.widget.FrameLayout/android.view.ViewGroup/android.view.ViewGroup/android.view.ViewGroup/android.widget.ScrollView/android.view.ViewGroup/android.view.ViewGroup/android.view.ViewGroup/android.view.ViewGroup/android.widget.ScrollView/android.view.ViewGroup/android.view.ViewGroup[3]/android.view.ViewGroup/com.horcrux.svg.SvgView/com.horcrux.svg.GroupView/com.horcrux.svg.PathView`);
+    return $(
+      `//android.widget.FrameLayout[@resource-id="android:id/content"]/android.widget.FrameLayout/android.view.ViewGroup/android.view.ViewGroup/android.view.ViewGroup/android.view.ViewGroup/android.view.ViewGroup[3]/android.widget.FrameLayout/android.view.ViewGroup/android.view.ViewGroup/android.view.ViewGroup/android.widget.ScrollView/android.view.ViewGroup/android.view.ViewGroup/android.view.ViewGroup/android.view.ViewGroup/android.widget.ScrollView/android.view.ViewGroup/android.view.ViewGroup[3]/android.view.ViewGroup/com.horcrux.svg.SvgView/com.horcrux.svg.GroupView/com.horcrux.svg.PathView`
+    );
   }
   get startConversationBtn() {
-    return $(`//android.view.ViewGroup[@content-desc="Comenzar grabación"]/android.view.ViewGroup/android.view.View`);
+    return $(`~Comenzar grabación`);
   }
   get continueBtn() {
     return $(`~CONTINUAR`);
   }
   get endEncounter() {
-    return $(`~ENCUENTRO FINAL`);
+    return $(`~FINALIZAR ENCUENTRO`);
   }
   get acknowledgeBtn() {
     return $(`~Aceptar y Continuar`);
@@ -429,54 +398,32 @@ async clickDraftTranscript() {
     return $(`~DESCARTAR`);
   }
   get SoapNoteBtn() {
-    return $(`//android.view.View[@content-desc="Nota SOAP"]/android.view.ViewGroup`);
-  }
-  get LaunguageSelectior() {
-    return $(`~`);
-  }
-  get LaunguageSelectText() {
-    return $(`~`);
-  }
-  get doneBtn() {
-    return $(`~`);
-  }
-  get EngLanOpt() {
-    return $(`~`);
-  }
-  get SpanLanOpt() {
-    return $(`~`);
-  }
-  get startConversationBtn() {
-    return $();
-  }
-  get ackwnledge() {
-    return $(`~`);
+    return $(
+      `//android.view.View[@content-desc="Nota SOAP"]/android.view.ViewGroup`
+    );
   }
   get pauseBtn() {
     return $(
-      `//android.widget.FrameLayout[@resource-id="android:id/content"]/android.widget.FrameLayout/android.view.ViewGroup/android.view.ViewGroup/android.view.ViewGroup/android.view.ViewGroup/android.view.ViewGroup[2]/android.widget.FrameLayout/android.view.ViewGroup/android.view.ViewGroup/android.view.ViewGroup/android.widget.ScrollView/android.view.ViewGroup/android.view.ViewGroup/android.view.ViewGroup/android.view.ViewGroup[2]/android.view.ViewGroup[2]/com.horcrux.svg.SvgView[1]/com.horcrux.svg.GroupView/com.horcrux.svg.CircleView`
+      'android=new UiSelector().className("com.horcrux.svg.CircleView")'
     );
   }
   get patientCreatedOk() {
-    return $(`~`);
+    return $(`~OK`);
   }
-
   get stopBtn() {
     return $(
-      `//android.widget.FrameLayout[@resource-id="android:id/content"]/android.widget.FrameLayout/android.view.ViewGroup/android.view.ViewGroup/android.view.ViewGroup/android.view.ViewGroup/android.view.ViewGroup[2]/android.widget.FrameLayout/android.view.ViewGroup/android.view.ViewGroup/android.view.ViewGroup/android.widget.ScrollView/android.view.ViewGroup/android.view.ViewGroup/android.view.ViewGroup/android.view.ViewGroup[2]/android.view.ViewGroup[2]/com.horcrux.svg.SvgView[2]/com.horcrux.svg.GroupView/com.horcrux.svg.CircleView`
+      'android=new UiSelector().className("com.horcrux.svg.CircleView").instance(1)'
     );
   }
-  get PlayBtn() {
+  get playBtn() {
     return $(
-      `//android.widget.FrameLayout[@resource-id="android:id/content"]/android.widget.FrameLayout/android.view.ViewGroup/android.view.ViewGroup/android.view.ViewGroup/android.view.ViewGroup/android.view.ViewGroup[2]/android.widget.FrameLayout/android.view.ViewGroup/android.view.ViewGroup/android.view.ViewGroup/android.widget.ScrollView/android.view.ViewGroup/android.view.ViewGroup/android.view.ViewGroup/android.view.ViewGroup[2]/android.view.ViewGroup[2]/com.horcrux.svg.SvgView[1]/com.horcrux.svg.GroupView/com.horcrux.svg.CircleView`
+      `android=new UiSelector().className("com.horcrux.svg.CircleView")`
     );
   }
-
-
-
-
   get PrevEncounterRef() {
-    return $(`//android.widget.TextView[@resource-id="¿Te gustaría usar la nota SOAP del encuentro anterior como contexto?"]`);
+    return $(
+      `//android.widget.TextView[@resource-id="¿Te gustaría usar la nota SOAP del encuentro anterior como contexto?"]`
+    );
   }
 
   get PrevEncounterRefYes() {
@@ -486,8 +433,6 @@ async clickDraftTranscript() {
     return $(`~NO`);
   }
 
-
- 
   get patientInformation() {
     return $(`~`);
   }
@@ -506,9 +451,7 @@ async clickDraftTranscript() {
   get additinalInformation() {
     return $(`~`);
   }
-  get name() {
-    return $(`~`);
-  }
+
   get age() {
     return $(`~`);
   }
@@ -571,8 +514,8 @@ async clickDraftTranscript() {
   get immunization() {
     return $(`~`);
   }
-  get referal() {
-    return $();
+  get referalLetter() {
+    return $(`//android.widget.TextView[@text="Carta de referencia"]`);
   }
 
   get Transcript() {
@@ -603,56 +546,70 @@ async clickDraftTranscript() {
   }
 
   get copyBtn() {
-    return $(`//androidx.recyclerview.widget.RecyclerView/android.widget.FrameLayout/android.view.ViewGroup/android.view.ViewGroup/android.view.ViewGroup/android.widget.ScrollView/android.view.ViewGroup/android.view.ViewGroup[1]/android.view.ViewGroup[1]/com.horcrux.svg.SvgView[1]`);
+    return $(
+      "//androidx.recyclerview.widget.RecyclerView/android.widget.FrameLayout/android.view.ViewGroup/android.view.ViewGroup/android.view.ViewGroup/android.widget.ScrollView/android.view.ViewGroup/android.view.ViewGroup[1]/android.view.ViewGroup[1]/com.horcrux.svg.SvgView[1]"
+    );
+  }
+  get feedBackCopyBtn() {
+    return $(
+      "//androidx.recyclerview.widget.RecyclerView/android.widget.FrameLayout/android.view.ViewGroup/android.view.ViewGroup/android.view.ViewGroup/android.view.ViewGroup/android.view.ViewGroup[1]/com.horcrux.svg.SvgView[1]"
+    );
+  }
+  get referalCopyBtn() {
+    return $(
+      "//androidx.recyclerview.widget.RecyclerView/android.widget.FrameLayout/android.view.ViewGroup/android.view.ViewGroup/android.view.ViewGroup/android.view.ViewGroup[1]/android.view.ViewGroup[1]/com.horcrux.svg.SvgView[1]"
+    );
   }
   get mailBtn() {
     return $(`~email`);
   }
- 
+
   get printBtn() {
     return $(`//com.horcrux.svg.SvgView[@resource-id="print"]`);
   }
   get addConversation() {
-    return $(`//android.view.ViewGroup[@content-desc="Agregar conversación"]/android.view.ViewGroup/android.view.View`);
+    return $(
+      `//android.view.ViewGroup[@content-desc="Agregar conversación"]/android.view.ViewGroup/android.view.View`
+    );
   }
 
   get printDownload() {
     return $(`~`);
   }
 
-  get printCancel() {
-    return $(`~`);
-  }
-  get printPageCancel() {
-    return $(`~`);
-  }
   get printPageBackBtn() {
     return $(`~`);
   }
   get SoapNoteScreenTxtField() {
-    return $(`//android.widget.EditText[@text="Presiona el micrófono y comienza a hablar..."]`);
+    return $(
+      `//android.widget.EditText[@text="Presiona el micrófono y comienza a hablar..."]`
+    );
   }
 
   get update() {
-    return $(`//com.horcrux.svg.SvgView[@resource-id="edit"]/com.horcrux.svg.GroupView/com.horcrux.svg.GroupView/com.horcrux.svg.PathView`);
+    return $(
+      `//com.horcrux.svg.SvgView[@resource-id="edit"]/com.horcrux.svg.GroupView/com.horcrux.svg.GroupView/com.horcrux.svg.PathView`
+    );
   }
-  get send() {
-    return $(`~`);
-  }
+ 
   get finaliseEncounter() {
     return $(`~Finalizar Encuentro`);
   }
   get finaliseEncounterTxt() {
-    return $(`//android.widget.TextView[@text="¿Está seguro de finalizar el encuentro y deshabilitar todas las acciones disponibles?"]`);
+    return $(
+      `//android.widget.TextView[@text="¿Está seguro de finalizar el encuentro y deshabilitar todas las acciones disponibles?"]`
+    );
   }
   get ok() {
-    return $(`~Sí`);
+    return $(`~OK`);
   }
   get no() {
     return $(`~No`);
   }
   get resumeRecording() {
-    return $(`//android.view.ViewGroup[@content-desc="Reanudar conversación"]/android.view.ViewGroup/android.view.View`);
+    return $(
+      `//android.view.ViewGroup[@content-desc="Reanudar conversación"]/android.view.ViewGroup/android.view.View`
+    );
   }
   get resumeRecordingConformation() {
     return $(``);
@@ -676,19 +633,17 @@ async clickDraftTranscript() {
   get AdditionalInfo() {
     return $(`~`);
   }
-  get connectionLost() {
-    return $(`~`);
-  }
-  get connectionLostClose() {
-    return $(`~`);
-  }
+
   get offlineModeRTranscription() {
-    return $(`//android.widget.TextView[@text="Transcripción no disponible en modo sin conexión"]`);
+    return $(
+      `//android.widget.TextView[@text="Transcripción no disponible en modo sin conexión"]`
+    );
   }
   get offlineConversationSaved() {
-    return $(`//android.widget.TextView[@text="Hemos guardado tu conversación. Se sincronizará cuando estés conectado nuevamente."]`);
+    return $(
+      `//android.widget.TextView[@text="Hemos guardado tu conversación. Se sincronizará cuando estés conectado nuevamente."]`
+    );
   }
-
 
   // Helper methods for actions
   async enterEmail(email) {
@@ -718,8 +673,9 @@ async clickDraftTranscript() {
     await this.emailField.clearValue();
     await this.passwordField.clearValue();
   }
-//Setting page Functinalities
+  //Setting page Functinalities
   async profileSettingScreen() {
+    await verifyAndClick(this.profileSettings);
     await verifyAndClick(this.edit);
     await verifyAndClick(this.firstName);
     await this.firstName.clearValue();
@@ -740,7 +696,6 @@ async clickDraftTranscript() {
     await back();
   }
   async support_VerifiCation() {
-
     await verifyAndClick(this.help);
     await driver.pause(5000);
     await verifyAndClick(this.phone);
@@ -754,7 +709,7 @@ async clickDraftTranscript() {
       );
     }
     console.log("phone is active");
-    await driver.activateApp("com.thinkhat.heynoki");
+    await driver.activateApp(process.env.BUNDLE_ID);
     await driver.pause(10000);
     // await this.whatsapp.click();
     // await driver.pause(10000);
@@ -767,7 +722,7 @@ async clickDraftTranscript() {
     // }
     // console.log("WhatsApp is active");
     // await driver.pause(5000);
-    // await driver.activateApp("com.thinkhat.heynoki");
+    // await driver.activateApp(process.env.BUNDLE_ID);
     // await driver.pause(5000);
     await verifyAndClick(this.Gmail);
     await driver.pause(5000);
@@ -783,7 +738,7 @@ async clickDraftTranscript() {
 
     console.log("Gmail is active");
     await driver.pause(5000);
-    await driver.activateApp("com.thinkhat.heynoki");
+    await driver.activateApp(process.env.BUNDLE_ID);
     await driver.pause(5000);
 
     await verifyAndClick(this.text);
@@ -802,15 +757,20 @@ async clickDraftTranscript() {
     console.log("Messages is active");
 
     await driver.pause(5000);
-    await driver.activateApp("com.thinkhat.heynoki");
+    await driver.activateApp(process.env.BUNDLE_ID);
     await back();
   }
-  async generalSettingsUpdate() {
-
-    await verifyAndClick(this.launguage);
+  async laungugeChageVerification(){
+     await verifyAndClick(this.launguage);
     await verifyAndClick(this.spanish);
     await verifyAndClick(this.Idioma);
     await verifyAndClick(this.Inglish);
+    await verifyAndClick(SettingsPage.launguage);
+    await verifyAndClick(SettingsPage.spanish);
+
+  }
+  async generalSettingsUpdate() {
+   
     await verifyAndClick(this.generalSettings);
     await verifyAndClick(this.cdssEnabled);
     await verifyAndClick(this.diognosisJustificationEnabled);
@@ -823,108 +783,116 @@ async clickDraftTranscript() {
     await verifyAndClick(this.cdssDisabled);
     await verifyAndClick(this.diognosisJustificationDisabled);
     await verifyAndClick(this.Done);
- 
   }
-
-
 
   async patitentName(patitent) {
     return $(`//android.widget.EditText[@text="${patitent}"]`);
   }
 
-//Quick Action Buttons
-get quickActionButton() {
-  return $(`~Acciones Rápidas`);
-}
-get quicktionsSearchField() {
-  return $(`//android.widget.EditText[@resource-id="quickActionSearchField"]`);
-}
-get regenerateSoapNote() {
-  return $(`~Regenerar Nota SOAP`);
-}
-get translateSoapNote() {
-  return $(`~Traducir Nota SOAP a`);
-}
-get regenerateIcdAndCpt() {
-  return $(`~Regenerar códigos ICD y CPT`);
-}
-get regenerateCarePlan() {
-  return $(`~Regenerar Plan de Atención con Explicación`);
-}
-get regenerateFeedBack() {
-  return $(`~Regenerar retroalimentación sobre el desempeño del doctor`);
-}
+  //Quick Action Buttons
+  get quickActionButton() {
+    return $(`~Acciones Rápidas`);
+  }
+  get quicktionsSearchField() {
+    return $(
+      `//android.widget.EditText[@resource-id="quickActionSearchField"]`
+    );
+  }
+  get regenerateSoapNote() {
+    return $(`~Regenerar Nota SOAP`);
+  }
+  get translateSoapNote() {
+    return $(`~Traducir Nota SOAP a`);
+  }
+  get regenerateIcdAndCpt() {
+    return $(`~Regenerar códigos ICD y CPT`);
+  }
+  get regenerateCarePlan() {
+    return $(`~Regenerar Plan de Atención con Explicación`);
+  }
+  get regenerateFeedBack() {
+    return $(`~Regenerar retroalimentación sobre el desempeño del doctor`);
+  }
 
-get regenerateReferalLetter() {
-  return $(`~Regenerar Carta de Referencia`);
-}
-get spanish() {
-  return $(`~Español`);
-}
+  get regenerateReferalLetter() {
+    return $(`~Regenerar Carta de Referencia`);
+  }
+  get no() {
+    return $(`~NO`);
+  }
+  get yes() {
+    return $(`~SÍ`);
+  }
 
-get no() {
-  return $(`~NO`);
-}
-get yes() {
-  return $(`~SÍ`);
-}
+  get PatientInformationTxtInSpanish() {
+    return $(`//android.widget.TextView[@text="Información del Paciente"]`);
+  }
+  get english() {
+    return $(`~Inglés`);
+  }
+  get generateIcdAndCptCodes() {
+    return $(`~Generar códigos ICD y CPT`);
+  }
+  get generateCarePlan() {
+    return $(`~Generar Plan de Atención con Explicación`);
+  }
+  get generateFeedBack() {
+    return $(`~Generar retroalimentación sobre el desempeño del doctor`);
+  }
+  get generateReferalLetter() {
+    return $(`~Generar Carta de Referencia`);
+  }
+  get PatientInformationTxtInEnlish() {
+    return $(`//android.widget.TextView[@text="Patient Information"]`);
+  }
 
-get PatientInformationTxtInSpanish() {
-  return $(`//android.widget.TextView[@text="Información del Paciente"]`);
-}
-get english() {
-  return $(`~Inglés`);
-}
-get generateIcdAndCptCodes() {
-  return $(`~Generar códigos ICD y CPT`);
-}
-get generateCarePlan() {
-  return $(`~Generar Plan de Atención con Explicación`);
-}
-get generateFeedBack() {
-  return $(`~Generar retroalimentación sobre el desempeño del doctor`);
-}
-get generateReferalLetter() {
-  return $(`~Generar Carta de Referencia`);
-}
-get PatientInformationTxtInEnlish() {
-  return $(`//android.widget.TextView[@text="Patient Information"]`);
-}
-
-get soapNOteSearchField() {
-  return $(`//androidx.recyclerview.widget.RecyclerView/android.widget.FrameLayout/android.view.ViewGroup/android.view.ViewGroup/android.view.ViewGroup/android.widget.ScrollView/android.view.ViewGroup/android.view.ViewGroup[3]`);
-}
-get micOn() {
-  return $(`//androidx.recyclerview.widget.RecyclerView/android.widget.FrameLayout/android.view.ViewGroup/android.view.ViewGroup/android.view.ViewGroup/android.widget.ScrollView/android.view.ViewGroup/com.horcrux.svg.SvgView/com.horcrux.svg.GroupView/com.horcrux.svg.GroupView/com.horcrux.svg.CircleView[2]`);
-}
-get MicStop() {
-  return $(`//android.widget.ImageView`);
-}
-get sendBtn() {
-  return $(`//androidx.recyclerview.widget.RecyclerView/android.widget.FrameLayout/android.view.ViewGroup/android.view.ViewGroup/android.view.ViewGroup/android.widget.ScrollView/android.view.ViewGroup/android.view.ViewGroup[3]/com.horcrux.svg.SvgView/com.horcrux.svg.GroupView/com.horcrux.svg.PathView`);
-}
-get careplan() {
-  return $(`//android.view.View[@content-desc="Carta de referencia"]/android.view.ViewGroup`);
-}
-get Icdcptcodes() {
-  return $(`//android.view.View[@content-desc="Códigos ICD y CPT"]/android.view.ViewGroup`);
-}
-get carePlan() {
-  return $(`//android.view.View[@content-desc="Plan de cuidado con explicación"]/android.view.ViewGroup`);
-}
-get feedBack() {
-  return $(`//android.view.View[@content-desc="Retroalimentación sobre el desempeño del doctor"]/android.view.ViewGroup`);
-}
+  get soapNOteSearchField() {
+    return $(
+      `//androidx.recyclerview.widget.RecyclerView/android.widget.FrameLayout/android.view.ViewGroup/android.view.ViewGroup/android.view.ViewGroup/android.widget.ScrollView/android.view.ViewGroup/android.view.ViewGroup[3]`
+    );
+  }
 
 
+  get Mic() {
+    return $(
+      "//androidx.recyclerview.widget.RecyclerView/android.widget.FrameLayout/android.view.ViewGroup/android.view.ViewGroup/android.widget.ScrollView/android.view.ViewGroup/com.horcrux.svg.SvgView[2]/com.horcrux.svg.GroupView/com.horcrux.svg.GroupView/com.horcrux.svg.CircleView[2]"
+    );
+  }
 
+  get MicStop() {
+    return $("//android.widget.ImageView");
+  }
+  get send() {
+    return $(
+      "//androidx.recyclerview.widget.RecyclerView/android.widget.FrameLayout/android.view.ViewGroup/android.view.ViewGroup/android.widget.ScrollView/android.view.ViewGroup/com.horcrux.svg.SvgView[1]/com.horcrux.svg.GroupView/com.horcrux.svg.PathView"
+    );
+  }
+  get careplan() {
+    return $(
+      `//android.view.View[@content-desc="Carta de referencia"]/android.view.ViewGroup`
+    );
+  }
+  get Icdcptcodes() {
+    return $(
+      `//android.view.View[@content-desc="Códigos ICD y CPT"]/android.view.ViewGroup`
+    );
+  }
+  get carePlan() {
+    return $(
+      `//android.view.View[@content-desc="Plan de cuidado con explicación"]/android.view.ViewGroup`
+    );
+  }
+  get feedBack() {
+    return $(
+      `//android.view.View[@content-desc="Retroalimentación sobre el desempeño del doctor"]/android.view.ViewGroup`
+    );
+  }
 
   //AddPatitent Screen Functions
   async copyMailPrint() {
     await waitForElement(this.copyBtn);
     await verifyAndClick(this.copyBtn);
     await verifyAndClick(this.mailBtn);
-    await verifyAndClick(this.emailSentOk);
     await verifyAndClick(this.printBtn);
     await driver.pause(10000);
     await back();
@@ -938,18 +906,17 @@ get feedBack() {
     await waitForElement(this.SoapNoteBtn);
     await this.copyMailPrint();
   }
-    // await this.update.click();
-    // await this.patientInformation.click();
-    // await verify(this.title);
-    // await verify(this.Discription);
-    // await verifyAndClick(this.add);
-    // await verifyAndClick(RecordingPage.clearPatientInfo);
-    // await verifyAndClick(this.save);
-    // await verifyAndClick(this.update);
-    // await verifyAndClick(this.cancel)
-  async translate_SoapNote()
-  {
-    await waitForElement(this.quickActionButton)
+  // await this.update.click();
+  // await this.patientInformation.click();
+  // await verify(this.title);
+  // await verify(this.Discription);
+  // await verifyAndClick(this.add);
+  // await verifyAndClick(RecordingPage.clearPatientInfo);
+  // await verifyAndClick(this.save);
+  // await verifyAndClick(this.update);
+  // await verifyAndClick(this.cancel)
+  async translate_SoapNote() {
+    await waitForElement(this.quickActionButton);
 
     await this.quickActionButton.click();
     await this.translateSoapNote.click();
@@ -964,17 +931,17 @@ get feedBack() {
     await waitForElement(this.PatientInformationTxtInSpanish);
     await driver.pause(4000);
   }
-    // await this.update.click();
-    // await this.patientInformation.click();
-    // await verify(RecordingPage.titleInSpanish)
-    // await verify(RecordingPage.discriptionInSpanish)
-    // await verifyAndClick(this.add);
-    // await verifyAndClick(RecordingPage.Ok)
-    // await verifyAndClick(RecordingPage.clearPatientInfo);
-    // await verifyAndClick(this.save);
-    // await verifyAndClick(this.update);
-    // await verifyAndClick(this.cancel);
-  async Icd_cpt(){
+  // await this.update.click();
+  // await this.patientInformation.click();
+  // await verify(RecordingPage.titleInSpanish)
+  // await verify(RecordingPage.discriptionInSpanish)
+  // await verifyAndClick(this.add);
+  // await verifyAndClick(RecordingPage.Ok)
+  // await verifyAndClick(RecordingPage.clearPatientInfo);
+  // await verifyAndClick(this.save);
+  // await verifyAndClick(this.update);
+  // await verifyAndClick(this.cancel);
+  async Icd_cpt() {
     await verifyAndClick(this.quickActionButton);
     await verifyAndClick(this.generateIcdAndCptCodes);
     await waitForElement(this.icdAndCptCodes);
@@ -984,8 +951,8 @@ get feedBack() {
     await waitForElement(this.icdAndCptCodes);
     await this.copyMailPrint();
   }
-  async care_plan(){
-    await waitForElement(this.quickActionButton)
+  async care_plan() {
+    await waitForElement(this.quickActionButton);
     await this.quickActionButton.click();
     await this.generateCarePlan.click();
     await waitForElement(this.careplan);
@@ -996,34 +963,56 @@ get feedBack() {
     await waitForElement(this.carePlan);
     await this.copyMailPrint();
   }
-  async feed_Back(){
-    await waitForElement(this.quickActionButton)
-
+  async feed_Back() {
+    await waitForElement(this.quickActionButton);
     await this.quickActionButton.click();
     await this.generateFeedBack.click();
     await waitForElement(this.feedBack);
-    await this.copyMailPrint();
-    await verifyAndClick(this.quickActionButton)
+    await driver.pause(4000);
+    await driver.pause(3000);
+    await verifyAndClick(RecordingPage.feedBackCopyBtn);
+    await console.log("copy button clicked successfully");
+    await verifyAndClick(RecordingPage.mailBtn);
+    await verifyAndClick(RecordingPage.printBtn);
+    await driver.pause(5000);
+    await back();
+    await verifyAndClick(this.quickActionButton);
     await verifyAndClick(this.quickActionButton);
     await verifyAndClick(this.regenerateFeedBack);
     await verifyAndClick(this.yes);
     await waitForElement(this.feedBack);
-    await this.copyMailPrint();
+    await driver.pause(3000);
+    await verifyAndClick(RecordingPage.feedBackCopyBtn);
+    await console.log("copy button clicked successfully");
+    await verifyAndClick(RecordingPage.mailBtn);
+    await verifyAndClick(RecordingPage.printBtn);
+    await driver.pause(5000);
+    await back();
   }
-  async referal_Letter(){
-    await waitForElement(this.quickActionButton)
+  async referal_Letter() {
+    await waitForElement(this.quickActionButton);
 
     await this.quickActionButton.click();
     await this.generateReferalLetter.click();
     await waitForElement(this.referalLetter);
-    await this.copyMailPrint();
+    await driver.pause(3000);
+    await verifyAndClick(RecordingPage.referalCopyBtn);
+    await console.log("copy button clicked successfully");
+    await verifyAndClick(RecordingPage.mailBtn);
+    await verifyAndClick(RecordingPage.printBtn);
+    await driver.pause(5000);
+    await back();
     await this.quickActionButton.click();
     await verifyAndClick(this.regenerateReferalLetter);
     await verifyAndClick(this.yes);
     await waitForElement(this.referalLetter);
-    await verifyAndClick(this.copyBtn);
-    await verifyAndClick(this.mailBtn);
-    await verifyAndClick(RecordingPage.emailSentOk)
+    await driver.pause(3000);
+    await verifyAndClick(RecordingPage.referalCopyBtn);
+    await console.log("copy button clicked successfully");
+    await verifyAndClick(RecordingPage.mailBtn);
+    await verifyAndClick(RecordingPage.printBtn);
+    await driver.pause(5000);
+    await back();
     await verifyAndClick(this.printBtn);
     await verifyAndClick(this.printPageCancel);
     await verifyAndClick(this.printPageBackBtn);
@@ -1034,18 +1023,20 @@ get feedBack() {
 
   //AddPatitent Screen Functions
   async createNewPatient() {
-
     const name = faker.person.fullName();
     const year = faker.number.int({ min: 1920, max: 2023 });
     const month = faker.number.int({ min: 1, max: 12 });
-    const date = faker.number.int({min: 1, max: 28})
-    const dob = `${String(month).padStart(2, "0")}/${String(date).padStart(2, "0")}/${year}`;
+    const date = faker.number.int({ min: 1, max: 28 });
+    const dob = `${String(month).padStart(2, "0")}/${String(date).padStart(
+      2,
+      "0"
+    )}/${year}`;
 
     await verifyAndClick(this.patientName);
-    await this.patientName.setValue(name)
+    await this.patientName.setValue(name);
     await this.DOB.click();
-    await this.DOB.setValue(dob)
- 
+    await this.DOB.setValue(dob);
+
     await this.genderPicker.click();
     await verifyAndClick(this.female);
     await this.genderPicker.click();
@@ -1056,7 +1047,6 @@ get feedBack() {
     await this.male.click();
     await verify(this.cancel);
     await verifyAndClick(this.addAndProceed);
-    await RecordingPage.patientCreatedOk.click()
     return name;
   }
   async addPatitentWrn() {
@@ -1084,28 +1074,31 @@ get feedBack() {
     await this.deleteBtn.click();
     await this.deleteConformation.click();
   }
-  
+
   //Patient Screen
-  async Search(patientName) {
-    await this.patientSearch.click();
-    await this.patientSearch.setValue(patientName);
-  }
-  async patientSearchAndContinue(patientName) {
-    await this.Search(patientName);
-    await verifyAndClick(`//XCUIElementTypeStaticText[@name="${patientName}`);
-  }
+  // async Search(patientName) {
+  //   await this..click();
+  //   await this.patientSearch.setValue(patientName);
+  // }
+  // async patientSearchAndContinue(patientName) {
+  //   await this.Search(patientName);
+  //   await verifyAndClick(`//XCUIElementTypeStaticText[@name="${patientName}`);
+  // }
   //Search Patient
+  name(patient) {
+    return $(`//android.widget.TextView[@text="${patient}"]`);
+  }
   async patientSearch(patient) {
     await this.searchPatientsField.click();
     await this.searchPatientsField.setValue(patient);
     await driver.pause(2000);
-    const patientElement = await this.patientName(patient);
+    const patientElement = await this.name(patient);
     await verifyAndClick(patientElement);
     await verifyAndClick(this.proceedBTn);
   }
   async startConversation() {
-    await verifyAndClick(RecordingPage.acknowledgeCheckBox);
     await verifyAndClick(this.startConversationBtn);
+    await verifyAndClick(this.acknowledgeBtn);
   }
 
   //Recording Screen
@@ -1145,22 +1138,19 @@ get feedBack() {
     }
   }
 
-  async Transcript_Verification(){
+  async Transcript_Verification() {
     await driver.pause(3000);
     await verifyAndClick(this.Transcript);
     await RecordingPage.dataScaning(RecordingPage.cleanedTranscriptScroll); // dsvceafsdc
-    await AudioManager.TextComparison("spanish")
+    await AudioManager.TextComparison("spanish");
     await verifyAndClick(this.originalTrnscript);
     await verifyAndClick(this.claeanedTranscript);
     await this.SoapNoteBtn.click();
   }
-  async SOAPNOTE_Verification(){
-    await verify(this.PatientInformationTxtInSpanish)
-    await RecordingPage.dataScaning(RecordingPage.soapNoteScroll)
-    await this.copyMailPrint()
-
+  async SOAPNOTE_Verification() {
+    await verify(this.PatientInformationTxtInSpanish);
+    await this.copyMailPrint();
   }
-
 
   async recordAudioAndSaveAsDraft() {
     await AudioManager.playAudio("spanish");
@@ -1177,7 +1167,7 @@ get feedBack() {
   async recordAudioForDraft() {
     await this.recordAudio();
     await waitForElementToBeVisible(this.PrevEncounterRef);
-    await verifyAndClick(this.ok);
+    await verifyAndClick(this.yes);
     await this.ctsConformation();
   }
   async finalizeEncounter() {
@@ -1187,7 +1177,9 @@ get feedBack() {
     await driver.pause(5000);
   }
   get resumeConversation() {
-    return $(`//android.view.ViewGroup[@content-desc="Reanudar conversación"]/android.view.ViewGroup/android.view.View`);
+    return $(
+      `//android.view.ViewGroup[@content-desc="Reanudar conversación"]/android.view.ViewGroup/android.view.View`
+    );
   }
   get resumeRecordingConformationYes() {
     return $(`~Sí`);
@@ -1202,21 +1194,19 @@ get feedBack() {
     await verifyAndClick(this.addConversation);
     await verifyAndClick(this.no);
     await verifyAndClick(this.addConversation);
-    await verifyAndClick(this.ok);
+    await verifyAndClick(this.yes);
     await verify(this.pauseBtn);
     await this.recordAudioAndSaveAsDraft();
     await driver.pause(5000);
     await LoginPage.restartApp();
     await verifyAndClick(this.encounter);
     await driver.pause(5000);
-    await clickDraftTranscript()
+    await clickDraftTranscript();
     await waitForElement(this.finaliseEncounter);
     await verifyAndClick(this.finaliseEncounter);
     await driver.pause(3000);
     await verifyAndClick(this.resumeConversation);
-    await verifyAndClick(
-      this.resumeConversationYes
-    );
+    await verifyAndClick(this.resumeConversationYes);
     await this.recordAudio();
   }
   async multipleConversationForExistingEnconter() {
@@ -1227,7 +1217,7 @@ get feedBack() {
   async second_Conversation_For_Existing_Encounter() {
     await waitForElement(this.addConversation);
     await verifyAndClick(this.addConversation);
-    await verifyAndClick(this.ok);
+    await verifyAndClick(this.yes);
     await this.recordAudio();
     await this.PrevEncounterRef.click();
     await this.no.click();
@@ -1235,7 +1225,7 @@ get feedBack() {
   async second_Conversation_For_New_Encounter() {
     await waitForElement(this.addConversation);
     await verifyAndClick(this.addConversation);
-    await verifyAndClick(this.ok);
+    await verifyAndClick(this.yes);
     await this.recordAudio();
   }
   async third_Conversation_For_Existing_Encounter() {
@@ -1283,7 +1273,7 @@ get feedBack() {
     );
     await driver.pause(5000);
     await verify(this.offlineConversationSaved);
-    await Network()
+    await Network();
     console.log(
       "here we have verified that the in offline mode when we click stop button it willshould show a popup of offline conversation is saved"
     );
@@ -1300,7 +1290,7 @@ get feedBack() {
   }
 
   async recordAudioforOfflineModeMT() {
-    let timesToRun = 3;
+    let timesToRun = 2;
     let count = 0;
     console.log(`Loop will run ${timesToRun} times`);
     for (let i = 0; i < timesToRun; i++) {
@@ -1308,117 +1298,91 @@ get feedBack() {
       await Network();
       await driver.pause(10000);
       await verify(this.offlineModeRTranscription);
-      await driver.pause(60000);
+      await driver.pause(30000);
       await Network();
       count++;
       console.log(`Offline Mode Loop we are Running Now  ${i + 1} completed`);
     }
   }
   get title() {
-    return $(`//android.widget.EditText[@text="Título"]`); 
+    return $(`//android.widget.EditText[@text="Título"]`);
   }
   get discription() {
     return $(`//android.widget.EditText[@text="Descripción"]`);
   }
-  get () {
-    return $(``);
+  get somethingWentWrongToast() {
+    return $(
+      `//android.widget.TextView[@text="Encontramos un problema al procesar su solicitud. Por favor, inténtelo de nuevo."]`
+    );
   }
-  get () {
-    return $(``);
+  get couldntStartConversationPopUp() {
+    return $(
+      `//android.widget.TextView[@text="No se pudo iniciar la conversación. Inténtalo de nuevo en un momento."]`
+    );
   }
-  get () {
-    return $(``);
+  get addPatientInformation() {
+    return $(`~Añadir Información del paciente`);
   }
-  get () {
-    return $(``);
-  }
-  get () {
-    return $(``);
-  }
-  get () {
-    return $(``);
-  }
-  get () {
-    return $(``);
-  }
-  get () {
-    return $(``);
-  }  get () {
-    return $(``);
+  get patientInformationRequired() {
+    return $(
+      `//android.widget.TextView[@text="Información del paciente es obligatorio"]`
+    );
   }
 
-
-  get () {
-    return $(``);
-  }
-  get () {
-    return $(``);
-  }
-  get () {
-    return $(``);
-  }
-  get () {
-    return $(``);
-  }
-  get () {
-    return $(``);
-  }
-
-  get () {
-    return $(``);
-  }
-  get () {
-    return $(``);
-  }
   async bloodGroup(text) {
     return await waitForElement(
-      $(
-        `//android.widget.TextView[@text="${text}"]`
-      )
+      $(`//android.widget.TextView[@text="${text}"]`)
     );
   }
 
   async bloodName(name) {
-    return await waitForElement($(`//android.widget.TextView[@text="${name}"]`));
+    return await waitForElement(
+      $(`//android.widget.TextView[@text="${name} "]`)
+    );
   }
 
   async UpdatePatientInfo() {
     await waitForElement(this.update);
     await verifyAndClick(this.update);
-    await verifyAndClick(this.PatientInformationTxtInSpanish);
+    await verifyAndClick(this.addPatientInformation);
+    await verifyAndClick(RecordingPage.add);
+    await validate(this.patientInformationRequired);
     await verifyAndClick(this.title);
     await this.title.setValue("Grupo sanguíneo");
     await verifyAndClick(this.discription);
     await this.discription.setValue("B postivo");
-    await back()
+    await hideKeyboard();
     await verifyAndClick(RecordingPage.add);
     await verifyAndClick(RecordingPage.save);
     await this.bloodGroup("Grupo sanguíneo");
     await this.bloodName("B postivo");
   }
 
-
   async manualUpdate() {
     await waitForElement(this.SoapNoteScreenTxtField);
     await verifyAndClick(this.SoapNoteScreenTxtField);
-    await this.SoapNoteScreenTxtField.setValue(
-      "Grupo sanguíneo O postivo"
-    );
-    await back()
+    await this.SoapNoteScreenTxtField.setValue("Grupo sanguíneo O postivo");
+    await hideKeyboard();
     await verifyAndClick(RecordingPage.send);
     await this.bloodGroup("Grupo sanguíneo");
     await this.bloodName("O postivo");
   }
 
-
   async hayNoki() {
-    await waitForElement(this.micOn);
-    await verifyAndClick(this.micOn);
+    await driver
+      .action("pointer") //pointer action to move the support chat to make the visibility of the mic button
+      .move({ duration: 0, x: 656, y: 1388 })
+      .down({ button: 0 })
+      .move({ duration: 1000, x: 694, y: 690 })
+      .up({ button: 0 })
+      .perform();
+
+    await waitForElement(RecordingPage.Mic);
+    await RecordingPage.Mic.click();
     await driver.pause(2000);
     await playTTS("Grupo sanguíneo O negativo", "Alex", 1.1);
     await driver.pause(2000);
-    await verifyAndClick(this.MicStop);
-    
+    await verifyAndClick(RecordingPage.MicStop);
     await verifyAndClick(RecordingPage.send);
     await this.bloodGroup("Grupo sanguíneo");
     await this.bloodName("O negativo");

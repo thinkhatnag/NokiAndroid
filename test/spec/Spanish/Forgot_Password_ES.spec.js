@@ -1,8 +1,7 @@
 
-describe("Forgot Password all scenarios in spanish", () => {
+describe("Forgot Password ", () => {
   beforeEach(() => {
     allureReporter.addEpic("NOKI IOS Automation");
-    allureReporter.addFeature("Forgot Password all scenarios ");
     allureReporter.addOwner('Mobile Team');
   });
   it("Verify  message entering not rigistered email in forgot password screen", async () => {

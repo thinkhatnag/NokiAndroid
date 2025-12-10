@@ -1,68 +1,60 @@
 import {
   verifyAndClick,
   hideKeyboard,
-} from "/Users/nagasubarayudu/Desktop/NokiAndroid/helper/helper.js";
+} from "../../../helper/helper.js";
 
 class LoginPage {
-  get loginText() {
-    return $('(//android.widget.TextView[@text="Login"])[1]');
-  }
+
   get newUserText() {
     return $(
       '//android.widget.TextView[@text="New User? Please create an account on"]'
     );
   }
   get emailField() {
-    return $("~userName");
+    return $("~Correo electrónico*");
   }
   get passwordField() {
-    return $("~password");
+    return $("~Contraseña*");
   }
   get loginButton() {
-    return $("~Login");
+    return $("~Iniciar sesión");
   }
   get forgotPassworfLoginButton() {
-    return $('//android.widget.TextView[@text="Login"]');
+    return $('');
   }
   get sendResetLink() {
-    return $('//android.widget.TextView[@text="Send Reset Link"]');
+    return $('');
   }
   get multtTenent() {
-    return $("~Select Account ID*");
+    return $("~Seleccionar ID de cuenta*");
+  }
+  get selectIdError() {
+    return $('');
   }
 
-  get() {
-    return $("");
+  get passwordRequiredError() {
+    return $('-android uiautomator:new UiSelector().text("Se requiere contraseña")');
   }
-  get() {
-    return $("");
-  }
-  get() {
-    return $("");
-  }
-  get passwordError() {
-    return $('//android.widget.TextView[@text="Password is required"]');
-  }
-  get emailError() {
-    return $('//android.widget.TextView[@text="Email is required"]');
+  get emailRequiredError() {
+    return $('-android uiautomator:new UiSelector().text("Se requiere correo electrónico")');
   }
   get invalidEmailError() {
-    return $('//android.widget.TextView[@text="Invalid Email"]');
+    return $('-android uiautomator:new UiSelector().text("Correo electrónico inválido")');
   }
 
   get startNewEncounter() {
     return $(
-      '//android.view.ViewGroup[@content-desc="Start New Encounter"]/android.view.ViewGroup'
+      ''
     );
   }
   get forgotPasswordBtn() {
-    return $(`//android.widget.TextView[@text="Forgot Password?"]`);
+    return $(`-android uiautomator:new UiSelector().text("¿Olvidaste tu contraseña?")`);
   }
   get multiTenantOption() {
-    return $('//android.widget.TextView[@text="nagasurendra-badri-69g23"]');
+    return $('~nagasurendra-badri-69g23');
   }
   get multiTenantError() {
-    return $('//android.widget.TextView[@text="Account ID is required"]');
+    return $('-android uiautomator:new UiSelector().text("Se requiere el ID de cuenta")');
   }
 
   async enterEmail(email) {

@@ -1,33 +1,22 @@
-import LoginPage from "../../test/screenObjectModel/login.page.js";
-import HomePage from "../../test/screenObjectModel/home.page.js";
-import {
-  verify,
-  verifyAndClick,
-} from "../../helpers/helper.js";
-import SettingsPage from "../../test/screenObjectModel/setting.page.js";
-import adapterFactory from "@wdio/mocha-framework";
+
 import allureReporter from "@wdio/allure-reporter";
-import SpanishLanguage from "../../screenObjectModel/spanishLanguage";
-describe("Spanish", () => {
-  beforeEach(() => {
+import SpanishLanguage from "../../pageObjectModel/spanishLanguage.js";
+describe("Setting screen", () => {
+  before(() => {
     allureReporter.addEpic("NOKI IOS Automation");
     allureReporter.addOwner("Mobile Team");
-    allureReporter.addParentSuite("Spanish");
   });
-  describe("setting screen ", () => {
-
-
-    it("Verify Settings screen Profille Edit ", async () => {
+  describe("setting screen -Es", () => {
+    it("Verify Settings screen Profille Edit -Es", async () => {
       await SpanishLanguage.profileSettingScreen();
     });
-    it("Verify Settings screen support verification ", async () => {
+    it("Support verification -Es", async () => {
       await SpanishLanguage.support_VerifiCation();
     });
-
-    it("Verify Settings screen launguage and general settings", async () => {
-      await SpanishLanguage.launguageChange();
-    });
-    it("Verify Settings screen general settings", async () => {
+    it("Launguage Change Verification -Es", async () =>{
+      await SpanishLanguage.laungugeChageVerification()
+    })
+    it("General settings -Es", async () => {
       await SpanishLanguage.generalSettingsUpdate();
     });
   });

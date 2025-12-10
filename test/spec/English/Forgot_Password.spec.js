@@ -1,12 +1,11 @@
-import { verify } from "../../../helper/helper.js";
+import { verify,verifyAndClick } from "../../../helper/helper.js";
 import LoginPage from "../../pageObjectModel/login.page.js";
 import allureReporter from '@wdio/allure-reporter'
 describe('Forgot Password',() => {
 
-  beforeEach(() => {
+  before(() => {
     allureReporter.addEpic("NOKI Android Automation");
     allureReporter.addOwner('Mobile Team');
-    allureReporter.addParentSuite('Forgot Password');
   });
   beforeEach(async() => {
     await LoginPage.restartApp()

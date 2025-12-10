@@ -22,7 +22,7 @@ import path from "path";
 class RecordingPage {
   get back() {
     return $(
-      '//android.widget.FrameLayout[@resource-id="android:id/content"]/android.widget.FrameLayout/android.view.ViewGroup/android.view.ViewGroup/android.view.ViewGroup/android.view.ViewGroup/android.view.ViewGroup[2]/android.widget.FrameLayout/android.view.ViewGroup/android.view.ViewGroup/android.view.ViewGroup/android.widget.ScrollView/android.view.ViewGroup/android.view.ViewGroup/android.view.ViewGroup/android.view.ViewGroup[1]/android.view.ViewGroup/com.horcrux.svg.SvgView'
+      '//android.widget.FrameLayout[@resource-id="android:id/content"]/android.widget.FrameLayout/android.view.ViewGroup/android.view.ViewGroup/android.view.ViewGroup/android.view.ViewGroup[3]/android.widget.FrameLayout/android.view.ViewGroup/android.view.ViewGroup/android.view.ViewGroup/android.widget.ScrollView/android.view.ViewGroup/android.view.ViewGroup/android.view.ViewGroup[2]'
     );
   }
 
@@ -94,7 +94,7 @@ class RecordingPage {
 
   get pauseBtn() {
     return $(
-      '//android.widget.FrameLayout[@resource-id="android:id/content"]/android.widget.FrameLayout/android.view.ViewGroup/android.view.ViewGroup/android.view.ViewGroup/android.view.ViewGroup/android.view.ViewGroup[2]/android.widget.FrameLayout/android.view.ViewGroup/android.view.ViewGroup/android.view.ViewGroup/android.widget.ScrollView/android.view.ViewGroup/android.view.ViewGroup/android.view.ViewGroup/android.view.ViewGroup[2]/android.view.ViewGroup[2]/com.horcrux.svg.SvgView[1]/com.horcrux.svg.GroupView/com.horcrux.svg.CircleView'
+      '//android.widget.FrameLayout[@resource-id="android:id/content"]/android.widget.FrameLayout/android.view.ViewGroup/android.view.ViewGroup/android.view.ViewGroup/android.view.ViewGroup[3]/android.widget.FrameLayout/android.view.ViewGroup/android.view.ViewGroup/android.view.ViewGroup/android.widget.ScrollView/android.view.ViewGroup/android.view.ViewGroup/com.horcrux.svg.SvgView[1]/com.horcrux.svg.GroupView/com.horcrux.svg.CircleView'
     );
   }
   get patientCreatedOk() {
@@ -121,14 +121,13 @@ class RecordingPage {
       `//android.widget.TextView[@text="By resuming, the ongoing conversation will be recorded and the draft transcript will be updated under the encounter dated ${date}. Are you sure you want to proceed?"]`
     );
   }
-
   get resumeRecordingConformationNO() {
     return $("~NO");
   }
 
   get stopBtn() {
     return $(
-      '//android.widget.FrameLayout[@resource-id="android:id/content"]/android.widget.FrameLayout/android.view.ViewGroup/android.view.ViewGroup/android.view.ViewGroup/android.view.ViewGroup/android.view.ViewGroup[2]/android.widget.FrameLayout/android.view.ViewGroup/android.view.ViewGroup/android.view.ViewGroup/android.widget.ScrollView/android.view.ViewGroup/android.view.ViewGroup/android.view.ViewGroup/android.view.ViewGroup[2]/android.view.ViewGroup[2]/com.horcrux.svg.SvgView[2]/com.horcrux.svg.GroupView/com.horcrux.svg.CircleView'
+      '//android.widget.FrameLayout[@resource-id="android:id/content"]/android.widget.FrameLayout/android.view.ViewGroup/android.view.ViewGroup/android.view.ViewGroup/android.view.ViewGroup[3]/android.widget.FrameLayout/android.view.ViewGroup/android.view.ViewGroup/android.view.ViewGroup/android.widget.ScrollView/android.view.ViewGroup/android.view.ViewGroup/com.horcrux.svg.SvgView[2]/com.horcrux.svg.GroupView/com.horcrux.svg.CircleView'
     );
   }
   get() {
@@ -287,51 +286,10 @@ class RecordingPage {
   }
   get playBtn() {
     return $(
-      `//android.widget.FrameLayout[@resource-id="android:id/content"]/android.widget.FrameLayout/android.view.ViewGroup/android.view.ViewGroup/android.view.ViewGroup/android.view.ViewGroup/android.view.ViewGroup[2]/android.widget.FrameLayout/android.view.ViewGroup/android.view.ViewGroup/android.view.ViewGroup/android.widget.ScrollView/android.view.ViewGroup/android.view.ViewGroup/android.view.ViewGroup/android.view.ViewGroup[2]/android.view.ViewGroup[2]/com.horcrux.svg.SvgView[1]/com.horcrux.svg.GroupView/com.horcrux.svg.CircleView`
+      `//android.widget.FrameLayout[@resource-id="android:id/content"]/android.widget.FrameLayout/android.view.ViewGroup/android.view.ViewGroup/android.view.ViewGroup/android.view.ViewGroup[3]/android.widget.FrameLayout/android.view.ViewGroup/android.view.ViewGroup/android.view.ViewGroup/android.widget.ScrollView/android.view.ViewGroup/android.view.ViewGroup/com.horcrux.svg.SvgView[1]/com.horcrux.svg.GroupView/com.horcrux.svg.CircleView`
     );
   }
-  get() {
-    return $("");
-  }
-  get() {
-    return $("");
-  }
-  get() {
-    return $("");
-  }
-  get() {
-    return $("");
-  }
-  get() {
-    return $("");
-  }
-  get() {
-    return $("");
-  }
-  get() {
-    return $("");
-  }
-  get() {
-    return $("");
-  }
-  get() {
-    return $("");
-  }
-  get() {
-    return $("");
-  }
-  get() {
-    return $("");
-  }
-  get() {
-    return $("");
-  }
-  get() {
-    return $("");
-  }
-  get() {
-    return $("");
-  }
+
   get somethingWentWrongToast() {
     return $(`//android.widget.TextView[@text="Something went wrong"]`);
   }
@@ -354,12 +312,12 @@ class RecordingPage {
   }
   get add() {
     return $(
-      "//androidx.recyclerview.widget.RecyclerView/android.widget.FrameLayout/android.view.ViewGroup/android.view.ViewGroup/android.view.ViewGroup/android.widget.ScrollView/android.view.ViewGroup/android.view.ViewGroup/android.widget.ScrollView/android.view.ViewGroup/com.horcrux.svg.SvgView[6]/com.horcrux.svg.GroupView/com.horcrux.svg.PathView"
+      "//androidx.recyclerview.widget.RecyclerView/android.widget.FrameLayout/android.view.ViewGroup/android.view.ViewGroup/android.widget.ScrollView/android.view.ViewGroup/android.view.ViewGroup/android.widget.ScrollView/android.view.ViewGroup/com.horcrux.svg.SvgView[6]/com.horcrux.svg.GroupView/com.horcrux.svg.PathView"
     );
   }
   get clearPatientInfo() {
     return $(
-      "//androidx.recyclerview.widget.RecyclerView/android.widget.FrameLayout/android.view.ViewGroup/android.view.ViewGroup/android.view.ViewGroup/android.widget.ScrollView/android.view.ViewGroup/android.view.ViewGroup/android.widget.ScrollView/android.view.ViewGroup/com.horcrux.svg.SvgView[7]/com.horcrux.svg.GroupView/com.horcrux.svg.PathView"
+      "//androidx.recyclerview.widget.RecyclerView/android.widget.FrameLayout/android.view.ViewGroup/android.view.ViewGroup/android.widget.ScrollView/android.view.ViewGroup/android.view.ViewGroup/android.widget.ScrollView/android.view.ViewGroup/com.horcrux.svg.SvgView[7]/com.horcrux.svg.GroupView/com.horcrux.svg.PathView"
     );
   }
 
@@ -375,7 +333,7 @@ class RecordingPage {
   }
   get cleanedTranscriptScroll() {
     return $(
-      "//androidx.recyclerview.widget.RecyclerView/android.widget.FrameLayout/android.view.ViewGroup/android.view.ViewGroup/android.view.ViewGroup/android.view.ViewGroup/android.widget.ScrollView"
+      "//androidx.recyclerview.widget.RecyclerView/android.widget.FrameLayout/android.view.ViewGroup/android.view.ViewGroup/android.view.ViewGroup[2]/android.widget.ScrollView"
     );
   }
   get soapNoteScroll() {
@@ -385,7 +343,7 @@ class RecordingPage {
   }
   get orginalTranscriptScroll() {
     return $(
-      "//androidx.recyclerview.widget.RecyclerView/android.widget.FrameLayout/android.view.ViewGroup/android.view.ViewGroup/android.view.ViewGroup/android.view.ViewGroup/android.widget.ScrollView/android.view.ViewGroup"
+      "//androidx.recyclerview.widget.RecyclerView/android.widget.FrameLayout/android.view.ViewGroup/android.view.ViewGroup/android.view.ViewGroup[2]/android.widget.ScrollView"
     );
   }
 
@@ -421,8 +379,12 @@ class RecordingPage {
   }
   get copyBtn() {
     return $(
-      // "//androidx.recyclerview.widget.RecyclerView/android.widget.FrameLayout/android.view.ViewGroup/android.view.ViewGroup/android.view.ViewGroup/android.widget.ScrollView/android.view.ViewGroup/android.view.ViewGroup[1]/android.view.ViewGroup[1]/com.horcrux.svg.SvgView[1]"
-      "//androidx.recyclerview.widget.RecyclerView/android.widget.FrameLayout/android.view.ViewGroup/android.view.ViewGroup/android.view.ViewGroup/android.widget.ScrollView/android.view.ViewGroup/android.view.ViewGroup[1]/android.view.ViewGroup[1]/com.horcrux.svg.SvgView[1]"
+      "//androidx.recyclerview.widget.RecyclerView/android.widget.FrameLayout/android.view.ViewGroup/android.view.ViewGroup/android.widget.ScrollView/android.view.ViewGroup/android.view.ViewGroup[1]/com.horcrux.svg.SvgView[1]"
+    );
+  }
+  get feedBackCopyBtn() {
+    return $(
+      "//androidx.recyclerview.widget.RecyclerView/android.widget.FrameLayout/android.view.ViewGroup/android.view.ViewGroup/android.view.ViewGroup/android.view.ViewGroup/android.view.ViewGroup[1]/com.horcrux.svg.SvgView[1]"
     );
   }
   get referalCopyBtn() {
@@ -446,12 +408,17 @@ class RecordingPage {
 
   get Mic() {
     return $(
-      "//androidx.recyclerview.widget.RecyclerView/android.widget.FrameLayout/android.view.ViewGroup/android.view.ViewGroup/android.view.ViewGroup/android.widget.ScrollView/android.view.ViewGroup/android.view.ViewGroup[3]/com.horcrux.svg.SvgView[1]"
+      "//androidx.recyclerview.widget.RecyclerView/android.widget.FrameLayout/android.view.ViewGroup/android.view.ViewGroup/android.widget.ScrollView/android.view.ViewGroup/com.horcrux.svg.SvgView[2]/com.horcrux.svg.GroupView/com.horcrux.svg.GroupView/com.horcrux.svg.CircleView[2]"
     );
   }
+
+  get MicStop() {
+    return $("//android.widget.ImageView");
+  }
+
   get send() {
     return $(
-      "//androidx.recyclerview.widget.RecyclerView/android.widget.FrameLayout/android.view.ViewGroup/android.view.ViewGroup/android.view.ViewGroup/android.widget.ScrollView/android.view.ViewGroup/android.view.ViewGroup[3]/com.horcrux.svg.SvgView/com.horcrux.svg.GroupView"
+      "//androidx.recyclerview.widget.RecyclerView/android.widget.FrameLayout/android.view.ViewGroup/android.view.ViewGroup/android.widget.ScrollView/android.view.ViewGroup/com.horcrux.svg.SvgView[1]/com.horcrux.svg.GroupView/com.horcrux.svg.PathView"
     );
   }
   get finaliseEncounter() {
@@ -462,15 +429,15 @@ class RecordingPage {
       '//android.widget.TextView[@text="Are you sure you want to finalise the encounter?"]'
     );
   }
-  get finaliseEncounterOk() {
+  get finaliseEncounterYes() {
     return $("~Yes");
   }
-  get finaliseEncounterCancel() {
+  get finaliseEncounterNo() {
     return $("~No");
   }
 
   get AddPatientInformation() {
-    return $("~Add Patient Information");
+    return $(`~Add Patient Information`);
   }
   get connectionLostDescription() {
     return $(
@@ -625,6 +592,9 @@ class RecordingPage {
   async third_Conversation_For_New_Patient() {
     await this.multipleConversation();
   }
+  get finalized() {
+    return $('//android.widget.TextView[@text=" Finalized"]');
+  }
 
   async finalizeEncounter() {
     await waitForElement(this.SoapNoteBtn);
@@ -634,7 +604,9 @@ class RecordingPage {
     await waitForElement(this.SoapNoteBtn);
     await verifyAndClick(this.SoapNoteBtn);
     await this.finaliseEncounter.click();
-    await this.Ok.click();
+    await this.finaliseEncounterYes.click();
+    await waitForElement(this.finalized);
+    await validate(this.finalized);
     await back();
   }
 
@@ -772,11 +744,12 @@ class RecordingPage {
     console.log(`Loop will run ${timesToRun} times`);
     for (let i = 0; i < timesToRun; i++) {
       await driver.pause(30000);
-      await network();
+      await network(); //offline
       await driver.pause(5000);
       await verify(this.offlineModeRTranscription);
       await driver.pause(30000);
-      await network();
+      await network(); //online
+      await driver.pause(5000);
     }
   }
 
@@ -802,9 +775,18 @@ class RecordingPage {
           newTextsAdded++;
         }
       }
-      if (newTextsAdded === 0) {
+      const stopElement = await $$(
+        '//android.widget.TextView[@text="Conversation 2"]'
+      );
+      if (stopElement.length > 0 || newTextsAdded === 0) {
+        console.log(
+          stopElement.length > 0
+            ? '🛑 Found "Conversation 2" — stopping scan.'
+            : "⚠️ No new texts found — stopping scan."
+        );
         break;
       }
+
       await swipe("up", element);
       await driver.pause(500);
       scrollCount++;
@@ -815,7 +797,7 @@ class RecordingPage {
     // ✅ Save to file
     const dirPath =
       "/Users/nagasubarayudu/Desktop/NokiAndroid/_results_/TranscriptFiles";
-    const filePath = path.join(dirPath, `texts_${Date.now()}.txt`);
+    const filePath = path.join(dirPath, `scanned_texts_${Date.now()}.txt`);
 
     // Ensure folder exists
     if (!fs.existsSync(dirPath)) {
@@ -829,35 +811,111 @@ class RecordingPage {
     return allTextArray;
   }
 
+  // soapNoteElements = {
+  //   patientInformation: this.patientInformation,
+  //   subjective: this.subjective,
+  //   objective: this.objective,
+  //   assessment: this.assessment,
+  //   plan: this.plan,
+  //   additionalInformation: this.additinalInformation,
+  // };
+
+  async dataScaningTemplet(scrollableElement, template, Elements) {
+    const allTexts = new Set();
+    let newTextsAdded = 0;
+    let scrollCount = 0;
+    const maxScrolls = 15;
+
+    const element = await scrollableElement;
+
+    while (scrollCount < maxScrolls) {
+      newTextsAdded = 0;
+
+      const textViews = await $$(
+        "//androidx.recyclerview.widget.RecyclerView//android.widget.TextView"
+      );
+
+      for (const textView of textViews) {
+        const text = await textView.getText();
+        if (text && !allTexts.has(text)) {
+          allTexts.add(text);
+          newTextsAdded++;
+        }
+      }
+
+      if (newTextsAdded === 0) {
+        console.log("⚠️ No new texts found — stopping scan.");
+        break;
+      }
+
+      await swipe("up", element);
+      await driver.pause(500);
+      scrollCount++;
+    }
+
+    // ✅ Convert text Set to Array
+    const allTextArray = Array.from(allTexts);
+
+    // ✅ Verify SOAP note elements
+    const verificationResults = {};
+
+    for (const [key, selector] of Object.entries(soapNoteElements)) {
+      try {
+        const el = await $(selector);
+        const exists = await el.isExisting();
+
+        if (!exists) {
+          verificationResults[key] = false;
+          continue;
+        }
+
+        const text = await el.getText();
+        verificationResults[key] = Boolean(text && allTexts.has(text));
+      } catch (err) {
+        verificationResults[key] = false;
+      }
+    }
+
+    // ✅ Save file (optional)
+    const filePath = `./${template}_${Date.now()}.txt`;
+    require("fs").writeFileSync(filePath, allTextArray.join("\n"), "utf-8");
+
+    console.log("✅ Scan complete");
+    console.log("Verification:", verificationResults);
+
+    return {
+      texts: allTextArray,
+      verified: verificationResults,
+    };
+  }
+
   async UpdatePatientInfo() {
     await waitForElement(this.update);
-    await this.update.click();
-    await this.AddPatientInformation.click();
+    await verifyAndClick(this.update);
+    await verifyAndClick(this.AddPatientInformation);
     await verifyAndClick(this.add);
+
     await validate(this.patientInformationRequired);
     await verifyAndClick(this.title);
     await this.title.setValue("Blood Group");
     await verifyAndClick(this.discription);
     await this.discription.setValue("O positive");
+    await hideKeyboard();
     await verifyAndClick(this.add);
     await verifyAndClick(this.save);
     await this.bloodGroup("Blood Group");
     await this.bloodName("O positive");
   }
 
-  get SoapNoteScreenTxtFieldEntry() {
-    return $("");
-  }
+  // get SoapNoteScreenTxtFieldEntry() {
+  //   return $("");
+  // }
   async bloodGroup(name) {
-    return await waitForElement(
-      $(`//android.widget.TextView[@text="${name}x"]`)
-    );
+    return await validate($(`~${name}`));
   }
 
   async bloodName(name) {
-    return await waitForElement(
-      $(`//android.widget.TextView[@text="${name}"]`)
-    );
+    return await validate($(`~${name}`));
   }
   async manualUpdate() {
     await waitForElement(this.SoapNoteScreenTxtField);
@@ -869,8 +927,17 @@ class RecordingPage {
     await this.bloodName("O negitive");
   }
   async hayNoki() {
+    await driver.pause(10000);
+    await driver
+      .action("pointer") //pointer action to move the support chat to make the visibility of the mic button
+      .move({ duration: 0, x: 656, y: 1388 })
+      .down({ button: 0 })
+      .move({ duration: 1000, x: 694, y: 690 })
+      .up({ button: 0 })
+      .perform();
+
     await waitForElement(this.Mic);
-    await verifyAndClick(this.Mic);
+    await this.Mic.click();
     await driver.pause(2000);
     await playTTS("Blood group is B negative", "Alex", 1.1);
     await driver.pause(2000);

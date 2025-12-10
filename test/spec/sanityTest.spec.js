@@ -1,202 +1,233 @@
-import HomePage from '../../pageObjectModel/home.page.js';
-import PatientsPage from '../pageObjectModel/patient.page.js';
-import EncounterPage from '../pageObjectModel/encounter.page.jsx';
-import SearchPatientPage from '../pageObjectModel/searchPatitent.page.js';
-import RecordingPage from '../pageObjectModel/recording.page.js';
- import AddPatitentPage from '../pageObjectModel/addPatient.page.js';
-import LoginPage from '../pageObjectModel/login.page.js';
+import HomePage from "../pageObjectModel/home.page.js";
+import PatientsPage from "../pageObjectModel/patient.page.js";
+import EncounterPage from "../pageObjectModel/encounter.page.jsx";
+import SearchPatientPage from "../pageObjectModel/searchPatitent.page.js";
+import RecordingPage from "../pageObjectModel/recording.page.js";
+import AddPatitentPage from "../pageObjectModel/addPatient.page.js";
+import LoginPage from "../pageObjectModel/login.page.js";
 import {
   verify,
   verifyAndClick,
   waitForElement,
   aeroplaneModeOff,
-  aeroplaneModeOn
-} from '../../helper/helper.js';
-import allureReporter from '';
-import AudioManeger from '../pageObjectModel/audioManeger.js';
-import QuickActions from '../pageObjectModel/quickActions.page.jsx' ;
-import SettingsPage from '../pageObjectModel/setting.page.js'
-it("home Screen UI Verifation", async () => {
-  await verify(HomePage.homeScreenAnimation);
-  await verifyAndClick(HomePage.patients);
-  await verify(PatientsPage.patientSearch);
-  await verifyAndClick(HomePage.encounter);
-  await verify(EncounterPage.Encounter);
-  await verifyAndClick(HomePage.settings);
-  await verifyAndClick(SettingsPage.home);
-});
-it("Setting screen Profile Edit Verification ", async () => {
-  await HomePage.settings.click();
-  await verifyAndClick(SettingsPage.profileSettings);
-  await SettingsPage.profileSettingScreen();
-});
+  aeroplaneModeOn,
+  validate,
+} from "../../helper/helper.js";
+import allureReporter from "@wdio/allure-reporter";
+import AudioManeger from "../pageObjectModel/audioManeger.js";
+import QuickActions from "../pageObjectModel/quickActions.page.jsx";
+import SettingsPage from "../pageObjectModel/setting.page.js";
+import SpanishLanguage from "../pageObjectModel/spanishLanguage.js";
+describe("Sanity Test Suite", () => {
+  beforeEach(() => {
+    allureReporter.addEpic("NOKI Android Automation");
+    allureReporter.addOwner("Mobile Team");
+    allureReporter.addParentSuite("Sanity Test Suite");
+  });
 
-it("NOKI Support Verification ", async () => {
-  await SettingsPage.SetthingsPageVerifiCation();
+  it("Login In", async () => {
+    await LoginPage.restartApp();
+    await LoginPage.enterEmail(process.env.Email);
+    await LoginPage.enterPassword(process.env.Password);
+    await LoginPage.selectMultiTenant();
+    await LoginPage.clickLogin();
+    await validate(HomePage.homeScreenAnimation);
+  });
+  it("Create New Patient", async () => {
+    await verifyAndClick(HomePage.startNewEncounterButton);
+    await verifyAndClick(SearchPatientPage.addPatient);
+    await AddPatitentPage.addPatitentWrn();
+    await AddPatitentPage.creatNewPatient();
+    await validate(RecordingPage.startConversationBtn);
+  });
+  it("First Convesation With Offline recording and app kill Verification", async () => {
+    await RecordingPage.startConversation();
+    await RecordingPage.recordAudioforOfflineModeMT();
+    await aeroplaneModeOn();
+    await verifyAndClick(RecordingPage.stopBtn);
+    await verify(RecordingPage.offlineConversationSaved);
+    await LoginPage.restartApp();
+    await validate(RecordingPage.offlineConversationSaved);
+  });
+  it("SoapNoten & transcript verification for first Encounter with offline functinality validation", async () => {
+    await RecordingPage.SOAPNote_Verification();
+    await RecordingPage.Transcript_Verification();
+  });
+
+  it("Second conversation with offline recording and app reopened in online functinality validation", async () => {
+    await waitForElement(RecordingPage.addConversation);
+    await verifyAndClick(RecordingPage.addConversation);
+    await verifyAndClick(RecordingPage.yes);
+    await AudioManeger.playAudio("english");
+    await driver.pause(60000);
+    await network();
+    await driver.pause(5000);
+    await AudioManeger.stopAudio();
+    await verifyAndClick(RecordingPage.pauseBtn);
+    await driver.pause(2000);
+    await terminateApp(); // kill app in offline mode
+    await driver.pause(5000);
+    await network(); // online mode
+    await driver.pause(5000);
+    await driver.activateApp(process.env.BUNDLE_ID); // reope app with online mode
+    await driver.pause(5000);
+    await verifyAndClick(RecordingPage.endEncounter); // end encounter after reopening the app
+    await verifyAndClick(RecordingPage.PrevEncounterRefYes);
+  });
+  it("SoapNote aand transcript validation for second convesation", async () => {
+    await RecordingPage.SOAPNote_Verification();
+    await RecordingPage.Transcript_Verification();
+  });
+  it("Third conversation along with Draft Completion", async () => {
+    await waitForElement(RecordingPage.addConversation);
+    await verifyAndClick(RecordingPage.addConversation);
+    await verifyAndClick(RecordingPage.yes);
+    await verify(RecordingPage.pauseBtn);
+    await AudioManeger.playAudio("english");
+    await driver.pause(100000);
+    await AudioManeger.pauseAudio();
+    await driver.pause(3000);
+    await verifyAndClick(RecordingPage.back);
+    await verifyAndClick(RecordingPage.saveAsDraftBtn);
+    await driver.pause(5000);
+    await verifyAndClick(HomePage.encounter);
+    await driver.pause(5000);
+    await EncounterPage.clickDraftTranscript();
+    await RecordingPage.finaliseEncounter.click();
+    await RecordingPage.Ok.click();
+    await RecordingPage.resumeConversation.click();
+    await RecordingPage.yes.click();
+    await AudioManeger.resumeAudio();
+    await driver.pause(5000);
+    await network(); //Offline mode
+    await driver.pause(60000);
+    await AudioManeger.stopAudio();
+    await verifyAndClick(RecordingPage.pauseBtn);
+    await driver.pause(2000);
+    await terminateApp();
+    await driver.pause(5000);
+    await network(); //online mode
+    await driver.pause(5000);
+    await driver.activateApp(process.env.BUNDLE_ID);
+  });
+  it("SoapNote aand transcript validation for Third convesation", async () => {
+    await RecordingPage.SOAPNote_Verification();
+    await RecordingPage.Transcript_Verification();
+  });
+  it("Generation and Regenretion of Quick Action Templates (ICD&CPT, Care Plan, Feedback, Referral)", async () => {
+    await QuickActions.Icd_Cpt();
+    await QuickActions.care_plan();
+    await QuickActions.feed_Back();
+    await QuickActions.referal_Letter();
+    await QuickActions.soap_note();
+  });
+  it("Patient Info Update", async () => {
+    await RecordingPage.UpdatePatientInfo();
+    await RecordingPage.manualUpdate();
+    await RecordingPage.hayNoki();
+    await RecordingPage.finalizeEncounter();
+  });
+  it("Seeting screen Verification & launguage change", async () => {
+    await LoginPage.restartApp();
+    await verifyAndClick(HomePage.settings);
+    await SettingsPage.support_VerifiCation();
+    await verifyAndClick(SettingsPage.launguage);
+    await verifyAndClick(SettingsPage.spanish);
+    await validate(SettingsPage.Idioma);
+  });
+  it("create a new patient -es", async () => {
+    await LoginPage.restartApp();
+    await SpanishLanguagestartNewEncounterButton;
+    await verifyAndClick(SpanishLanguage.addPatient);
+    await SpanishLanguage.addPatitentWrn();
+    await SpanishLanguage.createNewPatient();
+    await validate(SpanishLanguage.startConversationBtn);
+  });
+  it("First Convesation With Offline recording and app kill Verification -es", async () => {
+    await SpanishLanguage.startConversation();
+    await SpanishLanguage.recordAudioforOfflineModeMT();
+    await aeroplaneModeOn();
+    await verifyAndClick(SpanishLanguage.stopBtn);
+    await verify(SpanishLanguage.offlineConversationSaved);
+    await LoginPage.restartApp();
+    await validate(SpanishLanguage.offlineConversationSaved);
+  });
+  it("SoapNoten & transcript verification for first Encounter with offline functinality validation -es", async () => {
+    await SpanishLanguage.SOAPNOTE_Verification();
+    await SpanishLanguage.Transcript_Verification();
+  });
+
+  it("Second conversation with offline recording and app reopened in online functinality validation -es", async () => {
+    await waitForElement(SpanishLanguage.addConversation);
+    await verifyAndClick(SpanishLanguage.addConversation);
+    await verifyAndClick(SpanishLanguage.yes);
+    await AudioManeger.playAudio("english");
+    await driver.pause(60000);
+    await network();
+    await driver.pause(5000);
+    await AudioManeger.stopAudio();
+    await verifyAndClick(SpanishLanguage.pauseBtn);
+    await driver.pause(2000);
+    await terminateApp(); // kill app in offline mode
+    await driver.pause(5000);
+    await network(); // online mode
+    await driver.pause(5000);
+    await driver.activateApp(process.env.BUNDLE_ID); // reope app with online mode
+    await driver.pause(5000);
+    await verifyAndClick(SpanishLanguage.endEncounter); // end encounter after reopening the app
+    await verifyAndClick(SpanishLanguage.PrevEncounterRefYes);
+  });
+  it("SoapNote aand transcript validation for second convesation -es", async () => {
+    await SpanishLanguage.SOAPNOTE_Verification();
+    await SpanishLanguage.Transcript_Verification();
+  });
+  it("Third conversation along with Draft Completion", async () => {
+    await waitForElement(SpanishLanguage.addConversation);
+    await verifyAndClick(SpanishLanguage.addConversation);
+    await verifyAndClick(SpanishLanguage.yes);
+    await verify(SpanishLanguage.pauseBtn);
+    await AudioManeger.playAudio("english");
+    await driver.pause(100000);
+    await AudioManeger.pauseAudio();
+    await driver.pause(3000);
+    await verifyAndClick(SpanishLanguage.back);
+    await verifyAndClick(SpanishLanguage.saveAsDraftBtn);
+    await driver.pause(5000);
+    await verifyAndClick(HomePage.encounter);
+    await driver.pause(5000);
+    await SpanishLanguage.clickDraftTranscript();
+    await SpanishLanguage.finaliseEncounter.click();
+    await SpanishLanguage.ok.click();
+    await SpanishLanguage.resumeConversation.click();
+    await SpanishLanguage.yes.click();
+    await AudioManeger.resumeAudio();
+    await driver.pause(5000);
+    await network(); //Offline mode
+    await driver.pause(60000);
+    await AudioManeger.stopAudio();
+    await verifyAndClick(SpanishLanguage.pauseBtn);
+    await driver.pause(2000);
+    await terminateApp();
+    await driver.pause(5000);
+    await network(); //online mode
+    await driver.pause(5000);
+    await driver.activateApp(process.env.BUNDLE_ID);
+  });
+  it("SoapNote aand transcript validation for Third convesation -es", async () => {
+    await SpanishLanguage.SOAPNote_Verification();
+    await SpanishLanguage.Transcript_Verification();
+  });
+  it("Generation and Regenretion of Quick Action Templates (ICD&CPT, Care Plan, Feedback, Referral) -es", async () => {
+    await SpanishLanguage.Icd_cpt();
+    await SpanishLanguage.care_plan();
+    await SpanishLanguage.feed_Back();
+    await SpanishLanguage.referal_Letter();
+    await SpanishLanguage.soap_note();
+  });
+  it("Patient Info Update -es", async () => {
+    await SpanishLanguage.UpdatePatientInfo();
+    await SpanishLanguage.manualUpdate();
+    await SpanishLanguage.hayNoki();
+    await SpanishLanguage.finalizeEncounter();
+  });
 });
-
-it("verifying the Laguage Change and general settings for Noki settings screen", async () => {
-  await HomePage.settings.click();
-  await verifyAndClick(SettingsPage.launguage);
-  await verifyAndClick(SettingsPage.spanish);
-  await verifyAndClick(SettingsPage.Idioma);
-  await verifyAndClick(SettingsPage.english);
-  await verifyAndClick(SettingsPage.generalSettings);
-  await verifyAndClick(SettingsPage.diognosisJustification);
-  await verifyAndClick(SettingsPage.cdss);
-  await verifyAndClick(SettingsPage.cancel);
-  await verifyAndClick(SettingsPage.generalSettings);
-  await verify(SettingsPage.cdss);
-  await verify(SettingsPage.diognosisJustification);
-  await SettingsPage.cancel.click();
-  // await verifyAndClick(SettingsPage.logoutBtn)
-  // await verifyAndClick(SettingsPage.logoutcancelationBtn)
-  await verifyAndClick(SettingsPage.home);
-});
-
-it("Initiate conversations with existing patient", async () => {
-  await HomePage.startNewEncounterButton.click();
-  await SearchPatientPage.patientSearch("Naga");
-  await verifyAndClick(SearchPatientPage.proceedBTn);
-});
-
-it("Record the  first conversation for Exiciting patient and verifying all the Offline Scenarios ", async () => {
-  await RecordingPage.startConversation();
-  await RecordingPage.recordAudioforOfflineForExistingPatient()
-}); 
-
-it("CDSS  Transcript  SOAP Note - verification for an exiciting patient for First Conversation", async () => {
-  await RecordingPage.CDSS_Transcript_SOAPNote_Conformation();
-});
-
-it("Second conversation, verifying SOAP_NOTE and Transcript generation for ", async () => {
-  await RecordingPage.multiple_Conversations_For_Existing_Patient();
-});
-it("Third conversation, making draft transcript and verify the Draft,verify SoapNote and Transcript", async () => {
-  await RecordingPage.multiple_Conversation_For_Existing_Patient();
-});
-
-it("Quick Actions flow for generation /regenerationof all templates and sending emails for every update.", async () => {
-  await QuickActions.quickAction();
-});
-
-it("verifying the Finalizing of the encounter with out any draft is ther in that particular transcript", async () => {
-  await RecordingPage.finalize_Encounter();
-  await LoginPage.restartApp();
-});
-
-it("crating a new Patient", async () => {
-  //crating a new Patient
-  await waitForElement(HomePage.startNewEncounterButton);
-  await HomePage.startNewEncounterButton.click();
-  await verifyAndClick(SearchPatientPage.addPatient);
-  await AddPatitentPage.addPatientWrn();
-  await AddPatitentPage.createNewPatient();
-});
-
-it.only("Record First the conversation for new patient ", async () => {
-  await RecordingPage.startConversation();
-  await RecordingPage.recordAudioforOfflineMode()});
-  
-
-it("CDSS - Transcript - SOAP Note verification For newly created Patient", async () => {
-  await RecordingPage. CDSS_Transcript_SOAPNote_Conformation();
-});
-
-it("Second Conversation, verifying CDSS Transcript SOAP NOTE verification", async () => {
-  await RecordingPage.multiple_Conversations_For_New_Patient();
-
-});
-it("Third conversation, verifying of draft trancript completion before finalizing the encounter", async () => 
-  {
-  await RecordingPage.multiple_Conversation();
-
-});
-
-
-it("Quick Actions flow for generation /regenerationof all templates and sending emails for every update. ", async () => {
-  await QuickActions.quickAction();
-});
-
-it("verifying the Finalizing of the encounter of a newly created patient ", async () => {
-  await RecordingPage.finalize_Encounter();
-  await LoginPage.restartApp();
-});
-
-it("Verification of app switching to spanish launguage", async () => {
-  await LoginPage.restartApp();
-  await verifyAndClick(HomePage.settings);
-  await verifyAndClick(SettingsPage.launguage);
-  await verifyAndClick(SettingsPage.spanish);
-  await verifyAndClick(SettingsPage.home);
-});
-it("creating new patient -spanish", async () => {
-
-await SpanishLanguage.startNewEncounter.click();
-  await SpanishLanguage.addPatient.click();
-  await SpanishLanguage.createNewPatient();
-})
-it("Intiating first conversation for Offline recording and soapNote generation -Spanish", async () => {
-  await SpanishLanguage.startConversation();
-  await SpanishLanguage.recordAudioforOfflineMode();
-});
-
-it("CDSS - Transcript - SOAP Note verification For newly created Patient -Spanish", async () => {
-  await SpanishLanguage.CDSS_Transcript_SOAPNote_Conformation();
-});
-it("Second Conversation, verifying CDSS Transcript SOAP NOTE verification for Newly created patient -Spanish", async () => {
-  await SpanishLanguage.second_Conversations_For_New_Patient();
-});
-
-it("Third onversation, verifying CDSS Transcript SOAP NOTE verification for Newly created patient -Spanish", async () => {
-  await SpanishLanguage.multiple_Conversation()
-});
-
-it("Quick Actions for a new patient, verifying generation/regeneration of all templates and sending emails for every update, app launguage is spanish", async () => {
-  await SpanishLanguage.quickAction();
-});
-
-it("verifying the Finalizing of the encounter of a newly created patient, app launguage is in spanish", async () => {
-  await SpanishLanguage.finalize_Encounter();
-  await LoginPage.restartApp();
-});
-
-it("verification of intiating the new encunter for already Exicting patient", async () => {
-  await SpanishLanguage.startNewEncounter.click();
-  await SpanishLanguage.patientSearch("Naga");
-});
-
-it("verification of offline recording for already Existing Patient -Spanish  ", async () => {
-  await SpanishLanguage.startConversation();
-  await SpanishLanguage.recordAudioAndContinueForPrevEncounter();
-});
-
-it("CDSS - Transcript - SOAP Note verification for First conversation of Existing Patient -Spanish", async () => {
-  await SpanishLanguage.CDSS_Transcript_SOAPNote_Conformation();
-});
-
-it("Second conversation for already Exicting Patient -Spanish", async () => {
-  await SpanishLanguage.second_Conversations_For_Exicting_Patient();
-});
-it("Creating a draft transcript and completion and SoapNote Generation -Spanish ", async () => {
-  await SpanishLanguage.third_Conversation_For_Existing_Patitent();
-});
-
-it("Quick Actions for an Exicting patient,flow for generation / Regeneration all templates and sending emails for every update - Spanish", async () => {
-  await SpanishLanguage.quickAction();
-});
-
-it("verifying the Finalizing of the encounter of an Existing patient, without any draft is there in that particular Encounter -Spanish", async () => {
-  await SpanishLanguage.finalize_Encounter();
-  await LoginPage.restartApp();
-});
-
-// it("SettingsPage test case with complete Offlinr Recording all 10 scenarios ", async () => {
-//   await RecordingPage.startConversationBtn.click();
-// await RecordingPage.recordAudioforOfflineMode();
-//   await driver.pause(120000);
-//   await waitForElement(RecordingPage.SoapNoteBtn);
-//   await verifyAndClick(RecordingPage.Transcript);
-//   const recordText = await RecordingPage.dataScanning(RecordingPage.cleanedTranscriptScroll);
-//   await RecordingPage.audioManager.TextComparison(recordText);
-// });

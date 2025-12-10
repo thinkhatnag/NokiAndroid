@@ -3,11 +3,11 @@ import LoginPage from "../../pageObjectModel/login.page.js";
 import allureReporter from '@wdio/allure-reporter'
 import HomePage from "../../pageObjectModel/home.page.js"
 describe('Login',() => { 
-    beforeEach(() => {
+    before(() => {
         allureReporter.addEpic("NOKI Android Automation");
         allureReporter.addOwner('Mobile Team');
-        allureReporter.addParentSuite('Login');
       });
+      
     it('Verify error message for email is not provided', async() => {
         await LoginPage.restartApp()
         await LoginPage.clickLogin();
@@ -30,10 +30,10 @@ describe('Login',() => {
         await LoginPage.enterEmail(process.env.Email)
         await LoginPage.enterPassword(process.env.Password)
         await LoginPage.clickLogin();
-        await verify(LoginPage.selectIdError);
+        await verify(LoginPage.multiTenantError);
     });
 
-    it('Verify perfect login', async() => {
+    it('Verify successful login', async() => {
         await LoginPage.restartApp()
         await LoginPage.enterEmail(process.env.Email)
         await LoginPage.enterPassword(process.env.Password)

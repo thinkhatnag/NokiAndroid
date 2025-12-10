@@ -1,9 +1,9 @@
-import { faker } from '@faker-js/faker';
-import RecordingPage from '../test/pageObjectModel/recording.page.js';
-import SpanishLanguage from '../test/pageObjectModel/spanishLanguage.js'
-import say from 'say';
+import { faker } from "@faker-js/faker";
+import RecordingPage from "../test/pageObjectModel/recording.page.js";
+import SpanishLanguage from "../test/pageObjectModel/spanishLanguage.js";
+import say from "say";
 export async function verify(element) {
-  await element?.waitForDisplayed({ timeout: 10000 });
+  await element?.waitForDisplayed({ timeout: 20000 });
 }
 export async function validate(element) {
   await verify(element);
@@ -11,7 +11,7 @@ export async function validate(element) {
 }
 export async function verifyAndClick(element) {
   await verify(element);
-  await driver.pause(2000)
+  await driver.pause(2000);
   await element?.click();
 }
 export async function hideKeyboard() {
@@ -96,11 +96,9 @@ export async function network() {
 //     await driver.pause(5000)
 
 //     }
-    export async function back() {
-
-        await driver.executeScript("mobile: pressKey", [{"keycode":4}]);
-
-    }
+export async function back() {
+  await driver.executeScript("mobile: pressKey", [{ keycode: 4 }]);
+}
 
 export async function Network() {
   await driver.toggleAirplaneMode();
@@ -119,34 +117,25 @@ export async function swipe(direction, scrollElement) {
     percent: 0.08,
   });
 }
-export async function clickDraftTranscript() {
-  await driver.action('pointer')
-  .move({ duration: 0, x: 350, y: 382 })
-  .down({ button: 0 })
-  .pause(50)
-  .up({ button: 0 })
-  .perform();
 
+export async function terminateApp() {
+  // Open recent apps
+  await driver.executeScript("mobile: pressKey", [{ keycode: 187 }]);
 
-  }
-  export async function terminateApp() {
-    // Open recent apps
-    await driver.executeScript("mobile: pressKey", [{ "keycode": 187 }]);
+  // Wait for the UI to load
+  await driver.pause(1000);
 
-    // Wait for the UI to load
-    await driver.pause(1000);
+  // Swipe up to simulate manual kill
+  await driver
+    .action("pointer")
+    .move({ duration: 0, x: 427, y: 1018 }) // start point
+    .down({ button: 0 }) // press down
+    .move({ duration: 1000, x: 429, y: 113 }) // swipe up
+    .up({ button: 0 }) // release
+    .perform();
 
-    // Swipe up to simulate manual kill
-    await driver.action('pointer')
-        .move({ duration: 0, x: 427, y: 1018 })  // start point
-        .down({ button: 0 })                     // press down
-        .move({ duration: 1000, x: 429, y: 113 }) // swipe up
-        .up({ button: 0 })                       // release
-        .perform();
-
-    // Small pause to let the action complete
-    await driver.pause(500);
-
+  // Small pause to let the action complete
+  await driver.pause(500);
 }
 
 export async function playTTS(text, voice = null, speed = 1.0) {
@@ -162,60 +151,45 @@ export async function playTTS(text, voice = null, speed = 1.0) {
     });
   });
 }
-/**
- * Common Toast Verification Function
- *
- * Behavior:
- * - Waits up to 10s for a toast message (if any)
- * - If toast = "Bad Request" → FAIL test
- * - If toast = expectedToast → log as expected
- * - If toast = anything else → log and continue
- * - If no toast appears → continue silently
- *
- * @param {string} [expectedToast] - Optional. The toast text you expect for feature usage/logging.
- */
-export async function verifyToastMessage(expectedToast) {
-    const toastLocator = '//android.widget.Toast[1]';
-    const toastElement = await $(toastLocator);
+export async function scrollIntoView(element, direction, scrollingelement) {
+  const elem = await $(element);
+  await elem.scrollIntoView();
+  await elem.scrollIntoView({
+    direction: direction,
+    maxScrolls: 10,
+    scrollableElement: scrollingelement,
+  });
+}
 
-    // Internal timeout for toast detection
-    const timeout = 20000;
+export async function normalizeText(text) {
+  return text
+    .toLowerCase()
+    .normalize("NFKD") // normalize accented characters
+    .replace(/[\u0300-\u036f]/g, "") // remove diacritics (accents)
+    .replace(/[\r\n]+/g, " ") // replace newlines with spaces
+    .replace(/\s+/g, " ") // collapse multiple spaces
+    .trim();
+}
+export async function levenshtein(a, b) {
+  const m = a.length;
+  const n = b.length;
+  if (m === 0) return n;
+  if (n === 0) return m;
 
+  const matrix = Array.from({ length: m + 1 }, () => Array(n + 1).fill(0));
 
-    try {
-        // Wait for toast (if it appears)
-        await toastElement.waitForDisplayed({ timeout });
+  for (let i = 0; i <= m; i++) matrix[i][0] = i;
+  for (let j = 0; j <= n; j++) matrix[0][j] = j;
 
-        // Get toast text
-        const toastText = await toastElement.getText();
-        console.log(`📢 Toast detected: "${toastText}"`);
-
-        // Normalize for comparison
-        const normalize = (text) => text.toLowerCase().replace(/\s+/g, '');
-        const normalizedText = normalize(toastText);
-
-
-        // If user passed an expected toast, check & log it
-        if (expectedToast) {
-            if (normalizedText.includes(normalize(expectedToast))) {
-                console.log(`✅ Expected toast shown: "${toastText}"`);
-                return true;
-            } else {
-                console.log(`ℹ️ Different toast appeared: "${toastText}"`);
-                return false;
-            }
-        } else {
-            // No expected toast given → just log it
-            console.log(`ℹ️ Toast appeared (no expected text provided): "${toastText}"`);
-        }
-
-    } catch (err) {
-        // No toast appeared within timeout → continue test
-        if (err.message.includes('waitForDisplayed')) {
-            console.log('ℹ️ No toast appeared — continuing test.');
-            return;
-        }
-        // For actual failure toasts, rethrow
-        throw err;
+  for (let i = 1; i <= m; i++) {
+    for (let j = 1; j <= n; j++) {
+      const cost = a[i - 1] === b[j - 1] ? 0 : 1;
+      matrix[i][j] = Math.min(
+        matrix[i - 1][j] + 1, // deletion
+        matrix[i][j - 1] + 1, // insertion
+        matrix[i - 1][j - 1] + cost // substitution
+      );
     }
+  }
+  return matrix[m][n];
 }

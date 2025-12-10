@@ -12,10 +12,10 @@ class ForgotPasswordPage {
     }
 
     async checkEmailInGmail() {
-        await driver.execute('mobile: terminateApp', { appId: 'com.thinkhat.heynoki' });
+        await driver.execute('mobile: terminateApp', {appId: process.env.BUNDLE_ID});
         await driver.activateApp('com.google.android.gm');
         await driver.pause(5000);
-        await driver.activateApp('com.thinkhat.heynoki');
+        await driver.activateApp(process.env.BUNDLE_ID);
     }
 }
 

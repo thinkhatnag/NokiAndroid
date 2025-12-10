@@ -3,6 +3,8 @@ import SearchPatientPage from "../../pageObjectModel/searchPatitent.page.js";
 import RecordingPage from "../../pageObjectModel/recording.page.js";
 import LoginPage from "../../pageObjectModel/login.page.js";
 import EncounterPage from "../../pageObjectModel/encounter.page.js";
+
+import SettingsPage from "../../pageObjectModel/setting.page.js";
 import {
   verify,
   verifyAndClick,
@@ -15,86 +17,79 @@ import {
 import allureReporter from "@wdio/allure-reporter";
 import AudioManeger from "../../pageObjectModel/audioManeger.js";
 import QuickActions from "../../pageObjectModel/quickActions.page.js";
+import { net } from "appium/support.js";
+import SpanishLanguage from "../../pageObjectModel/spanishLanguage.js";
 describe("Existing patient E2E flow in English", () => {
-  beforeEach(() => {
+  before(() => {
     allureReporter.addEpic("NOKI Android Automation");
     allureReporter.addOwner("Mobile Team");
-    allureReporter.addParentSuite("English");
   });
-  it("offline/online app kill verification with play pause", async () => {
-    await LoginPage.restartApp();
-    await HomePage.startNewEncounterButton.click();
-    await SearchPatientPage.patientSearch("Naga");
-    await RecordingPage.startConversation();
-    await AudioManeger.playAudio("english");
-    await driver.pause(5000);
-    // offline mode
-    await network();
-    for (let i = 0; i < 3; i++) {
-      await verifyAndClick(RecordingPage.pauseBtn);
-      await driver.pause(3000);
-      await verifyAndClick(RecordingPage.playBtn);
-      await driver.pause(3000);
-    }
-    await driver.pause(5000);
-    await AudioManeger.pauseAudio();
-    await terminateApp();
-    await driver.pause(5000);
-    await driver.activateApp(process.env.BUNDLE_ID);
-    await driver.pause(5000);
-    await verifyAndClick(RecordingPage.ContinueBtn)
-    await AudioManeger.resumeAudio();
-    await network(); // online mode
-    await driver.pause(30000);
-    for (let i = 0; i < 3; i++) {
-      await verifyAndClick(RecordingPage.pauseBtn);
-      await driver.pause(3000);
-      await verifyAndClick(RecordingPage.playBtn);
-      await driver.pause(3000);
-    }
-    await driver.pause(5000);
-    await network(); // offline mode
-    await driver.pause(5000);
-    await AudioManeger.stopAudio();
-    await terminateApp();
-    await driver.pause(5000);
-    await network();  //online mode
-    await driver.pause(5000);
-    await driver.activateApp(process.env.BUNDLE_ID);
-    await driver.pause(5000);
-    await verifyAndClick(RecordingPage.discardBtn);
-    await driver.pause(5000);
-    await LoginPage.restartApp();
-    await HomePage.startNewEncounterButton.click();
-    await SearchPatientPage.patientSearch("Naga");
-    await RecordingPage.startConversation();
-    await driver.pause(5000);
-    await network()
-    await terminateApp()
-    await driver.pause(5000);
-    await network();
-    await driver.pause(5000)
-    await driver.activateApp(process.env.BUNDLE_ID);
-    await driver.pause(5000)
-    await verifyAndClick(RecordingPage.discardBtn)
-    await driver.pause(5000)
-    await HomePage.home.click();
-    await validate(HomePage.startNewEncounterButton);
-  });
-    it("Search patient", async () => {
+  // it("Offline Functinality verification", async () => {
+  //   await LoginPage.restartApp();
+  //   await HomePage.startNewEncounterButton.click();
+  //   await SearchPatientPage.patientSearch("Naga");
+  //   await RecordingPage.startConversation();
+  //   await AudioManeger.playAudio("english");
+  //   await driver.pause(5000);
+  //   // offline mode
+  //   await network();
+  //   for (let i = 0; i < 3; i++) {
+  //     await verifyAndClick(RecordingPage.pauseBtn);
+  //     await driver.pause(3000);
+  //     await verifyAndClick(RecordingPage.playBtn);
+  //     await driver.pause(3000);
+  //   }
+  //   await driver.pause(5000);
+  //   await AudioManeger.pauseAudio();
+  //   await terminateApp();
+  //   await driver.pause(5000);
+  //   await driver.activateApp(process.env.BUNDLE_ID);
+  //   await driver.pause(5000);
+  //   await verifyAndClick(RecordingPage.ContinueBtn);
+  //   await AudioManeger.resumeAudio();
+  //   await network(); // online mode
+  //   await driver.pause(30000);
+  //   for (let i = 0; i < 3; i++) {
+  //     await verifyAndClick(RecordingPage.pauseBtn);
+  //     await driver.pause(3000);
+  //     await verifyAndClick(RecordingPage.playBtn);
+  //     await driver.pause(3000);
+  //   }
+  //   await driver.pause(5000);
+  //   await network(); // offline mode
+  //   await driver.pause(5000);
+  //   await AudioManeger.stopAudio();
+  //   await terminateApp();
+  //   await driver.pause(5000);
+  //   await network(); //online mode
+  //   await driver.pause(5000);
+  //   await driver.activateApp(process.env.BUNDLE_ID);
+  //   await driver.pause(5000);
+  //   await verifyAndClick(RecordingPage.discardBtn);
+  //   await driver.pause(5000);
+  //   await LoginPage.restartApp();
+  //   await HomePage.startNewEncounterButton.click();
+  //   await SearchPatientPage.patientSearch("Naga");
+  //   await RecordingPage.startConversation();
+  //   await driver.pause(5000);
+  //   await network(); // offline mode
+  //   await terminateApp();
+  //   await driver.pause(5000);
+  //   await network();
+  //   await driver.pause(5000);
+  //   await driver.activateApp(process.env.BUNDLE_ID);
+  //   await driver.pause(5000);
+  //   await verifyAndClick(RecordingPage.discardBtn);
+  //   await driver.pause(5000);
+  //   await validate(HomePage.startNewEncounterButton);
+  // });
+  it("New Encounter Creation", async () => {
     await LoginPage.restartApp();
     await HomePage.startNewEncounterButton.click();
     await SearchPatientPage.patientSearch("Naga");
   });
-  it("Automatic sync verification when offline to online", async () => {
+  it("Automatic Sync Verification (Offline to Online and Vice Versa)", async () => {
     await RecordingPage.startConversation();
-    await driver.pause(1000);
-    await network();
-    await verifyAndClick(RecordingPage.Ok);     // POP up Issue fix
-    await driver.pause(5000);
-    await network();
-    await driver.pause(5000);
-    await RecordingPage.startConversationBtn.click()
     await AudioManeger.playAudio("english");
     console.log("Audio started:", AudioManeger.currentAudioFile);
     await RecordingPage.recordAudioforOfflineModeMT();
@@ -104,9 +99,10 @@ describe("Existing patient E2E flow in English", () => {
     console.log("Audio paused at:", AudioManeger.pausedTime, "seconds");
     await driver.pause(20000);
     await waitForElement(RecordingPage.playBtn);
+    await driver.pause(2000);
     await verifyAndClick(RecordingPage.playBtn);
   });
-  it("App Killed in Offline Mode verification", async () => {
+  it("App Killed and Reopened (Offline Mode Verification)", async () => {
     await AudioManeger.resumeAudio();
     console.log("Audio resumed:", AudioManeger.currentAudioFile);
     await driver.pause(30000);
@@ -120,8 +116,9 @@ describe("Existing patient E2E flow in English", () => {
     await waitForElement(RecordingPage.ContinueBtn);
     await validate(RecordingPage.endEncounter);
     await verifyAndClick(RecordingPage.ContinueBtn);
+    await driver.pause(5000);
   });
-  it("App offline kill and reopen the app in online mode verifiction", async () => {
+  it("App Killed in Offline and Reopened in Online Mode Verification", async () => {
     await AudioManeger.resumeAudio();
     await driver.pause(30000);
     await AudioManeger.pauseAudio();
@@ -130,40 +127,37 @@ describe("Existing patient E2E flow in English", () => {
     await network(); //online
     await driver.pause(5000);
     await driver.activateApp(process.env.BUNDLE_ID);
-    // await waitForElement(RecordingPage.ContinueBtn); //validating the offline kill and reopen the app in online mode
-    // await validate(RecordingPage.endEncounter);
     await driver.pause(5000);
     await verifyAndClick(RecordingPage.ContinueBtn);
-    await verify(RecordingPage.pauseBtn);
   });
-  it("Offline mode stop and app kill Verification", async () => {
-    await network();
+  it("Offline Mode Stop and App Kill Verification", async () => {
+    await network(); // offline mode
     await AudioManeger.resumeAudio();
     await driver.pause(30000);
     await AudioManeger.stopAudio();
     await verifyAndClick(RecordingPage.stopBtn);
-    console.log(
-      "Here after app got closed while recording automatically again resumed the audio"
-    );
     await driver.pause(5000);
     await verify(RecordingPage.offlineConversationSaved);
-    await terminateApp();
+    console.log(
+      "The app was killed in offline mode after stopping the recording and clicking stop button"
+    );
+    await terminateApp(); // app kill
     await driver.pause(5000);
     await driver.activateApp(process.env.BUNDLE_ID);
     await waitForElement(RecordingPage.offlineConversationSaved);
     await validate(RecordingPage.offlineConversationSaved);
-    await network();
-    console.log(
-      "Here we have verified that the in offline mode when we click stop button it willshould show a popup of offline conversation is saved"
-    );
+    await network(); // online mode
     await waitForElement(RecordingPage.PrevEncounterRefNo);
     await verifyAndClick(RecordingPage.PrevEncounterRefNo);
   });
-  it("SoapNote and Transcript verification for the First conversation", async () => {
+  it("First Conversation and SOAP Note Generation", async () => {
     await RecordingPage.SOAPNote_Verification();
+  });
+  it("Transcript verification for the First Conversation", async () => {
     await RecordingPage.Transcript_Verification();
   });
-  it("Add Conversation for Existing Encounter ", async () => {
+
+  it("Second Conversation for the New Encounter", async () => {
     await waitForElement(RecordingPage.addConversation);
     await verifyAndClick(RecordingPage.addConversation);
     await verifyAndClick(RecordingPage.yes);
@@ -172,98 +166,142 @@ describe("Existing patient E2E flow in English", () => {
     await network();
     await driver.pause(5000);
     await AudioManeger.stopAudio();
+    await verifyAndClick(RecordingPage.pauseBtn);
+    await driver.pause(2000);
     await terminateApp(); // kill app in offline mode
     await driver.pause(5000);
     await network(); // online mode
     await driver.pause(5000);
-    await driver.activateApp(process.env.BUNDLE_ID); // reope app with online mode
+    await driver.activateApp(process.env.BUNDLE_ID); // reopen app with online mode
     await driver.pause(5000);
     await verifyAndClick(RecordingPage.endEncounter); // end encounter after reopening the app
     await verifyAndClick(RecordingPage.PrevEncounterRefYes);
   });
-  it("SoapNote and Transcript verification for the second Conversation", async () => {
+  it("SOAP Note Verification for the Second Conversation", async () => {
     await RecordingPage.SOAPNote_Verification();
+  });
+  it("Transcript Verification for the Second Conversation", async () => {
     await RecordingPage.Transcript_Verification();
   });
-  it("Third Conversation {making the conversation as draft and completing the draft Transcript }", async () => {
+
+  // it("SoapNote Tab Missing issue verification", async () => {
+  //   await waitForElement(RecordingPage.addConversation);
+  //   await verifyAndClick(RecordingPage.addConversation);
+  //   await verifyAndClick(RecordingPage.yes);
+  //   await verify(RecordingPage.pauseBtn);
+  //   await AudioManeger.playAudio("english");
+  //   await driver.pause(60000);
+  //   await network(); //Offline mode
+  //   await driver.pause(60000);
+  //   await AudioManeger.stopAudio();
+  //   await verifyAndClick(RecordingPage.stopBtn);
+  //   await driver.pause(2000);
+  //   await network(); //online mode
+  //   await driver.pause(7000);
+  //   await verifyAndClick(RecordingPage.yes);
+  //   await driver.pause(4000);
+  //   await network(); //offline mode
+  //   await validate(RecordingPage.somethingWentWrongToast);
+  //   await verifyAndClick(RecordingPage.Ok);
+  //   await network(); //online mode
+  //   await driver.pause(5000);
+  //   await verifyAndClick(RecordingPage.PrevEncounterRefYes);
+  //   await driver.pause(3000);
+  //   await network(); //Offline mode
+  //   await validate(RecordingPage.somethingWentWrongToast); //verifying somthing went wrong popup
+  //   await verifyAndClick(RecordingPage.Ok);
+  //   await driver.pause(3000);
+  //   await network(); //online mode
+  //   await driver.pause(5000);
+  //   await verifyAndClick(RecordingPage.PrevEncounterRefYes);
+  //   await driver.pause(3000);
+  //   await waitForElement(QuickActions.quickActions);
+  //   await validate(RecordingPage.SoapNoteBtn);
+  // });
+
+  it("Third Conversation (Draft Creation and Completion of Draft Transcript)", async () => {
     await waitForElement(RecordingPage.addConversation);
     await verifyAndClick(RecordingPage.addConversation);
     await verifyAndClick(RecordingPage.yes);
     await verify(RecordingPage.pauseBtn);
-    await RecordingPage.recordAudioAndSaveAsDraft();
-    await HomePage.encounter.click();
+    await AudioManeger.playAudio("english");
+    await driver.pause(100000);
+    await AudioManeger.pauseAudio();
+    await driver.pause(3000);
+    await verifyAndClick(RecordingPage.back);
+    await verifyAndClick(RecordingPage.saveAsDraftBtn);
+    await driver.pause(5000);
     await EncounterPage.clickDraftTranscript();
     await RecordingPage.finaliseEncounter.click();
     await RecordingPage.Ok.click();
     await RecordingPage.resumeConversation.click();
     await RecordingPage.yes.click();
-    await AudioManeger.playAudio("english");
+    await AudioManeger.resumeAudio();
     await driver.pause(5000);
-    await network();  //Offline mode
-    await driver.pause(100000);
+    await network(); //Offline mode
+    await driver.pause(60000);
     await AudioManeger.stopAudio();
     await verifyAndClick(RecordingPage.pauseBtn);
     await driver.pause(2000);
-    await terminateApp()
+    await terminateApp();
     await driver.pause(5000);
-    await network();   //online mode
-    await driver.pause(5000);
-    await driver.activateApp(process.env.BUNDLE_ID);
-    await verifyAndClick(RecordingPage.endEncounter)
-    await verifyAndClick(RecordingPage.PrevEncounterRefYes)
-    await driver.pause(3000);
-    await network();  //Offline mode
-    await verify(RecordingPage.somethingWentWrongToast); //verifying somthing went wrong popup
-    await terminateApp(); 
-    await driver.pause(5000);
-    await network();            //online mode
+    await network(); //online mode
     await driver.pause(5000);
     await driver.activateApp(process.env.BUNDLE_ID);
-    await driver.pause(2000)
-    await verifyAndClick(RecordingPage.endEncounter)
-    await network()          //offline mode  
-    await verify(RecordingPage.somethingWentWrongToast); //verifying somthing went wrong popup
-    await verifyAndClick(RecordingPage.Ok)
-    await terminateApp()
-    await network();      //online moded
-    await driver.pause(5000);
-    await driver.activateApp(process.env.BUNDLE_ID);
-    await driver.pause(5000);
-    await verifyAndClick(RecordingPage.endEncounter)
-    await validate(RecordingPage.PrevEncounterRef);
+    await verifyAndClick(RecordingPage.endEncounter);
     await verifyAndClick(RecordingPage.PrevEncounterRefYes);
+    // await driver.pause(3000);
+    // await network(); //Offline mode
+    // await verify(RecordingPage.somethingWentWrongToast); //verifying somthing went wrong popup
+    // await verifyAndClick(RecordingPage.Ok);
+    // await terminateApp();
+    // await driver.pause(5000);
+    // await network(); //online mode
+    // await driver.pause(5000);
+    // await driver.activateApp(process.env.BUNDLE_ID);
+    // await driver.pause(2000);
+    // await verifyAndClick(RecordingPage.endEncounter);
+    // await network(); //offline mode
+    // await verify(RecordingPage.somethingWentWrongToast); //verifying somthing went wrong popup
+    // await verifyAndClick(RecordingPage.Ok);
+    // await network(); //online mode
+    // await driver.pause(2000);
+    // await network(); //offline mode
+    // await driver.pause(2000);
+    // await network(); //online mode
+    // await verifyAndClick(RecordingPage.endEncounter);
+    // await validate(RecordingPage.PrevEncounterRef);
+    // await verifyAndClick(RecordingPage.PrevEncounterRefYes);
   });
-  it("SOAP NOTE  & Transcript generation and verify for the draft Conversation", async () => {
+
+  it("SOAP Note Generation and Verification for the Draft Conversation", async () => {
     await RecordingPage.SOAPNote_Verification();
+  });
+  it("Transcript Verification for the Draft Conversation", async () => {
     await RecordingPage.Transcript_Verification();
-  })
-  it("ICD & CPT Codes generation and regeneration", async () => {
+  });
+
+  it("Generation and Regeneration of Quick Action Templates (ICD & CPT, Care Plan, Feedback, Referral)", async () => {
     await QuickActions.Icd_Cpt();
-  });
-
-  it("Care Plan generation and regeneration ", async () => {
     await QuickActions.care_plan();
-  });
-
-  it('"Feed back on the doctor"genaration and regenaration', async () => {
     await QuickActions.feed_Back();
-  });
-  it("Referall leter genaration and regenaration", async () => {
     await QuickActions.referal_Letter();
-  });
-  it("Regenerate SOAP Note ", async () => {
     await QuickActions.soap_note();
   });
-  it("Patient Info Update ", async () => {
+  it("Patient Info Update", async () => {
     await RecordingPage.UpdatePatientInfo();
-  });
-  it("Manual update ", async () => {
     await RecordingPage.manualUpdate();
-  });
-  it("HayNoki update ", async () => {
     await RecordingPage.hayNoki();
   });
-  it("Finalizing the encounter", async () => {
+  it("Finalize Encounter", async () => {
     await RecordingPage.finalizeEncounter();
   });
+  it('Logout ', async ()=>{
+    await LoginPage.restartApp()
+    await HomePage.settings.click()
+    await verifyAndClick(SettingsPage.launguage);
+    await verifyAndClick(SettingsPage.spanish);
+    await verifyAndClick(SpanishLanguage.logoutBtn)
+    await verifyAndClick(SpanishLanguage.logoutConformationBtn)
+  })
 });

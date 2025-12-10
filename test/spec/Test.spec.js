@@ -8,16 +8,14 @@ import SettingPage from "/Users/nagasubarayudu/Desktop/NokiAndroid/test/pageObje
 import {
   back,
   verify,
-  verifyAndClick, 
+  verifyAndClick,
   waitForElement,
-  
 } from "/Users/nagasubarayudu/Desktop/NokiAndroid/helper/helper.js";
 import PatientsPage from "/Users/nagasubarayudu/Desktop/NokiAndroid/test/pageObjectModel/patient.page.js";
 import AddPatientPage from "/Users/nagasubarayudu/Desktop/NokiAndroid/test/pageObjectModel/addPatient.page.js";
 //import QuickActions from "/Users/nagasubarayudu/Desktop/NokiAndroid/test/test/pageObjectModel/quickActions.page.js";
 
 describe(" Noki Android ", () => {
-
   // it("HOME Screen, patiens, notes and setting screen verfication", async () => {
   //   await verify(HomePage.homeScreenAnimation);
   //   await HomePage.patients.click();
@@ -54,7 +52,7 @@ describe(" Noki Android ", () => {
 
   // // });
   // it("existing patient with previous add on data, also verifying CTS, Multiple Conversation, Quick Actions, Finalizing Enconter ", async () => {
-  //   await LoginPage.restartApp()    
+  //   await LoginPage.restartApp()
   //   await HomePage.startNewEncounterButton.click();
   //   await SearchPatientPage.patientSearch("Naga");
   //   await SearchPatientPage.proceedBtn.click();
@@ -75,13 +73,10 @@ describe(" Noki Android ", () => {
   // });
 
   it("Loging Out scenariofrom the app", async () => {
-    // await RecordingPage.dataScaning(RecordingPage.cleanedTranscriptScroll);
-    // await AudioManeger.TextComparison();
-    await RecordingPage.referalCopyBtn.click();
-    await RecordingPage.mailBtn.click();
-    await RecordingPage.printBtn.click();
+    await RecordingPage.feedBackCopyBtn.click();
+    await verifyAndClick(RecordingPage.mailBtn);
+    await verifyAndClick(RecordingPage.printBtn);
     await driver.pause(5000);
     await back();
-
   });
 });

@@ -1,5 +1,5 @@
 import {
- back,
+  back,
   hideKeyboard,
   verify,
   verifyAndClick,
@@ -86,7 +86,7 @@ class SettingPage {
   }
   get home() {
     return $(
-      '//android.widget.FrameLayout[@resource-id="android:id/content"]/android.widget.FrameLayout/android.view.ViewGroup/android.view.ViewGroup/android.view.ViewGroup/android.view.ViewGroup/android.widget.Button[1]'
+      '//android.widget.FrameLayout[@resource-id="android:id/content"]/android.widget.FrameLayout/android.view.ViewGroup/android.view.ViewGroup/android.view.ViewGroup/android.widget.Button[1]'
     );
   }
   get spanish() {
@@ -94,32 +94,32 @@ class SettingPage {
   }
   get selectAllEnabled() {
     return $(
-      '(//android.widget.SeekBar[@content-desc="Bottom Sheet"])[2]/android.view.ViewGroup/android.view.ViewGroup/android.widget.ScrollView/android.view.ViewGroup/android.view.ViewGroup[1]/android.view.ViewGroup/android.view.ViewGroup'
+      `(//android.widget.SeekBar[@content-desc="Bottom Sheet"])[2]/android.widget.ScrollView/android.view.ViewGroup/android.view.ViewGroup[2]`
     );
   }
   get selectAllDisabled() {
     return $(
-      '(//android.widget.SeekBar[@content-desc="Bottom Sheet"])[2]/android.view.ViewGroup/android.view.ViewGroup/android.widget.ScrollView/android.view.ViewGroup/android.view.ViewGroup[1]/android.view.ViewGroup/android.view.ViewGroup'
+      `(//android.widget.SeekBar[@content-desc="Bottom Sheet"])[2]/android.widget.ScrollView/android.view.ViewGroup/android.view.ViewGroup[2]/android.view.ViewGroup`
     );
   }
   get cdssEnabled() {
     return $(
-      '(//android.widget.SeekBar[@content-desc="Bottom Sheet"])[2]/android.view.ViewGroup/android.view.ViewGroup/android.widget.ScrollView/android.view.ViewGroup/android.view.ViewGroup[2]/android.view.ViewGroup/android.view.ViewGroup'
+      `(//android.widget.SeekBar[@content-desc="Bottom Sheet"])[2]/android.widget.ScrollView/android.view.ViewGroup/android.view.ViewGroup[4]`
     );
   }
   get cdssDisabled() {
     return $(
-      '(//android.widget.SeekBar[@content-desc="Bottom Sheet"])[2]/android.view.ViewGroup/android.view.ViewGroup/android.widget.ScrollView/android.view.ViewGroup/android.view.ViewGroup[2]/android.view.ViewGroup/android.view.ViewGroup'
+      `(//android.widget.SeekBar[@content-desc="Bottom Sheet"])[2]/android.widget.ScrollView/android.view.ViewGroup/android.view.ViewGroup[4]/android.view.ViewGroup`
     );
   }
   get diognosisJustificationDisabled() {
     return $(
-      '(//android.widget.SeekBar[@content-desc="Bottom Sheet"])[2]/android.view.ViewGroup/android.view.ViewGroup/android.widget.ScrollView/android.view.ViewGroup/android.view.ViewGroup[3]/android.view.ViewGroup/android.view.ViewGroup'
+      `(//android.widget.SeekBar[@content-desc="Bottom Sheet"])[2]/android.widget.ScrollView/android.view.ViewGroup/android.view.ViewGroup[6]/android.view.ViewGroup`
     );
   }
   get diognosisJustificationEnabled() {
     return $(
-      '(//android.widget.SeekBar[@content-desc="Bottom Sheet"])[2]/android.view.ViewGroup/android.view.ViewGroup/android.widget.ScrollView/android.view.ViewGroup/android.view.ViewGroup[3]/android.view.ViewGroup/android.view.ViewGroup'
+      `(//android.widget.SeekBar[@content-desc="Bottom Sheet"])[2]/android.widget.ScrollView/android.view.ViewGroup/android.view.ViewGroup[6]`
     );
   }
   get logoutcancelationBtn() {
@@ -144,19 +144,19 @@ class SettingPage {
       '//android.view.ViewGroup[@content-desc="Consult"]/android.view.ViewGroup[1]'
     );
   }
-  get whatsapp() {
+  // get whatsapp() {
+  //   return $(
+  //     '//android.view.ViewGroup[@content-desc="Consult"]/android.view.ViewGroup[2]'
+  //   );
+  // }
+  get text() {
     return $(
       '//android.view.ViewGroup[@content-desc="Consult"]/android.view.ViewGroup[2]'
     );
   }
-  get text() {
-    return $(
-      '//android.view.ViewGroup[@content-desc="Consult"]/android.view.ViewGroup[3]'
-    );
-  }
   get Gmail() {
     return $(
-      '//android.view.ViewGroup[@content-desc="Consult"]/android.view.ViewGroup[4]'
+      '//android.view.ViewGroup[@content-desc="Consult"]/android.view.ViewGroup[3]'
     );
   }
 
@@ -166,9 +166,9 @@ class SettingPage {
     await this.firstName.clearValue();
     const FirstName = await this.firstName.setValue("Naga");
     await hideKeyboard();
-    await verifyAndClick(this.middleName)
-    const MiddleName=await this.middleName.setValue('Surrendra')
-    await hideKeyboard()
+    await verifyAndClick(this.middleName);
+    const MiddleName = await this.middleName.setValue("Surrendra");
+    await hideKeyboard();
     await verify(this.lastName);
     await this.lastName.clearValue();
     const LastName = await this.lastName.setValue("Subbarayudu");
@@ -176,17 +176,17 @@ class SettingPage {
     await verifyAndClick(this.cancel);
     await verifyAndClick(this.edit);
     await verify(FirstName);
-    await verify(MiddleName)
+    await verify(MiddleName);
     await verify(LastName);
     await back();
   }
   async support_VerifiCation() {
     await verifyAndClick(this.help);
     await driver.pause(5000);
-    await verifyAndClick(this.phone)
-    await driver.pause(3000)
+    await verifyAndClick(this.phone);
+    await driver.pause(3000);
     const phonePackage = "com.google.android.dialer";
-    await driver.pause(3000)
+    await driver.pause(3000);
     const Package = await driver.getCurrentPackage();
     if (Package !== phonePackage) {
       throw new Error(
@@ -215,7 +215,7 @@ class SettingPage {
     const gmailPackage = "com.google.android.gm";
     const gmailCurrentPackage = await driver.getCurrentPackage();
     if (gmailCurrentPackage !== gmailPackage) {
-      await driver.pause(5000)
+      await driver.pause(5000);
 
       throw new Error(
         `Gmail (${gmailPackage}) is not active. Current package: ${gmailCurrentPackage}`
@@ -233,7 +233,7 @@ class SettingPage {
     const messagesPackage = "com.google.android.apps.messaging";
     const messagesCurrentPackage = await driver.getCurrentPackage();
     if (messagesCurrentPackage !== messagesPackage) {
-      await driver.pause(5000)
+      await driver.pause(5000);
 
       throw new Error(
         `Messages (${messagesPackage}) is not active. Current package: ${messagesCurrentPackage}`
@@ -259,7 +259,7 @@ class SettingPage {
     await verifyAndClick(this.cancel);
     await verifyAndClick(this.generalSettings);
     await verifyAndClick(this.cdssEnabled);
-    await this.diognosisJustificationEnabled;
+    await verifyAndClick(this.diognosisJustificationEnabled);
     await verifyAndClick(this.Done);
     await verifyAndClick(this.generalSettings);
     await verifyAndClick(this.cdssDisabled);
