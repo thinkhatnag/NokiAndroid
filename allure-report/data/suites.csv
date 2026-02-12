@@ -1,4 +1,0 @@
-"DESCRIPTION","DURATION IN MS","NAME","PARENT SUITE","START TIME","STATUS","STOP TIME","SUB SUITE","SUITE","TEST CLASS","TEST METHOD"
-"","8725","Loging Out scenariofrom the app"," Noki Android ","Wed Nov 12 11:37:03 IST 2025","passed","Wed Nov 12 11:37:12 IST 2025","Positive","","",""
-"","191103","Automatic sync verification when offline to online","English","Tue Nov 11 17:08:37 IST 2025","passed","Tue Nov 11 17:11:48 IST 2025","Positive","","",""
-"","310984","Third Conversation {making the conversation as draft and completing the draft Transcript }","English","Tue Nov 11 18:23:05 IST 2025","broken","Tue Nov 11 18:28:16 IST 2025","Positive","","",""
