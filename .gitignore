@@ -7,3 +7,5 @@ allure-report/
 utils/
 # test
 # helpers
+node_modules/
+report/Android-index.html
