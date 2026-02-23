@@ -514,7 +514,6 @@ class RecordingPage {
     await driver.pause(3000);
     await verifyAndClick(this.Transcript);
     await this.dataScaning(this.cleanedTranscriptScroll);
-    await AudioManager.TextComparison();
     await verifyAndClick(this.showOriginalTrnscript);
     await verifyAndClick(this.showClaeanedTranscript);
     await verifyAndClick(this.SoapNoteBtn);

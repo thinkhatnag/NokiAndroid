@@ -1,13 +1,9 @@
-import {
-  verifyAndClick,
-  hideKeyboard,
-} from "../../../helper/helper.js";
+import { verifyAndClick, hideKeyboard } from "../../../helper/helper.js";
 
 class LoginPage {
-
   get newUserText() {
     return $(
-      '//android.widget.TextView[@text="New User? Please create an account on"]'
+      '//android.widget.TextView[@text="New User? Please create an account on"]',
     );
   }
   get emailField() {
@@ -20,41 +16,54 @@ class LoginPage {
     return $("~Iniciar sesión");
   }
   get forgotPassworfLoginButton() {
-    return $('');
+    return $("");
   }
   get sendResetLink() {
-    return $('');
+    return $("");
   }
   get multtTenent() {
     return $("~Seleccionar ID de cuenta*");
   }
   get selectIdError() {
-    return $('');
+    return $("");
   }
 
   get passwordRequiredError() {
-    return $('-android uiautomator:new UiSelector().text("Se requiere contraseña")');
+    return $(
+      '-android uiautomator:new UiSelector().text("Se requiere contraseña")',
+    );
   }
   get emailRequiredError() {
-    return $('-android uiautomator:new UiSelector().text("Se requiere correo electrónico")');
+    return $(
+      '-android uiautomator:new UiSelector().text("Se requiere correo electrónico")',
+    );
   }
   get invalidEmailError() {
-    return $('-android uiautomator:new UiSelector().text("Correo electrónico inválido")');
+    return $(
+      '-android uiautomator:new UiSelector().text("Correo electrónico inválido")',
+    );
   }
 
   get startNewEncounter() {
-    return $(
-      ''
-    );
+    return $("");
   }
   get forgotPasswordBtn() {
-    return $(`-android uiautomator:new UiSelector().text("¿Olvidaste tu contraseña?")`);
+    return $(
+      `-android uiautomator:new UiSelector().text("¿Olvidaste tu contraseña?")`,
+    );
   }
   get multiTenantOption() {
-    return $('~nagasurendra-badri-69g23');
+    return $("~nagasurendra-badri-69g23");
   }
   get multiTenantError() {
-    return $('-android uiautomator:new UiSelector().text("Se requiere el ID de cuenta")');
+    return $(
+      '-android uiautomator:new UiSelector().text("Se requiere el ID de cuenta")',
+    );
+  }
+  get homeScreenAnimation() {
+    return $(
+      `//android.widget.FrameLayout[@resource-id="android:id/content"]/android.widget.FrameLayout/android.view.ViewGroup/android.view.ViewGroup/android.view.ViewGroup/android.view.ViewGroup/android.view.ViewGroup[3]/android.widget.FrameLayout/android.view.ViewGroup/android.view.ViewGroup/android.view.ViewGroup/android.widget.ScrollView/android.view.ViewGroup/android.view.ViewGroup/android.view.ViewGroup/android.widget.ScrollView/android.view.ViewGroup/com.horcrux.svg.SvgView/com.horcrux.svg.GroupView/com.horcrux.svg.GroupView/com.horcrux.svg.PathView[3]`,
+    );
   }
 
   async enterEmail(email) {
@@ -88,9 +97,9 @@ class LoginPage {
     await this.multiTenantOption.click();
     await driver.pause(2000);
   }
-  async clearTextFields(){
-    await this.emailField.clearValue()
-    await this.passwordField.clearValue()
+  async clearTextFields() {
+    await this.emailField.clearValue();
+    await this.passwordField.clearValue();
   }
 }
 

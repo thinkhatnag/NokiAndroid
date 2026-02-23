@@ -42,9 +42,7 @@ class SpanishLanguage {
   get emailNotRegisteredError() {
     return $();
   }
-  get homescreenAnimation() {
-    return $();
-  }
+
 
   //HOME Screen
 

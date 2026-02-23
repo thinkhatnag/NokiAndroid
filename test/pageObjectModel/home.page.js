@@ -6,9 +6,7 @@ class HomePage {
   }
 
   get startNewEncounterButton() {
-    return $(
-      '~Start New Encounter'
-    );
+    return $("~Start New Encounter");
   }
 
   get welcomeThumbnail() {
@@ -24,17 +22,17 @@ class HomePage {
   } ////android.widget.FrameLayout[@resource-id="android:id/content"]/android.widget.FrameLayout/android.view.ViewGroup/android.view.ViewGroup/android.view.ViewGroup/android.view.ViewGroup/android.widget.Button[1]/com.horcrux.svg.SvgView/com.horcrux.svg.GroupView/com.horcrux.svg.PathView[1]
   get patients() {
     return $(
-      '//android.widget.FrameLayout[@resource-id="android:id/content"]/android.widget.FrameLayout/android.view.ViewGroup/android.view.ViewGroup/android.view.ViewGroup/android.view.ViewGroup/android.widget.Button[2]/com.horcrux.svg.SvgView/com.horcrux.svg.GroupView/com.horcrux.svg.PathView'
+      '-android uiautomator:new UiSelector().className("android.widget.Button").instance(1)'
     );
   }
   get encounter() {
     return $(
-      '//android.widget.FrameLayout[@resource-id="android:id/content"]/android.widget.FrameLayout/android.view.ViewGroup/android.view.ViewGroup/android.view.ViewGroup/android.view.ViewGroup/android.widget.Button[3]/com.horcrux.svg.SvgView/com.horcrux.svg.GroupView/com.horcrux.svg.PathView[2]'
+      '-android uiautomator:new UiSelector().className("android.widget.Button").instance(2)'
     );
   }
   get settings() {
     return $(
-      '//android.widget.FrameLayout[@resource-id="android:id/content"]/android.widget.FrameLayout/android.view.ViewGroup/android.view.ViewGroup/android.view.ViewGroup/android.widget.Button[4]'
+      '-android uiautomator:new UiSelector().className("android.widget.Button").instance(3)'
     );
   }
 }

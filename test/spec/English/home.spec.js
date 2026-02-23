@@ -24,14 +24,13 @@ describe("Home Screen elements functinalities and flows are verified here ", () 
   it("Verify the audio recording process {TC12}", async () => {
     await HomePage.startNewEncounterButton.click();
     await SearchPatientPage.patientSearch("Naga");
-    await (await SearchPatientPage.proceedBTn).click();
+    await (await SearchPatientPage.proceedBtn).click();
     await verify(RecordingPage.startConversationBtn);
     await LoginPage.restartApp();
   });
   it("Start recording with Spanish language selected {TC13}", async () => {
     await HomePage.startNewEncounterButton.click();
     await SearchPatientPage.patientSearch("Naga");
-    await (await SearchPatientPage.proceedBTn).click();
     await verify(RecordingPage.startConversationBtn);
     await RecordingPage.launguageSelectior.click();
     await verify(RecordingPage.englishLanOpt);

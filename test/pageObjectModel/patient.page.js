@@ -8,7 +8,7 @@ class PatientPage {
 
     get patientSearch() 
     { 
-        return $('//android.widget.FrameLayout[@resource-id="android:id/content"]/android.widget.FrameLayout/android.view.ViewGroup/android.view.ViewGroup/android.view.ViewGroup/android.view.ViewGroup/android.view.ViewGroup[3]/android.widget.FrameLayout/android.view.ViewGroup/android.view.ViewGroup/android.view.ViewGroup/android.widget.ScrollView/android.view.ViewGroup/android.view.ViewGroup/android.view.ViewGroup/android.view.ViewGroup[1]/android.view.ViewGroup'); 
+        return $('-android uiautomator:new UiSelector().className("android.view.ViewGroup").instance(13)'); 
     }
     get patientSearchTextField() 
     { 

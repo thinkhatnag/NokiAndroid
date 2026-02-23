@@ -2,13 +2,15 @@ import { EventEmitter } from "events";
 import fsExtra from "fs-extra"; // Import the default export
 import allure from "allure-commandline"; // Import allure-commandline
 const { removeSync } = fsExtra; // Destructure removeSync
-import { exec } from "child_process";
 import allureReporter from "@wdio/allure-reporter";
 import dotenv from "dotenv";
-const env = process.env.TEST_ENV;
+// import { getEnvironmentData } from "worker_threads";
+
+const env = process.env.TEST_ENV; // must be set via bash command
 dotenv.config({ path: `.env.${env}` });
 
 console.log(`Running tests in '${env}' environment`);
+
 EventEmitter.defaultMaxListeners = 50;
 
 export const config = {
@@ -38,21 +40,18 @@ export const config = {
   // of the config file unless it's absolute.
   //
   specs: [
-    // "./test/spec/test.spec.js"
-    // "./test/spec/ISSUESVERIFICAZTION.spec.js"
-    // './test/spec/English/home.spec.js',
+    // "./test/spec/English/home.spec.js",
     // "./test/spec/English/Forgot_Password.spec.js",
-    // "./test/spec/English/Login.spec.js",
-    // "./test/spec/English/Settings.spec.js",
-    // './test/spec/English/New_Patient.spec.js',
-    // "./test/spec/English/Existing_Patient.spec.js",
-     // './test/spec/Spanish/Settings_ES.spec.js',
-    // './test/spec/Spanish/Existing_Patient_ES.spec.js',
-    // './test/spec/Spanish/New_Patient_ES.spec.js',
-
-    // './test/spec/Spanish/Forgot_Password_ES.spec.js',
-    // './test/spec/Spanish/Login_Es.spec.js',
-   
+    "./test/spec/English/Login.spec.js",
+    "./test/spec/English/Setting.spec.js",
+    "./test/spec/English/New_Patient.spec.js",
+    "./test/spec/English/Existing_Patient.spec.js",
+    // "./test/spec/Spanish/Forgot_Password_ES.spec.js",
+    // "./test/spec/Spanish/Login_Es.spec.js",
+    // "./test/spec/Spanish/Settings_ES.spec.js",
+    // "./test/spec/Spanish/New_Patient_ES.spec.js",
+    // "./test/spec/Spanish/Existing_Patient_ES.spec.js",
+    // './test/spec/Test.spec.js',
   ],
   // Patterns to exclude.
   exclude: [
@@ -83,23 +82,36 @@ export const config = {
   capabilities: [
     // capabilities for local Appium web tests on an Android Emulator
     {
-      platformName: "Android",
-      "appium:deviceName": "moto s",
-      "appium:platformVersion": "15",
-      "appium:automationName": "UiAutomator2",
+      "appium:platformName": "iOS",
+      // "path": "/wd/hub",
+      //"deviceName": "iPhone 16",
+      // "platformVersion": "16.7.8",
+      //"deviceName": "iPhone 15 Pro Max",
+      "appium:deviceName": "iPhone 16",
+      "appium:wdaLocalPort": 8100 + Math.floor(Math.random() * 100),
+
+      //"deviceName": "iPad (5th generation)",
+      "appium:platformVersion": "18.7.2",
+      // "deviceName": "iPhone 12",\
+      "appium:automationName": "XCUITest",
       "appium:noReset": true,
       "appium:fullReset": false,
-      "appium:newCommandTimeout": 1200000,
-      "appium:connectionTimeout": 120000,
+      "appium:showXcodeLog": true,
+      "appium:wdaLaunchTimeout": 180000,
+      "appium:newCommandTimeout": 240000,
+      "appium:connectionTimeout": 180000,
       "appium:sessionOverride": true,
-      // "appium:autoGrantPermissions": true,
+      "appium:udid": "00008140-00054922012B001C", //Iphone 16
+      //"udid": "00008101-00041921212B001E",//Iphone 12
+      //"udid": "00008130-0018755202F0001C",//Iphone 15 Pro Max
+      //"udid": "BEAE10F4-8353-4B1C-B2D2-8E0C9D2F5DC1",//simulator
+      //"udid": "00008110-000165DE22E9801E",//Iphone 13 Pro Max
+      // "appium:autoAcceptAlerts": true,
       "appium:forceAppLaunch": true,
 
-      "appium:appWaitActivity": "*",
-      "appium:adbExecTimeout": 50000,
-      // "appium:disableWindowAnimation": true,
-      "appium:uiautomator2ServerLaunchTimeout": 60000,
-      "appium:uiautomator2ServerInstallTimeout": 60000,
+      //"bundleId": "com.thinkhat.devNoki",
+      //"connectHardwareKeyboard": true,
+      // "appium:AcceptAlerts": true
     },
   ],
 
@@ -137,7 +149,7 @@ export const config = {
   // baseUrl: 'http://localhost:8080',
   //
   // Default timeout for all waitFor* commands.
-  waitforTimeout: 100000,
+  waitforTimeout: 10000,
   //
   // Default timeout in milliseconds for request
   // if browser driver or grid doesn't send response
@@ -159,6 +171,7 @@ export const config = {
         },
       },
     ],
+
     //     [
     //         'visual',
     //         {
@@ -210,31 +223,34 @@ export const config = {
         },
       },
     ],
+    [
+      "html-nice",
+      {
+        outputDir: "./reports/html-reports/",
+        filename: "mobile-report.html",
+        reportTitle: "Mobile Automation Report",
+        showInBrowser: false,
+        collapseTests: false,
+      },
+    ],
 
-    // [
-    //   "html-nice",
-    //   {
-    //     outputDir: "./reports/html-reports/",
-    //     filename: "report.html",
-    //     reportTitle: " Test Report (iOS)",
-    //     showInBrowser: true,
-    //     collapseTests: false,
-    //   },
-    // ],
-
-    // ['video', {
-    //   saveAllVideos: false,
-    //   videoSlowdownMultiplier: 3,
-    //   outputDir: './reports/videos',
-    //   maxTestNameCharacters: 200,
-    // }]
+    // ✅ JUnit Reporter (for CI systems like Jenkins/GitHub)
+    [
+      "junit",
+      {
+        outputDir: "./reports/junit/",
+        outputFileFormat: function (options) {
+          return `results-${options.cid}.xml`;
+        },
+      },
+    ],
   ],
 
   // Options to be passed to Mocha.
   // See the full list at http://mochajs.org/
   mochaOpts: {
     ui: "bdd",
-    timeout: 12000000,
+    timeout: 1200000,
   },
 
   //
@@ -250,10 +266,12 @@ export const config = {
    * @param {object} _config wdio configuration object
    * @param {Array.<Object>} _capabilities list of capabilities details
    */
-  // onPrepare: function (_config, _capabilities) {
-  //     console.log('Cleaning up old allure results...');
-  //     removeSync('./allure-results'); // Automatically remove old results
-  // },
+  onPrepare: function (_config, _capabilities) {
+    console.log("Cleaning up old allure results...");
+    removeSync("./allure-results");
+    removeSync("./reports");
+    // Automatically remove old results
+  },
   /**
    * Gets executed before a worker process is spawned and can be used to initialize specific service
    * for that worker as well as modify runtime environments in an async fashion.
@@ -309,59 +327,35 @@ export const config = {
   /**
    * Function to be executed before a test (in Mocha/Jasmine) starts.
    */
-  // beforeTest(test) {
-  //   // parent and suite can be set here or inside your test file
 
-  //   // Segrigate Positive or Negative automatically
-  //   const name = test.title.toLowerCase();
-
-  //   const negativeWords = [
-  //     "error",
-  //     "fail",
-  //     "invalid",
-  //     "empty",
-  //     "expired",
-  //     "wrong",
-  //   ];
-  //   const isNegative = negativeWords.some((word) => name.includes(word));
-
-  //   if (isNegative) {
-  //     allureReporter.addSubSuite("Negative");
-  //   } else {
-  //     allureReporter.addSubSuite("Positive");
-  //   }
-  // },
   beforeTest(test) {
     const title = test.title.toLowerCase();
 
-    const language =
-      title.includes(" spanish ") ||
-      title.includes("[es]") ||
-      title.includes("_es") ||
-      title.includes(" es ")
-        ? "Spanish"
-        : "English";
+    // ---------- LANGUAGE ----------
+    const language = /-es/i.test(title) ? "Spanish" : "English";
 
-    allureReporter.addParentSuite(language);
-
-    // ✅ Positive / Negative → suite
+    // ---------- POSITIVE / NEGATIVE (classification only) ----------
     const negativeWords = [
       "error",
       "fail",
-      "failed",
+      "offline",
       "invalid",
-      "empty",
-      "expired",
-      "wrong",
-      "timeout",
       "denied",
+      "killed",
+      "timeout",
     ];
 
-    const isNegative = negativeWords.some((word) => title.includes(word));
-    allureReporter.addSuite(isNegative ? "Negative" : "Positive");
+    const type = negativeWords.some((w) => title.includes(w))
+      ? "Negative"
+      : "Positive";
 
-    // ✅ Optional: better filtering
-    allureReporter.addLabel("Language", language);
+    // ---------- ALLURE STRUCTURE ----------
+    allureReporter.addEpic("Noki iOS Mobile"); // Application
+    allureReporter.addParentSuite(language); // English / Spanish
+
+    // ---------- FILTER LABELS ----------
+    allureReporter.addLabel("language", language);
+    allureReporter.addLabel("type", type);
   },
 
   /**
@@ -389,16 +383,63 @@ export const config = {
   afterTest: async function (
     test,
     context,
-    { error, result, duration, passed, retries, issue }
+    { error, result, duration, passed, retries },
   ) {
-    if (error || result || !passed) {
-      const screenshot = await browser.takeScreenshot();
-      allureReporter.addAttachment(
-        "Screenshot on Failure",
-        Buffer.from(screenshot, "base64"),
-        "image/png"
-      );
+    console.log("\n╔══════════════════════════════════════╗");
+    console.log("║  afterTest HOOK FIRED!              ║");
+    console.log("╚══════════════════════════════════════╝");
+    console.log("Test:", test.title);
+    console.log("Passed:", passed);
+
+    if (!global.testResults) {
+      global.testResults = [];
+      console.log("✓ Initialized global.testResults");
     }
+
+    const isSpanish =
+      test.title.includes("-Es") ||
+      test.title.includes("_Es") ||
+      test.title.includes(" Es ");
+
+    const baseTestName = test.title.replace(/-Es|_Es| Es /gi, "").trim();
+
+    // ✅ Screenshot + Allure attachment on failure
+    if (!passed) {
+      try {
+        const screenshot = await browser.takeScreenshot();
+
+        const allureReporter = (await import("@wdio/allure-reporter")).default;
+
+        allureReporter.addAttachment(
+          "Screenshot on Failure",
+          Buffer.from(screenshot, "base64"),
+          "image/png",
+        );
+
+        // Optional: auto mark as issue if error exists
+        if (error) {
+          allureReporter.addIssue("AUTO-FAIL", error.message || "Test failed");
+        }
+
+        console.log("📸 Screenshot attached to Allure");
+      } catch (err) {
+        console.log("⚠️ Screenshot failed:", err.message);
+      }
+    }
+
+    // ✅ Store result
+    global.testResults.push({
+      name: test.title,
+      baseTestName: baseTestName,
+      passed: passed,
+      skipped: test.pending || false,
+      duration: duration,
+      error: error ? error.message : null,
+      isSpanish: isSpanish,
+    });
+
+    console.log("✓ Pushed. Total:", global.testResults.length);
+    console.log("═══════════════════════════════════════\n");
   },
 
   /**    idevicesyslog
@@ -461,21 +502,25 @@ export const config = {
    */
 
   onComplete: async function (_exitCode, _config, _capabilities, _results) {
-    const reportError = new Error("❌ Could not generate Allure report");
+    await new Promise((r) => setTimeout(r, 1000));
+
     const generation = allure(["generate", "allure-results", "--clean"]);
+
     await new Promise((resolve, reject) => {
       generation.on("exit", (exitCode) => {
-        if (exitCode !== 0) return reject(reportError);
+        if (exitCode !== 0)
+          return reject(new Error("❌ Could not generate Allure report"));
+
         console.log("✅ Allure report generated");
         resolve();
       });
     });
 
-    exec(`allure open`, (err) => {
-      if (err)
-        console.error("⚠️ Failed to open Allure report automatically:", err);
-      else console.log("🌐 Allure report opened in browser");
-    });
+    // exec(`allure open`, (err) => {
+    //   if (err)
+    //     console.error("⚠️ Failed to open Allure report automatically:", err);
+    //   else console.log("🌐 Allure report opened in browser");
+    // });
 
     // const reportPath = "./reports/html-reports/report.html";
     // if (!fs.existsSync(reportPath)) {
@@ -486,8 +531,8 @@ export const config = {
     //       console.error("⚠️ Failed to open HTML report automatically:", err);
     //     else console.log(`🌐 HTML report opened: ${reportPath}`);
     //   });
-    // }
   },
+
   /**
    * Gets executed when a refresh happens.
    * @param {string} oldSessionId session ID of the old session
