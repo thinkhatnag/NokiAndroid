@@ -1,22 +1,7 @@
-#!/bin/bash
+set -e  # exit immediately if a command fails
 
-set -e  # Exit immediately if a command fails
+git remote set-url origin https://github.com/thinkhatnag/reports.git
 
-# Go to project folder
-cd /Users/nagasubarayudu/Desktop/NokiAndroid || exit
-
-echo "🔗 Setting correct origin remote..."
-git remote remove origin 2>/dev/null || true
-git remote add origin https://github.com/thinkhatnag/NikiAndroid.git
-
-echo "➕ Staging only docs/..."
-git add test  helper wdio.conf.js 
-
-echo "💾 Committing changes..."
-git commit -m "new aumadio manegment adn change in offline testing code and improments is reporting "
-
-echo "⬆️ Pushing to GitHub..."
-git push -u origin main
-
-echo "✅ Done! Report available at: "https://github.com/thinkhatnag/NikiAndroid.git"
-
+git add Android-allure-results report generate-Android-Report.js
+git commit -m "Report Update"
+git push origin main
