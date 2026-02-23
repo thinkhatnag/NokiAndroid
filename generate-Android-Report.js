@@ -1,11 +1,121 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>Android Test Report</title>
-<style>
+import fs from "fs";
+import path from "path";
 
+const ALLURE_DIR = path.join(process.cwd(), "Android-allure-results");       // reads from NokiAndroid/allure-results/
+const OUT_DIR = path.join(process.cwd(), "report");                  // outputs to NokiAndroid/report/
+const OUT_FILE = path.join(OUT_DIR, "android-test-report.html");
+
+if (!fs.existsSync(OUT_DIR)) fs.mkdirSync(OUT_DIR, { recursive: true });
+
+const resultFiles = fs
+  .readdirSync(ALLURE_DIR)
+  .filter((f) => f.endsWith("-result.json"))
+  .map((f) => path.join(ALLURE_DIR, f));
+
+console.log("Found:", resultFiles.length, "result files");
+
+function prettifyPackage(raw) {
+  const STRIP = new Set(["test","spec","english","spanish","es","en","js"]);
+  return raw
+    .replace(/\.spec\.js$/i, "")
+    .replace(/\.js$/i, "")
+    .split(/[._\-\/\\]+/)
+    .filter((p) => p && !STRIP.has(p.toLowerCase()))
+    .join(" ");
+}
+
+function extractSuite(raw) {
+  if (Array.isArray(raw.labels)) {
+    const pkg = raw.labels.find((l) => l.name === "package");
+    if (pkg?.value) return prettifyPackage(pkg.value);
+  }
+  if (raw.fullName?.includes("#")) {
+    const file = raw.fullName.split("#")[0].split("/").pop();
+    return prettifyPackage(file);
+  }
+  if (raw.suite?.trim()) return raw.suite.trim();
+  return "Ungrouped";
+}
+
+// Merge retries — keep latest run only
+const merged = new Map();
+for (const file of resultFiles) {
+  try {
+    const raw = JSON.parse(fs.readFileSync(file, "utf8"));
+    const key = raw.historyId || raw.fullName || raw.name || file;
+    const time = raw.start || 0;
+    if (!merged.has(key) || time > merged.get(key).time)
+      merged.set(key, { raw, time });
+  } catch {}
+}
+
+// Build test cases
+const testCases = [];
+merged.forEach(({ raw }) => {
+  const name = raw.name || "Unknown Test";
+  const status = raw.status || "unknown";
+  const dur = (raw.stop || 0) - (raw.start || 0);
+  const err = raw.statusDetails?.message || null;
+  const isSpanish = /\s*[-_]Es\s*$/i.test(name);
+  const baseTestName = name.replace(/\s*[-_]Es\s*$/i, "").trim();
+  const suite = extractSuite(raw);
+
+  testCases.push({
+    name,
+    baseTestName,
+    suite,
+    passed: status === "passed",
+    skipped: status === "skipped" || status === "pending",
+    failed: status === "failed" || status === "broken",
+    dur,
+    err,
+    isSpanish,
+    status,
+  });
+});
+
+// Group into suites → base test name → { en, es }
+const suiteMap = {};
+testCases.forEach((t) => {
+  if (!suiteMap[t.suite]) suiteMap[t.suite] = {};
+  if (!suiteMap[t.suite][t.baseTestName])
+    suiteMap[t.suite][t.baseTestName] = { en: null, es: null };
+  suiteMap[t.suite][t.baseTestName][t.isSpanish ? "es" : "en"] = t;
+});
+
+const suiteList = Object.entries(suiteMap).map(([name, tests]) => {
+  const pairs = Object.entries(tests).map(([base, { en, es }]) => ({ base, en, es }));
+  let total = 0, passed = 0, failed = 0, skipped = 0;
+  pairs.forEach(({ en, es }) => {
+    [en, es].forEach((t) => {
+      if (t) {
+        total++;
+        if (t.passed) passed++;
+        else if (t.failed) failed++;
+        else if (t.skipped) skipped++;
+      }
+    });
+  });
+  return { name, pairs, stats: { total, passed, failed, skipped } };
+});
+
+const gStats = {
+  total: testCases.length,
+  passed: testCases.filter((t) => t.passed).length,
+  failed: testCases.filter((t) => t.failed).length,
+  skipped: testCases.filter((t) => t.skipped).length,
+};
+
+const reportDate = new Date().toLocaleString();
+const reportTS = new Date().toISOString();
+
+const dataJson = JSON.stringify({
+  suites: suiteList,
+  stats: gStats,
+  meta: { platform: "Android", reportDate, reportTS },
+});
+
+const css = `
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
   --bg:#f8f9fb;--sf:#ffffff;--sf2:#f4f6f8;--sf3:#e8ebf0;
@@ -98,54 +208,10 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .exp-btn{padding:7px 18px;background:var(--acc);color:#fff;border:none;border-radius:6px;font-size:12px;font-weight:700;font-family:var(--mono);cursor:pointer;transition:opacity .15s}
 .exp-btn:hover{opacity:.85}
 .footer{margin-top:28px;text-align:center;font-size:11px;font-family:var(--mono);color:var(--txd)}
+`;
 
-</style>
-</head>
-<body>
-<div class="page">
-<div class="hdr">
-  <div>
-  <h1>&#129302; Android Test Report <span>v2</span></h1>
-  <div class="hdr-meta" id="hdrMeta">Loading&hellip;</div>
-  <!-- </div>
-  <a href="report/index.html" class="back">&larr; Dashboard</a>
-</div> -->
-<div class="stats">
-  <div class="sc"><div class="sc-lbl">Total</div><div class="sc-val" id="sTotal">0</div></div>
-  <div class="sc p"><div class="sc-lbl">&#10003; Passed</div><div class="sc-val" id="sPassed">0</div></div>
-  <div class="sc f"><div class="sc-lbl">&#10007; Failed</div><div class="sc-val" id="sFailed">0</div></div>
-  <div class="sc s"><div class="sc-lbl">&#8855; Skipped</div><div class="sc-val" id="sSkipped">0</div></div>
-</div>
-<div class="legend">
-  <span class="leg-ttl">Legend</span>
-  <div class="leg-item"><span class="lb p">&#10003; PASS</span> Test passed</div>
-  <div class="leg-item"><span class="lb f">&#10007; FAIL</span> Test failed</div>
-  <div class="leg-item"><span class="lb s">&#8855; SKIP</span> Skipped</div>
-</div>
-<div class="toolbar">
-  <div class="fg">
-    <span class="flbl">Filter:</span>
-    <button class="fbtn on" data-f="all"     onclick="setF('all')">All</button>
-    <button class="fbtn"    data-f="passed"  onclick="setF('passed')">&#10003; Pass</button>
-    <button class="fbtn"    data-f="failed"  onclick="setF('failed')">&#10007; Fail</button>
-    <button class="fbtn"    data-f="skipped" onclick="setF('skipped')">&#8855; Skip</button>
-  </div>
-  <div class="eg">
-    <button class="cbtn" onclick="expandAll()">Expand All</button>
-    <button class="cbtn" onclick="collapseAll()">Collapse All</button>
-    <span class="sind" id="sind">&#10003; Saved</span>
-  </div>
-</div>
-<div class="suites" id="suites"></div>
-<div class="nores" id="nores">No tests match the current filter.</div>
-<div class="exp-row">
-  <button class="exp-btn" onclick="exportCSV()">&#128229; Export CSV</button>
-</div>
-<div class="footer">WebdriverIO + Appium + Allure &mdash; Android Automated Test Report</div>
-</div>
-<script>
-
-var D = {"suites":[{"name":"Login","pairs":[{"base":"Login Error message verification: \"short Password\"","en":{"name":"Login Error message verification: \"short Password\"","baseTestName":"Login Error message verification: \"short Password\"","suite":"Login","passed":true,"skipped":false,"failed":false,"dur":17057,"err":null,"isSpanish":false,"status":"passed"},"es":null},{"base":"Login Error message verification: \"short password\"","en":null,"es":{"name":"Login Error message verification: \"short password\" -Es","baseTestName":"Login Error message verification: \"short password\"","suite":"Login","passed":true,"skipped":false,"failed":false,"dur":16011,"err":null,"isSpanish":true,"status":"passed"}},{"base":"Login Error messge verification: \"Email is not provided\"","en":{"name":"Login Error messge verification: \"Email is not provided\"","baseTestName":"Login Error messge verification: \"Email is not provided\"","suite":"Login","passed":true,"skipped":false,"failed":false,"dur":8840,"err":null,"isSpanish":false,"status":"passed"},"es":null},{"base":"Login Error message verification: \"password not provided\"","en":null,"es":{"name":"Login Error message verification: \"password not provided\" -Es ","baseTestName":"Login Error message verification: \"password not provided\"","suite":"Login","passed":true,"skipped":false,"failed":false,"dur":14204,"err":null,"isSpanish":true,"status":"passed"}},{"base":"Login Error message verification: \"invalid Email\"","en":{"name":"Login Error message verification: \"invalid Email\"","baseTestName":"Login Error message verification: \"invalid Email\"","suite":"Login","passed":true,"skipped":false,"failed":false,"dur":9080,"err":null,"isSpanish":false,"status":"passed"},"es":null}],"stats":{"total":5,"passed":5,"failed":0,"skipped":0}},{"name":"Existing Patient","pairs":[{"base":"Finalize encounter","en":{"name":"Finalize encounter","baseTestName":"Finalize encounter","suite":"Existing Patient","passed":true,"skipped":false,"failed":false,"dur":6603,"err":null,"isSpanish":false,"status":"passed"},"es":null},{"base":"Transcript Verification for the Draft Conversation","en":{"name":"Transcript Verification for the Draft Conversation","baseTestName":"Transcript Verification for the Draft Conversation","suite":"Existing Patient","passed":false,"skipped":false,"failed":true,"dur":10075,"err":"element (\"~Transcript\") still not displayed after 10000ms","isSpanish":false,"status":"broken"},"es":{"name":"Transcript Verification for the Draft Conversation -Es","baseTestName":"Transcript Verification for the Draft Conversation","suite":"Existing Patient","passed":true,"skipped":false,"failed":false,"dur":18384,"err":null,"isSpanish":true,"status":"passed"}},{"base":"Trascript verification","en":null,"es":{"name":"Trascript verification -Es","baseTestName":"Trascript verification","suite":"Existing Patient","passed":true,"skipped":false,"failed":false,"dur":18319,"err":null,"isSpanish":true,"status":"passed"}},{"base":"Patient info manual update","en":null,"es":{"name":"Patient info manual update -Es","baseTestName":"Patient info manual update","suite":"Existing Patient","passed":true,"skipped":false,"failed":false,"dur":23186,"err":null,"isSpanish":true,"status":"passed"}},{"base":"Offline Mode Stop and App Kill Verification","en":null,"es":{"name":"Offline Mode Stop and App Kill Verification -Es","baseTestName":"Offline Mode Stop and App Kill Verification","suite":"Existing Patient","passed":true,"skipped":false,"failed":false,"dur":81919,"err":null,"isSpanish":true,"status":"passed"}},{"base":"Transcript Verification for the Second Conversation","en":{"name":"Transcript Verification for the Second Conversation","baseTestName":"Transcript Verification for the Second Conversation","suite":"Existing Patient","passed":true,"skipped":false,"failed":false,"dur":14788,"err":null,"isSpanish":false,"status":"passed"},"es":null},{"base":"Hay Noki verification","en":null,"es":{"name":"Hay Noki verification -Es","baseTestName":"Hay Noki verification","suite":"Existing Patient","passed":true,"skipped":false,"failed":false,"dur":76148,"err":null,"isSpanish":true,"status":"passed"}},{"base":"App Killed in Offline and Reopened in Online Mode Verification","en":{"name":"App Killed in Offline and Reopened in Online Mode Verification","baseTestName":"App Killed in Offline and Reopened in Online Mode Verification","suite":"Existing Patient","passed":true,"skipped":false,"failed":false,"dur":57922,"err":null,"isSpanish":false,"status":"passed"},"es":null},{"base":"SoapNote Regeneration","en":{"name":"SoapNote Regeneration","baseTestName":"SoapNote Regeneration","suite":"Existing Patient","passed":true,"skipped":false,"failed":false,"dur":67880,"err":null,"isSpanish":false,"status":"passed"},"es":null}],"stats":{"total":10,"passed":9,"failed":1,"skipped":0}},{"name":"Forgot Password","pairs":[{"base":"Verify Reset Password mail generation","en":null,"es":{"name":"Verify Reset Password mail generation -Es","baseTestName":"Verify Reset Password mail generation","suite":"Forgot Password","passed":false,"skipped":false,"failed":true,"dur":21074,"err":"element (\"~El enlace para restablecer la contraseña ha sido enviado correctamente a su correo electrónico.\") still not displayed after 10000ms","isSpanish":true,"status":"broken"}},{"base":"Error message verifcation: \"Email not Enterd\"","en":{"name":"Error message verifcation: \"Email not Enterd\"","baseTestName":"Error message verifcation: \"Email not Enterd\"","suite":"Forgot Password","passed":true,"skipped":false,"failed":false,"dur":10356,"err":null,"isSpanish":false,"status":"passed"},"es":null},{"base":"Error message verification: \"Email is not rigisterd\"","en":{"name":"Error message verification: \"Email is not rigisterd\"","baseTestName":"Error message verification: \"Email is not rigisterd\"","suite":"Forgot Password","passed":true,"skipped":false,"failed":false,"dur":12238,"err":null,"isSpanish":false,"status":"passed"},"es":null}],"stats":{"total":3,"passed":2,"failed":1,"skipped":0}},{"name":"New Patient","pairs":[{"base":"Referal Generation and Regeneration","en":null,"es":{"name":"Referal Generation and Regeneration-Es","baseTestName":"Referal Generation and Regeneration","suite":"New Patient","passed":true,"skipped":false,"failed":false,"dur":53849,"err":null,"isSpanish":true,"status":"passed"}},{"base":"Transcript Verification for the Second Conversation for the First Encounter","en":null,"es":{"name":"Transcript Verification for the Second Conversation for the First Encounter -Es","baseTestName":"Transcript Verification for the Second Conversation for the First Encounter","suite":"New Patient","passed":true,"skipped":false,"failed":false,"dur":42838,"err":null,"isSpanish":true,"status":"passed"}},{"base":"SOAP Note Generation for the First Encounter","en":{"name":"SOAP Note Generation for the First Encounter","baseTestName":"SOAP Note Generation for the First Encounter","suite":"New Patient","passed":true,"skipped":false,"failed":false,"dur":195910,"err":null,"isSpanish":false,"status":"passed"},"es":null},{"base":"Care plan Generation and Regeneration","en":null,"es":{"name":"Care plan Generation and Regeneration-Es","baseTestName":"Care plan Generation and Regeneration","suite":"New Patient","passed":false,"skipped":false,"failed":true,"dur":140244,"err":"element (\"~Descargar\") still not displayed after 10000ms","isSpanish":true,"status":"broken"}},{"base":"SoapNote Regeneration","en":null,"es":{"name":"SoapNote Regeneration-Es","baseTestName":"SoapNote Regeneration","suite":"New Patient","passed":false,"skipped":false,"failed":true,"dur":11798,"err":"element (\"~Regenerar nota SOAP\") still not displayed after 10000ms","isSpanish":true,"status":"broken"}},{"base":"Transcript verification for the Second Conversation in First Encounter","en":{"name":"Transcript verification for the Second Conversation in First Encounter","baseTestName":"Transcript verification for the Second Conversation in First Encounter","suite":"New Patient","passed":true,"skipped":false,"failed":false,"dur":11749,"err":null,"isSpanish":false,"status":"passed"},"es":null}],"stats":{"total":6,"passed":4,"failed":2,"skipped":0}},{"name":"Setting","pairs":[{"base":"Verify Setting's screen launguage and general settings","en":{"name":"Verify Setting's screen launguage and general settings","baseTestName":"Verify Setting's screen launguage and general settings","suite":"Setting","passed":true,"skipped":false,"failed":false,"dur":16783,"err":null,"isSpanish":false,"status":"passed"},"es":null}],"stats":{"total":1,"passed":1,"failed":0,"skipped":0}}],"stats":{"total":25,"passed":21,"failed":4,"skipped":0},"meta":{"platform":"Android","reportDate":"2/23/2026, 12:06:03 PM","reportTS":"2026-02-23T06:36:03.357Z"}};
+const js = `
+var D = ${dataJson};
 
 function sc(t){
   if(!t)return'';
@@ -302,7 +368,7 @@ function exportCSV(){
       k++;
     });
   });
-  var csv=rows.map(function(r){return r.map(esc).join(',');}).join('\n');
+  var csv=rows.map(function(r){return r.map(esc).join(',');}).join('\\n');
   var blob=new Blob([csv],{type:'text/csv;charset=utf-8;'});
   var url=URL.createObjectURL(blob);
   var a=document.createElement('a');
@@ -311,7 +377,87 @@ function exportCSV(){
   document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(url);
 }
 window.addEventListener('load',loadC);
+`;
 
-</script>
-</body>
-</html>
+const html = [
+  "<!DOCTYPE html>",
+  '<html lang="en">',
+  "<head>",
+  '<meta charset="UTF-8"/>',
+  '<meta name="viewport" content="width=device-width,initial-scale=1.0"/>',
+  "<title>Android Test Report</title>",
+  "<style>",
+  css,
+  "</style>",
+  "</head>",
+  "<body>",
+  '<div class="page">',
+
+  '<div class="hdr">',
+  "  <div>",
+  "  <h1>&#129302; Android Test Report <span>v2</span></h1>",
+  '  <div class="hdr-meta" id="hdrMeta">Loading&hellip;</div>',
+  "  </div>",
+  '  <a href="index.html" class="back">&larr; Dashboard</a>',
+  "</div>",
+
+  '<div class="stats">',
+  '  <div class="sc"><div class="sc-lbl">Total</div><div class="sc-val" id="sTotal">0</div></div>',
+  '  <div class="sc p"><div class="sc-lbl">&#10003; Passed</div><div class="sc-val" id="sPassed">0</div></div>',
+  '  <div class="sc f"><div class="sc-lbl">&#10007; Failed</div><div class="sc-val" id="sFailed">0</div></div>',
+  '  <div class="sc s"><div class="sc-lbl">&#8855; Skipped</div><div class="sc-val" id="sSkipped">0</div></div>',
+  "</div>",
+
+  '<div class="legend">',
+  '  <span class="leg-ttl">Legend</span>',
+  '  <div class="leg-item"><span class="lb p">&#10003; PASS</span> Test passed</div>',
+  '  <div class="leg-item"><span class="lb f">&#10007; FAIL</span> Test failed</div>',
+  '  <div class="leg-item"><span class="lb s">&#8855; SKIP</span> Skipped</div>',
+  "</div>",
+
+  '<div class="toolbar">',
+  '  <div class="fg">',
+  '    <span class="flbl">Filter:</span>',
+  '    <button class="fbtn on" data-f="all"     onclick="setF(\'all\')">All</button>',
+  '    <button class="fbtn"    data-f="passed"  onclick="setF(\'passed\')">&#10003; Pass</button>',
+  '    <button class="fbtn"    data-f="failed"  onclick="setF(\'failed\')">&#10007; Fail</button>',
+  '    <button class="fbtn"    data-f="skipped" onclick="setF(\'skipped\')">&#8855; Skip</button>',
+  "  </div>",
+  '  <div class="eg">',
+  '    <button class="cbtn" onclick="expandAll()">Expand All</button>',
+  '    <button class="cbtn" onclick="collapseAll()">Collapse All</button>',
+  '    <span class="sind" id="sind">&#10003; Saved</span>',
+  "  </div>",
+  "</div>",
+
+  '<div class="suites" id="suites"></div>',
+  '<div class="nores" id="nores">No tests match the current filter.</div>',
+
+  '<div class="exp-row">',
+  '  <button class="exp-btn" onclick="exportCSV()">&#128229; Export CSV</button>',
+  "</div>",
+
+  '<div class="footer">WebdriverIO + Appium + Allure &mdash; Android Automated Test Report</div>',
+  "</div>",
+
+  "<script>",
+  js,
+  "<\/script>",
+  "</body>",
+  "</html>",
+].join("\n");
+
+fs.writeFileSync(OUT_FILE, html);
+console.log("✅ Android report written to:", OUT_FILE);
+console.log(
+  "📊 Stats | Suites:",
+  suiteList.length,
+  "| Total:",
+  gStats.total,
+  "| Pass:",
+  gStats.passed,
+  "| Fail:",
+  gStats.failed,
+  "| Skip:",
+  gStats.skipped,
+);
