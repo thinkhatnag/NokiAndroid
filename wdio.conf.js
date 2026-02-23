@@ -210,7 +210,7 @@ export const config = {
     [
       "allure",
       {
-        outputDir: "allure-results",
+        outputDir: "Android-allure-results",
         disableWebdriverStepsReporting: true,
         disableWebdriverScreenshotsReporting: false,
         reportedEnvironmentVars: {
@@ -268,7 +268,7 @@ export const config = {
    */
   onPrepare: function (_config, _capabilities) {
     console.log("Cleaning up old allure results...");
-    removeSync("./allure-results");
+    removeSync("./Android-allure-results");
     removeSync("./reports");
     // Automatically remove old results
   },
@@ -504,7 +504,11 @@ export const config = {
   onComplete: async function (_exitCode, _config, _capabilities, _results) {
     await new Promise((r) => setTimeout(r, 1000));
 
-    const generation = allure(["generate", "allure-results", "--clean"]);
+    const generation = allure([
+      "generate",
+      "Android-allure-results",
+      "--clean",
+    ]);
 
     await new Promise((resolve, reject) => {
       generation.on("exit", (exitCode) => {
